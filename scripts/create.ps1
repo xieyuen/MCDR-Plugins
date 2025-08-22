@@ -30,7 +30,7 @@ New-Item -ItemType Directory -Path "${pluginPath}\${packageName}" | Out-Null
 # 创建基本的插件元数据文件
 ${metadataContent} = @"
 {
-  "id": "$(${PluginName}.ToLower() )",
+  "id": "$(${PluginName}.ToLower())",
   "version": "0.1.0",
   "name": "$PluginName",
   "description": {
