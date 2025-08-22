@@ -1,0 +1,5 @@
+allow_alias: true
+auto_fix: false
+command_prefixes: ['!!po', '!!post']
+max_storage_num: 5
+receive_tip_delay: 3.0
