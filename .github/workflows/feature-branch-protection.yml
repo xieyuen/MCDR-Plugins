@@ -20,12 +20,16 @@ jobs:
             # It can only be merged to dev/* branches
             if [[ $TARGET_BRANCH == dev/* ]]; then
               echo "✓ Feature branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+              echo "FEATURE_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
               echo "Error: Feature branches can only be merged to dev/* branches"
               echo "Source branch: $SOURCE_BRANCH"
               echo "Target branch: $TARGET_BRANCH"
+              echo "FEATURE_BRANCH_CHECK=false" >> $GITHUB_ENV
               exit 1
             fi
+          else
+            echo "FEATURE_BRANCH_CHECK=skipped" >> $GITHUB_ENV
           fi
           
           # If source is a fix branch
@@ -33,22 +37,40 @@ jobs:
             # It can only be merged to dev/* branches
             if [[ $TARGET_BRANCH == dev/* ]]; then
               echo "✓ Fix branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+              echo "FIX_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
               echo "Error: Fix branches can only be merged to dev/* branches"
               echo "Source branch: $SOURCE_BRANCH"
               echo "Target branch: $TARGET_BRANCH"
+              echo "FIX_BRANCH_CHECK=false" >> $GITHUB_ENV
               exit 1
             fi
+          else
+            echo "FIX_BRANCH_CHECK=skipped" >> $GITHUB_ENV
           fi
           
           # If merging to master, only allow dev/* or hotfix/* branches
           if [[ $TARGET_BRANCH == master ]]; then
             if [[ $SOURCE_BRANCH == dev/* ]] || [[ $SOURCE_BRANCH == hotfix/* ]]; then
               echo "✓ $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+              echo "MASTER_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
               echo "Error: Only dev/* or hotfix/* branches can be merged to master"
               echo "Source branch: $SOURCE_BRANCH"
               echo "Target branch: $TARGET_BRANCH"
+              echo "MASTER_BRANCH_CHECK=false" >> $GITHUB_ENV
               exit 1
             fi
+          else
+            echo "MASTER_BRANCH_CHECK=skipped" >> $GITHUB_ENV
           fi
+          
+      - name: Create Job Summary
+        run: |
+          echo "## Branch Protection Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Feature Branch Check | ${{ env.FEATURE_BRANCH_CHECK }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Fix Branch Check | ${{ env.FIX_BRANCH_CHECK }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Master Branch Check | ${{ env.MASTER_BRANCH_CHECK }} |" >> $GITHUB_STEP_SUMMARY

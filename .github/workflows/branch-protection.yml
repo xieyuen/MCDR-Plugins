@@ -17,8 +17,20 @@ jobs:
         run: |
           if [[ "${{ github.head_ref }}" == dev/* ]] || [[ "${{ github.head_ref }}" == hotfix/* ]]; then
             echo "✓ Pull request is from an allowed branch: ${{ github.head_ref }}"
+            echo "BRANCH_CHECK_RESULT=true" >> $GITHUB_ENV
+            echo "ALLOWED_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
           else
             echo "ERROR: Pull requests to master branch are only allowed from dev/* or hotfix/* branches."
             echo "Your branch: ${{ github.head_ref }}"
+            echo "BRANCH_CHECK_RESULT=false" >> $GITHUB_ENV
+            echo "ALLOWED_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
             exit 1
           fi
+          
+      - name: Create Job Summary
+        run: |
+          echo "## Master Branch Protection Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Branch check result: ${{ env.BRANCH_CHECK_RESULT }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Source branch: ${{ env.ALLOWED_BRANCH }}" >> $GITHUB_STEP_SUMMARY
