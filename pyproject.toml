@@ -1,0 +1,14 @@
+[project]
+name = "mcdr-plugins"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mcdreforged>=2.14.7",
+]
+license = { file = "LICENSE" }
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
