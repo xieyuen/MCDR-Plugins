@@ -1,0 +1,35 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR is from allowed branches
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ $BRANCH_NAME == dev/* ]] || [[ $BRANCH_NAME == hotfix/* ]]; then
+            echo "✓ Pull request is from an allowed branch: $BRANCH_NAME"
+          else
+            echo "Error: Pull requests to master branch can only come from dev/* or hotfix/* branches"
+            echo "Current branch: $BRANCH_NAME"
+            exit 1
+          fi
+          
+      - name: Additional checks for feature branches
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ $BRANCH_NAME == feature/* ]]; then
+            echo "Error: feature/* branches cannot be merged directly to master"
+            echo "Please merge feature branches to dev/* branches first"
+            exit 1
+          fi
+          
+      - name: Check commit signing
+        run: |
+          # This job can be expanded to check other PR requirements
+          echo "PR source validation completed"

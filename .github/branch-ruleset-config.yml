@@ -1,0 +1,26 @@
+# GitHub Repository Ruleset Configuration
+# This file documents the ruleset configuration for branch protection
+
+# Ruleset Name: Master Branch Protection
+# Target: master branch
+# Rules:
+# 1. All changes must be via pull request
+# 2. Pull requests must originate from dev/* or hotfix/* branches
+# 3. Require approvals (configured in GitHub UI)
+# 4. Require status checks (configured in GitHub UI)
+
+# Ruleset Name: Feature Branch Protection
+# Rules:
+# 1. feature/* branches can only be merged to dev/* branches
+# 2. fix/* branches can only be merged to dev/* branches
+# 3. dev/* and hotfix/* branches can be merged to master
+
+# Branch naming conventions:
+# - feature/* : Feature development branches
+# - fix/* : Bug fix branches
+# - dev/* : Development branches that can be merged to master
+# - hotfix/* : Hotfix branches that can be merged directly to master
+# - master : Production branch
+
+# This configuration is mainly for documentation purposes
+# Actual ruleset should be configured in GitHub Settings > Rulesets

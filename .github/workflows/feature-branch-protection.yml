@@ -1,0 +1,54 @@
+name: Feature Branch Protection
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  check-feature-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check feature branch destination
+        run: |
+          SOURCE_BRANCH="${{ github.head_ref }}"
+          TARGET_BRANCH="${{ github.base_ref }}"
+          
+          # If source is a feature branch
+          if [[ $SOURCE_BRANCH == feature/* ]]; then
+            # It can only be merged to dev/* branches
+            if [[ $TARGET_BRANCH == dev/* ]]; then
+              echo "✓ Feature branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+            else
+              echo "Error: Feature branches can only be merged to dev/* branches"
+              echo "Source branch: $SOURCE_BRANCH"
+              echo "Target branch: $TARGET_BRANCH"
+              exit 1
+            fi
+          fi
+          
+          # If source is a fix branch
+          if [[ $SOURCE_BRANCH == fix/* ]]; then
+            # It can only be merged to dev/* branches
+            if [[ $TARGET_BRANCH == dev/* ]]; then
+              echo "✓ Fix branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+            else
+              echo "Error: Fix branches can only be merged to dev/* branches"
+              echo "Source branch: $SOURCE_BRANCH"
+              echo "Target branch: $TARGET_BRANCH"
+              exit 1
+            fi
+          fi
+          
+          # If merging to master, only allow dev/* or hotfix/* branches
+          if [[ $TARGET_BRANCH == master ]]; then
+            if [[ $SOURCE_BRANCH == dev/* ]] || [[ $SOURCE_BRANCH == hotfix/* ]]; then
+              echo "✓ $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
+            else
+              echo "Error: Only dev/* or hotfix/* branches can be merged to master"
+              echo "Source branch: $SOURCE_BRANCH"
+              echo "Target branch: $TARGET_BRANCH"
+              exit 1
+            fi
+          fi

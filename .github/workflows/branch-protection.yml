@@ -1,0 +1,24 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch source
+        run: |
+          if [[ "${{ github.head_ref }}" == dev/* ]] || [[ "${{ github.head_ref }}" == hotfix/* ]]; then
+            echo "✓ Pull request is from an allowed branch: ${{ github.head_ref }}"
+          else
+            echo "ERROR: Pull requests to master branch are only allowed from dev/* or hotfix/* branches."
+            echo "Your branch: ${{ github.head_ref }}"
+            exit 1
+          fi
