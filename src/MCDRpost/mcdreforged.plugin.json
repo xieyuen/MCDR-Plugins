@@ -1,6 +1,6 @@
 {
   "id": "mcdrpost",
-  "version": "3.3.2-beta2",
+  "version": "3.2.0",
   "name": "MCDRpost",
   "description": {
     "en_us": "A MCDR plugin for post/teleport items",
@@ -12,8 +12,8 @@
   ],
   "link": "https://github.com/xieyuen/MCDRpost/",
   "dependencies": {
-    "python": ">=3.10",
-    "mcdreforged": ">=2.15.0",
+    "python": ">=3.11",
+    "mcdreforged": ">=2.10",
     "minecraft_data_api": "*"
   },
   "resources": [
