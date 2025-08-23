@@ -2,6 +2,7 @@ mcdrpost:
   desc: "An MCDR plugin for post/teleport items"
   info_msg: "post/teleport weapon hands items"
   hover: "Click to write to chat bar"
+  new_player_joined: "§6[MCDRpost] §eNew player §b{0} §ejoined the server but is not registered, use §7!!po player add §eto register them"
   help:
     title: "§a『Command Usage』§r"
     hint_help: "show help"

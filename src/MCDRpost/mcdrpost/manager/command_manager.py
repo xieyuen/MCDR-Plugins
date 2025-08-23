@@ -153,6 +153,7 @@ class CommandManager:
 
         if not all_orders:
             src.reply(tr(Tags.no_orders))
+            return
 
         msg = ""
 
