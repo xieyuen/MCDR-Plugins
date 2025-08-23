@@ -1,11 +1,13 @@
 """版本管理器，根据 Minecraft 版本提供相应的功能实现"""
+from typing import Callable, final
 
 from mcdreforged import PluginServerInterface
 
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
-from mcdrpost.utils.types import Checker
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+
+Checker = Callable[[Environment], bool]
 
 
 class VersionManager:
@@ -19,8 +21,10 @@ class VersionManager:
     """
 
     _handlers: list[tuple[Checker, AbstractVersionHandler]] = []
+    _builtin_handlers: list[tuple[Checker, AbstractVersionHandler]] = []
 
     @classmethod
+    @final
     def register_handler(cls, handler: type[AbstractVersionHandler], checker: Checker) -> None:
         """注册 Handler
 
@@ -28,7 +32,10 @@ class VersionManager:
             handler (type[AbstractVersionHandler]): 要注册的 handler 类
             checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
         """
-        cls._handlers.append((checker, handler()))
+        if handler.is_builtin():
+            cls._builtin_handlers.append((checker, handler()))
+        else:
+            cls._handlers.append((checker, handler()))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
@@ -44,16 +51,27 @@ class VersionManager:
         """刷新版本相关函数引用
 
         根据当前服务器版本，更新内部函数引用
+
+        .. note::
+            插件会优先使用外部注册的 Handler
+
+        Raises:
+            RuntimeError: 如果没有找到合适的 VersionHandler 的话
         """
         for checker, handler in self._handlers:
             if checker(self.environment):
                 self._handler = handler
-                break
-        else:
-            raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
+                return
+
+        for checker, handler in self._builtin_handlers:
+            if checker(self.environment):
+                self._handler = handler
+                return
+
+        raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
 
     # 下面是是依赖版本的函数
-    def replace(self, player: str, item: str) -> None:
+    def replace(self, player: str, item: Item) -> None:
         """替换玩家副手物品
 
         Args:
@@ -62,24 +80,10 @@ class VersionManager:
         """
         self._handler.replace(player, item)
 
-    def dict2item(self, item: dict) -> Item:
-        """将字典转换为物品对象
+    def get_offhand_item(self, player: str) -> Item:
+        """获取玩家副手物品
 
         Args:
-            item (dict): 物品字典
-
-        Returns:
-            Item: 物品对象
+            player (str): 玩家名
         """
-        return self._handler.dict2item(item)
-
-    def item2str(self, item: Item) -> str:
-        """将物品对象转换为物品字符串
-
-        Args:
-            item (Item): 物品对象
-
-        Returns:
-            str: 物品字符串
-        """
-        return self._handler.item2str(item)
+        return self._handler.get_offhand_item(player)

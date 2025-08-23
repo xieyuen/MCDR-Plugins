@@ -21,6 +21,14 @@ class Order(Serializable):
     item: Item
 
 
+class NewOrderData(Serializable):
+    players: list[str] = []
+    orders: dict[str, Order] = {}
+
+
+AIR = Item(id='minecraft:air', count=1, components={})
+
+
 class OldOrdersData:
     def __init__(self, data_file_path: str):
         self.players = []
@@ -43,40 +51,61 @@ def is_in_mcdr_dir() -> bool:
     return os.path.exists('config.yml') and os.path.exists('permission.yml')
 
 
-def fix_nbt_format(nbt_content_: str) -> str:
-    """修复NBT格式使其符合JSON规范。"""
-    if not nbt_content_:
+def fix_nbt_format(nbt_content: str) -> str:
+    """修复 NBT 格式使其符合JSON规范。"""
+    if not nbt_content:
         return "{}"
 
-    # 修复未加引号的键
-    fixed = re.sub(r'([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)', r'\1"\2"\3', nbt_content_)
+    # 先处理原始字符串，修复一些常见的格式问题
+    fixed = nbt_content
+
+    # 修复数字和单位之间有空格的情况，如 "lvl: 3 s" -> "lvl: \"3s\""
+    fixed = re.sub(r':\s*(\d+)\s+([bslfd])\s*([,}])', r':"\1\2"\3', fixed)
+    # 修复键值对之间的空格问题，如 "lvl: 3 s,id:" -> "lvl: \"3s\",id:"
+    fixed = re.sub(r':\s*(\d+)\s+([bslfd])\s*,', r':"\1\2",', fixed)
+    # 处理数组中的对象，修复其中的格式问题
+    fixed = re.sub(r'\[\s*{', '[{', fixed)
+    fixed = re.sub(r'}\s*\]', '}]', fixed)
+    # 修复未加引号的键（确保键名被双引号包围）
+    fixed = re.sub(r'([{,])\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:', r'\1"\2":', fixed)
+    # 处理开头的键（没有前导字符的情况）
+    fixed = re.sub(r'^(\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:', r'\1"\2":', fixed)
     # 修复布尔值
     fixed = re.sub(r':\s*(true|false)\s*([,}])', r':"\1"\2', fixed)
-    # 修复数字后缀
+    # 修复数字后缀 (再次处理，确保覆盖所有情况)
     fixed = re.sub(r':\s*(\d+)([bslfd])\s*([,}])', r':"\1\2"\3', fixed)
     # 确保字符串有引号
     fixed = re.sub(r':\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*([,}])', r':"\1"\2', fixed)
     # 修复数组中的字符串
-    fixed = re.sub(r'\[\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\]', r'["\1"]', fixed)
+    fixed = re.sub(r'\[\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*]', r'["\1"]', fixed)
     fixed = re.sub(r',\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*,', r',"\1",', fixed)
-    fixed = re.sub(r',\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\]', r',"\1"]', fixed)
+    fixed = re.sub(r',\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*]', r',"\1"]', fixed)
 
-    return f"{{{fixed}}}"
+    # 确保所有内容都被大括号包围
+    if not fixed.startswith('{'):
+        fixed = '{' + fixed
+    if not fixed.endswith('}'):
+        fixed = fixed + '}'
+
+    return fixed
 
 
-def parse_nbt_content(nbt_content_: str) -> dict[str, Any]:
-    """解析NBT内容为字典。"""
-    if not nbt_content_:
+def parse_nbt_content(nbt_content: str) -> dict:
+    """解析 NBT 内容为字典。"""
+    if not nbt_content:
         return {}
 
     try:
-        return json.loads(f"{{{nbt_content_}}}")
+        # 首先尝试直接解析
+        return json.loads(f"{{{nbt_content}}}")
     except json.JSONDecodeError:
         try:
-            fixed_nbt = fix_nbt_format(nbt_content_)
+            # 如果失败，则尝试修复格式
+            fixed_nbt = fix_nbt_format(nbt_content)
             return json.loads(fixed_nbt)
-        except json.JSONDecodeError:
-            return {"raw_nbt": nbt_content_}
+        except json.JSONDecodeError as e:
+            print(f"Warning: JSON解析错误: {e}")
+            return {"raw_nbt": nbt_content}
 
 
 def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
@@ -123,8 +152,8 @@ def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
     if not item_string:
         return None
 
-    # 模式1: 带有NBT标签的物品
-    pattern_with_nbt = r'^([a-z0-9_]+):([a-z0-9_/]+)\s*\{([^}]*)\}(?:\s+(\d+))?$'
+    # 模式1: 带有NBT标签的物品 (物品名{NBT} 数量)
+    pattern_with_nbt = r'^([a-z0-9_.-]+):([a-z0-9_./-]+)\s*\{(.*)\}(?:\s+(\d+))?$'
     match_with_nbt = re.match(pattern_with_nbt, item_string, re.IGNORECASE)
 
     if match_with_nbt:
@@ -133,13 +162,32 @@ def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
         nbt_dict = parse_nbt_content(nbt_content)
         return count, namespace, item_id, nbt_dict
 
-    # 模式2: 纯物品（无NBT标签）
-    pattern_simple = r'^([a-z0-9_]+):([a-z0-9_/]+)(?:\s+(\d+))?$'
+    # 模式2: 带有NBT标签但没有数量的物品 (物品名{NBT})
+    pattern_nbt_no_count = r'^([a-z0-9_.-]+):([a-z0-9_./-]+)\s*\{(.*)\}$'
+    match_nbt_no_count = re.match(pattern_nbt_no_count, item_string, re.IGNORECASE)
+
+    if match_nbt_no_count:
+        namespace, item_id, nbt_content = match_nbt_no_count.groups()
+        count = 1
+        nbt_dict = parse_nbt_content(nbt_content)
+        return count, namespace, item_id, nbt_dict
+
+    # 模式3: 没有NBT标签但有数量的物品 (物品名 数量)
+    pattern_with_count = r'^([a-z0-9_.-]+):([a-z0-9_./-]+)(?:\s+(\d+))$'
+    match_with_count = re.match(pattern_with_count, item_string, re.IGNORECASE)
+
+    if match_with_count:
+        namespace, item_id, count = match_with_count.groups()
+        count = int(count) if count else 1
+        return count, namespace, item_id, {}
+
+    # 模式4: 只有物品名的格式 (物品名)
+    pattern_simple = r'^([a-z0-9_.-]+):([a-z0-9_./-]+)$'
     match_simple = re.match(pattern_simple, item_string, re.IGNORECASE)
 
     if match_simple:
-        namespace, item_id, count = match_simple.groups()
-        count = int(count) if count else 1
+        namespace, item_id = match_simple.groups()
+        count = 1
         return count, namespace, item_id, {}
 
     return None
@@ -154,7 +202,7 @@ def main() -> None:
     data_file_path = input("path: ")
 
     if not data_file_path:
-        data_file_path = 'PostOrders.json'
+        data_file_path = './config/MCDRpost/PostOrders.json'
 
     old_data = OldOrdersData(data_file_path)
     print("正在加载旧版数据文件")
@@ -168,25 +216,33 @@ def main() -> None:
 
     new_order_data: dict[str, Order] = {}
     for order_id, old_order in old_data.orders.items():
-        count, namespace, item_id, nbt_dict = parse_item(old_order['item'])
-        item: Item = Item(
-            id=f'{namespace}:{item_id}',
-            count=count,
-            components=nbt_dict
-        )
+        parse_res = parse_item(old_order['item'])
+
+        if parse_res is None:
+            print(f"Warning: 非法的物品：{old_order['item']}")
+            print("Warning: 使用 minecraft:air 代替")
+            item: Item = AIR
+        else:
+            count, namespace, item_id, nbt_dict = parse_res
+            item: Item = Item(
+                id=f'{namespace}:{item_id}',
+                count=count,
+                components=nbt_dict
+            )
+
         new_order_data[order_id] = Order(
             id=int(order_id),
             time=old_order['time'],
             sender=old_order['sender'],
             receiver=old_order['receiver'],
-            comment=old_order['comment'],
+            comment=old_order['info'],
             item=item
         )
 
-    new_data = dict(
+    new_data = NewOrderData(
         players=old_data.players,
         orders=new_order_data
-    )
+    ).serialize()
 
     print("正在保存数据到 config/MCDRpost/orders.json ...")
 

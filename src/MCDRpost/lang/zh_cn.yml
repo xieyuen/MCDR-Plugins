@@ -57,19 +57,14 @@ mcdrpost:
   command_incomplete: "§e* 输入命令不完整，§7!!po §e可查看帮助信息"
   wait_for_receive: "§6[MCDRpost] §e您有待查收的快件~ 命令 §7!!po receive_list §e查看详情"
   config:
-    display:
-      max_storage: "中转站最大存储量: {0}"
-      allow_alias: "是否允许命令别名: {0}"
-      command_prefix: "命令前缀: {0}"
-      auto_fix: "是否自动修复无效订单: {0}"
-      receive_tip_delay: "登录之后收件箱提示的延迟时间: {0} 秒"
     load: "已加载配置文件"
     save: "已保存配置文件"
   data:
     load: "已加载订单数据"
     save: "已保存订单数据"
   error:
-    invalid_order: " 有订单占用了两个 id: {0} 和 {1}"
+    invalid_order: "有订单占用了两个 id: {0} 和 {1}"
+    running: "MCDRpost 运行时发生了错误，请检查后台日志"
   auto_fix:
     invalid_order: "将使用 {0} 作为订单 id"
   rcon:
@@ -77,3 +72,4 @@ mcdrpost:
   env:
     server_no_start: "Minecraft 服务器未启动，无法获取版本信息"
     version: "检测到 Minecraft 服务器版本: {0}"
+  reload_success: "已重新加载 MCDRpost 配置和数据文件"
