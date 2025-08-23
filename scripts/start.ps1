@@ -21,24 +21,29 @@
 #>
 
 param(
-    [Alias("n")]
-    [switch]$NoStart
+    [Alias("n", "ns", "no-start")]
+    [switch]$nostart
 )
 
 
-cd ./test/
+Set-Location ./test/
 
-if ($NoStart)
+try
 {
-    Write-Host "正在以 --no-server-start 参数启动 MCDR"
-    mcdreforged start --no-server-start
+    if ($nostart)
+    {
+        Write-Host "正在以 --no-server-start 参数启动 MCDR"
+        mcdreforged start --no-server-start
+    }
+    else
+    {
+        # 启动MCDR服务器
+        Write-Host "正在启动 MCDR 服务器..."
+        mcdreforged start
+    }
 }
-else
+finally
 {
-    # 启动MCDR服务器
-    Write-Host "正在启动 MCDR 服务器..."
-    mcdreforged start
+    # 恢复原始目录
+    Set-Location ..
 }
-
-# 恢复原始目录
-cd ..
