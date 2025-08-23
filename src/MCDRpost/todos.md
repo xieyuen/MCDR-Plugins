@@ -3,7 +3,7 @@
 ## Configuration
 
 - [x] 命令权限自定义
-- [ ] 是否自动注册玩家
+- [x] 是否自动注册玩家
 
 ## Feature
 

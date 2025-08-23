@@ -1,5 +1,17 @@
 allow_alias: true
 auto_fix: false
-command_prefixes: ['!!po', '!!post']
+command_prefixes:
+  - "!!po"
+  - "!!post"
 max_storage_num: 5
 receive_tip_delay: 3.0
+command_permission:
+  root: 0
+  post: 0
+  receive: 0
+  cancel: 0
+  list_player: 2
+  list_orders: 2
+  player: 3
+  save: 3
+  reload: 3

@@ -5,6 +5,7 @@ class Tags:
     desc = 'desc'
     info_msg = 'info_msg'
     hover = 'hover'
+    new_player_joined = 'new_player_joined'
 
     class help:
         title = 'help.title'

@@ -2,6 +2,7 @@ mcdrpost:
   desc: "一个用于邮寄/传送物品的MCDR插件"
   info_msg: "传送/收寄副手物品"
   hover: "点击写入聊天栏"
+  new_player_joined: "§6[MCDRpost] §e有新玩家 §b{0} §e加入服务器，但尚未注册，请使用 §7!!po player add §e为其注册"
   help:
     title: "§a『命令说明』§r"
     hint_help: "显示帮助信息"

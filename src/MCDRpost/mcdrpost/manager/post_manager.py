@@ -3,6 +3,7 @@ import time
 from mcdreforged.api.decorator import new_thread
 from mcdreforged.api.types import Info, InfoCommandSource, PluginServerInterface
 
+import minecraft_data_api as api
 from mcdrpost import constants
 from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
@@ -67,10 +68,18 @@ class PostManager:
         我们会在玩家加入的时候自动注册，对于老玩家，如果有未接收的订单我们会推送消息
         """
         if not self.order_manager.is_player_registered(player):
-            # 还未注册的玩家
-            self.order_manager.add_player(player)
-            server.logger.info(tr(Tags.login_log, player))
-            self.order_manager.save()
+            if self.config_manager.configuration.auto_register:
+                # 还未注册的玩家
+                self.order_manager.add_player(player)
+                server.logger.info(tr(Tags.login_log, player))
+                self.order_manager.save()
+                return
+            # 通知权限在admin以上的管理员有新玩家加入
+            player_list = api.get_server_player_list()[-1]
+            for online_player in player_list:
+                if server.get_permission_level(online_player) >= 3:
+                    server.tell(online_player, tr(Tags.new_player_joined, player))
+            server.logger.info(tr(Tags.new_player_joined, player))
             return
 
         # 已注册的玩家，向他推送订单消息（如果有）
