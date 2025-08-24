@@ -4,7 +4,7 @@
 
 这里插件会把需要的事件传给 PostManager 处理
 """
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 from mcdrpost.manager.post_manager import PostManager
 

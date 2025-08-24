@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.config.configuration import Configuration

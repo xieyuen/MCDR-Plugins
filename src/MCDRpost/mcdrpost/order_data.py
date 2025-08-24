@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from mcdreforged.api.utils import Serializable
+from mcdreforged import Serializable
 
 
 class OrderInfo(Serializable):

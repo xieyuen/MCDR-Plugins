@@ -1,7 +1,7 @@
 """
 播放提示音
 """
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 
 def receive(server: PluginServerInterface, player: str):

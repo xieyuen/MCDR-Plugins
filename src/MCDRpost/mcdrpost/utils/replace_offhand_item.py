@@ -1,6 +1,6 @@
 """替换副手物品"""
 
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 
 def replace_for_17(server: PluginServerInterface, player: str, item: str) -> None:

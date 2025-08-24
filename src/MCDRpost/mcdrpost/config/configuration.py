@@ -1,4 +1,4 @@
-from mcdreforged.api.utils import Serializable
+from mcdreforged import Serializable
 
 
 class CommandPermission(Serializable):

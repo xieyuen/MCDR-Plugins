@@ -1,7 +1,7 @@
 import json
 import time
 
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.utils.translation_tags import Tags
