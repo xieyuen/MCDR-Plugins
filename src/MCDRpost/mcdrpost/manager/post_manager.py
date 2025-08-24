@@ -1,7 +1,6 @@
 import time
 
-from mcdreforged.api.decorator import new_thread
-from mcdreforged.api.types import Info, InfoCommandSource, PluginServerInterface
+from mcdreforged import Info, InfoCommandSource, PluginServerInterface, new_thread
 
 import minecraft_data_api as api
 from mcdrpost import constants

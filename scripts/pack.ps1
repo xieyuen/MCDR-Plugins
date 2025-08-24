@@ -18,6 +18,6 @@ if (-not (Test-Path ${pluginSourcePath})) {
 }
 
 # 使用 mcdreforged pack 命令打包插件
-mcdreforged pack --input $pluginSourcePath --output "dist/" --ignore-file "../../.gitignore"
+mcdreforged pack --input $pluginSourcePath --output "build/" --ignore-file "../../.gitignore"
 
 Write-Host "插件 ${PluginName} 打包完成！"

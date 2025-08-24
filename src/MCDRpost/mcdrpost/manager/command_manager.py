@@ -1,8 +1,7 @@
 from typing import Literal as LiteralType, TYPE_CHECKING
 
-from mcdreforged.api.command import GreedyText, Integer, Literal, RequirementNotMet, Text
-from mcdreforged.api.rtext import RAction, RColor, RText, RTextList
-from mcdreforged.api.types import CommandSource, InfoCommandSource, PluginServerInterface
+from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
+    RColor, RText, RTextList, RequirementNotMet, Text
 
 from mcdrpost.config.configuration import CommandPermission
 from mcdrpost.constants import END_LINE
