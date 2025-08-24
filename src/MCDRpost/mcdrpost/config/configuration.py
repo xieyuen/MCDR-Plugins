@@ -51,4 +51,4 @@ class Configuration(Serializable):
     command_permission: CommandPermission = CommandPermission()
 
 
-__all__ = ['Configuration']
+__all__ = ['Configuration', 'CommandPermission']
