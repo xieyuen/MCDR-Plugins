@@ -1,9 +1,10 @@
 allow_alias: true
 auto_fix: false
+auto_register: true
 command_prefixes:
   - "!!po"
   - "!!post"
-max_storage_num: 5
+max_storage: 5
 receive_tip_delay: 3.0
 command_permission:
   root: 0

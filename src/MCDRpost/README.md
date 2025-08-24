@@ -1,21 +1,9 @@
 # MCDRpost
 
-## Copyright Information
+## Original Author
 
 - 原作者: [Flyky](https://github.com/Flyky)
 - 原仓库: [MCDRpost](https://github.com/Flyky/MCDRpost)
-- 维护者: [xieyuen](https://github.com/xieyuen)
-
-> [!WARNING]
-> 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
-> 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
->     - *Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，见 [README](<../MCDRpost-migration/README.md>) 或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
-
-- 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
-
-
-[^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
-Flyky/MCDRpost#10
 
 ## Introduce
 
@@ -26,36 +14,26 @@ A MCDR plugin for post/teleport items
 
 ![MCDRpost help](https://s1.ax1x.com/2020/04/16/Jk8ysP.png)
 
-## Dependencies
+# Install
 
-- Python >= 3.10
-- MCDReforged >= 2.15.0
-- [Minecraft Data API](https://github.com/MCDReforged/MinecraftDataAPI) 任意版本
+将在 release 下载的 `.mcdr` 插件文件放入插件目录下重载插件即可  
+**当前必须使用Rcon获取信息，请一定配置好服务器和MCDR的Rcon**  
+*MCDRpost(ver1.0.0+)依赖[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)
+，请先安装[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)*  
+~~*旧版本依赖[PlayerInfoAPI插件](https://github.com/TISUnion/PlayerInfoAPI)*~~
 
-- 开启 Minecraft Rcon
+在MPM弃用之后的MCDR中，可以直接使用
 
-> [!IMPORTANT]
-> 请一定配置好 RCON!<br>
-> 请一定配置好 RCON!<br>
-> 请一定配置好 RCON!<br>
-> 重要的事情说三遍~
+```text
+!!MCDR plg install mcdrpost
+!!MCDR confirm
+```
 
-## Install
+来安装 2.1.0 版本的 MCDRpost
 
-将在 release 或 catalogue 下载的 `.mcdr` 插件文件放入插件目录下加载即可
+> 我还没有与Fallen和Flyky取得联系，仓库内的新版本的更新暂不支持自动下载
 
-> [!NOTE]
->
-> 在MCDR中，可以直接使用
->
-> ```text
-> !!MCDR plg install mcdrpost
-> !!MCDR confirm
-> ```
->
-> 来安装 MCDRpost, 这也是推荐做法
-
-## Feature
+# Feature
 
 **使用该插件可以将副手的物品发送给别的玩家**  
 也可以发送给离线玩家（但该玩家必须曾经进过服务器）  
@@ -64,48 +42,41 @@ A MCDR plugin for post/teleport items
 - 玩家发出物品后，物品(订单)将会存放在【中转站】
 - 需要收件人收取订单才能收到物品，之后【中转站】会删除该订单
 - 还未查收的订单可以取消，物品会从【中转站】退回，并删除订单
-- 每人存放【中转站】的订单数有上限，以防止把邮件寄送作为储存箱等的滥用
-- 如果你要问为啥一定是用副手传送接收呢 ，因为
+- 每人存放【中转站】的订单数有上限（防止作为储存箱等的滥用），默认为 5[^1]
+- 如果你要问为啥一定是副手用 `replaceitem` 传送接收呢 ，因为
     - 用 `give` 传到身上任意栏位，如果身上东西多的话，传回来还要找一下，比较麻烦，还不容易找到传回来的是哪个东西
     - 如果身上东西满了的话 `give` 是拿不到物品的，防止粗心大意的小天才
-    - 该插件传送和接收前均会检查并提示副手物品，不用担心会直接 replace 掉原本副手的物品
-    - 当然为什么不传送当前主手所持栏位进行传送呢？ ~~因为懒2333~~
+    - 该插件传送和接收前均会检查并提示副手物品，不用担心会直接replace掉原本副手的物品
+    - 当然为什么不传送当前主手所持栏位进行传送呢？ 因为我懒2333
+    - minecraft ver1.17之后移除了`replaceitem`命令，改为了`item replace`
 
 ## Usage
 
-|                命令                |              别名               | 说明            |
-|:--------------------------------:|:-----------------------------:|:--------------|
-|             `!!post`             |            `!!po`             | 显示帮助信息        |
-| `!!post post <player> [comment]` |  `!!po p <player> [comment]`  | 发送副手物品，可以没有备注 |
-|    `!!post receive <orderid>`    |      `!!po r <orderid>`       | 接收输入单号的物品到副手  |
-|    `!!post cancel <orderid>`     |    `!!po cancel <orderid>`    | 取消订单，仅限对方未收取时 |
-|        `!!post post_list`        |           `!!po pl`           | 列出发件列表        |
-|        `!!post list post`        |        `!!po ls post`         | 列出发件列表        |
-|      `!!post receive_list`       |           `!!po rl`           | 列出收件列表        |
-|      `!!post list receive`       |       `!!po ls receive`       | 列出收件列表        |
-|      `!!post list players`       |       `!!po ls players`       | 列出已注册玩家名单     |
-|   `!!post player add <player>`   |  `!!po player add <player>`   | 注册一个新玩家       |
-| `!!post player remove <player>`  | `!!po player remove <player>` | 删除已经注册的玩家     |
+- `!!po` 显示帮助信息
+- `!!po p [收件人id] [备注]` 将副手物品发送给[收件人]，[备注]为可选项
+- `!!po rl` 列出收件列表。包括[发件人]，[寄件时间]，[备注消息]和[单号]
+- `!!po r [单号]` 确认收取该单号的物品到副手(收取前将副手清空)
+- `!!po pl` 列出发件(待收取)列表，包括[收件人]，[寄件时间]，[备注消息]和[单号]
+- `!!po c [单号]` 取消传送物品(收件人还未收件前)，该单号物品退回到副手(取消前将副手清空)
+- `!!po ls players` 查看可被寄送的注册玩家列表
+- `!!po ls orders` 查看当前中转站内所有订单 [helper以上权限可用]
+- `!!po player add [玩家id]` 手动注册玩家到可寄送玩家列表 [admin以上权限可用]
+- `!!po player remove [玩家id]` 删除某注册的玩家 [admin以上权限可用]
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
-*Added in version 3.1.0:* 支持命令的全写，例如`!!po post Flyky full-name-support`
+*Added in version 3.1.0:* 支持命令的全写，例如`!!post post Flyky full-name-support` `list`
 
-*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，效果等同于 `!!po pl` 和 `!!po rl`
+*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，等同于 `pl` 和 `rl`
 
 ## Configurations
 
 MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 中
-但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`
-
-**点击快速跳转**
-
-- [2.x](#211-及以下)
-- [3.x](#300-版本或以上)
+但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`，详细配置如下
 
 ### 2.1.1 及以下
 
-对于 2.1.1 及以下的版本，**Flyky 并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
+对于 2.1.1 及以下的版本，**Flyky并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
 
 在 `mcdrpost/__init__.py` 文件中 Line 13~17，有以下五行代码
 
@@ -117,74 +88,95 @@ OrderJsonDirectory = './config/MCDRpost/'
 OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ```
 
-这些属性就是配置，含义见下表
+各个属性的含义如下：
 
-|         属性         |  类型   |                  默认值                  | 描述                        |
-|:------------------:|:-----:|:-------------------------------------:|:--------------------------|
-|       Prefix       | `str` |               `'!!po'`                | 插件命令的前缀                   |
-|   MaxStorageNum    | `int` |                  `5`                  | 每个玩家最大存储的订单数量，-1 不限制      |
-|     SaveDelay      | `int` |                  `1`                  | 新增 `SaveDelay` 个订单时保存一次   |
-| OrderJsonDirectory | `str` |        `'./config/MCDRpost/'`         | 订单数据文件储存的文件夹              |
-|   OrderJsonFile    | `str` | `'./config/MCDRpost/PostOrders.json'` | 订单数据文件的名称，应是一个 `.json` 文件 |
-
-> [!NOTE]
-> Line 18 处的 `command_item = -2` 请别动，这是用来自动检测版本的
+- `Prefix`
+    - 这是插件命令的前缀，接收一个 `str`
+    - 默认为 `!!po`
+- `MaxStorageNum`
+    - 每个人的最大订单存储数量，接收一个 `int`，设定为 -1 则无限制
+    - 默认为 5
+- `SaveDelay`
+    - 保存间隔，也就是在新增 `SaveDelay` 个订单时保存一次，接收一个 `int`
+    - 默认为 1
+- `OrderJsonDirectory`
+    - 订单数据文件储存的文件夹，应是一个写着有效路径 `str`
+    - 默认为 `'./config/MCDRpost/'`
+- `OrderJsonFile`
+    - 订单数据文件的名称，应是一个 `.json` 文件
 
 ### 3.0.0 版本或以上
 
-在 3.0.0 版本中, [xieyuen](https://github.com/xieyuen) 对插件进行了模块化重构，
-配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
+在 3.0.0 和 3.1.0 版本中，@xieyuen 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
 
-下面的 [配置表](#配置表) 是最新版本配置文件的内容
+以下是配置文件的内容，[点此查看默认配置文件](<demo/config.yml>)
 
-#### 配置表
-
-|         属性         |  Python类型   |         默认值          | 描述                 |
-|:------------------:|:-----------:|:--------------------:|:-------------------|
-|    allow_alias     |   `bool`    |        `true`        | 是否允许别名             |
-|      auto_fix      |   `bool`    |       `false`        | 是否自动修复订单           |
-|   auto_register    |   `bool`    |        `true`        | 是否自动为新玩家注册         |
-|    max_storage     |    `int`    |         `5`          | 订单最大存储量，设置为 -1 不限制 |
-| receive_tip_delay  |   `float`   |        `3.0`         | 提示延迟               |
-|  command_prefixes  | `list[str]` | `['!!po', '!!post']` | 命令根节点              |
-| command_permission |   `dict`    |          ~           | 见[权限表](#权限表)       |
-
-> [!NOTE]
-> 将 `allow_alias` 设定为 `false` 之后，`command_prefixes` 配置将会作废，锁定为 `!!po`<br>
-> 但是子命令的缩写(如 `!!po ls`)仍然有效
-
-#### 权限表
-
-> [!NOTE]
-> MCDReforged的权限系统支持5种权限: `owner`, `admin`, `helper`, `user`, `guest`,
-> 在设定权限的时候，用 0~4 五个数字代替权限等级，
-> 其中 `0` 表示 `owner`， `1` 表示 `admin`， `2` 表示 `helper`， `3` 表示 `user`， `4` 表示 `guest`
->
->> 此部分的官方文档见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
-
-|      属性      | 默认权限 | 描述                     |
-|:------------:|:----:|:-----------------------|
-|     root     |  0   | 根命令的权限                 |
-|     post     |  0   | 发送邮件的权限(同时包括列出发件列表的权限) |
-|   receive    |  0   | 接收邮件的权限(同时包括列出收件列表的权限) |
-|    cancel    |  0   | 取消邮件的权限                |
-| list_orders  |  2   | 获得中转站全部订单信息的权限         |
-| list_players |  2   | 获得全部已注册玩家的权限           |
-|    player    |  3   | `player` 子命令的权限        |
-
-[配置文件 demo](https://gist.github.com/xieyuen/36f3c272d05b59ac6d0fe9e8a690b312)
+- allow_alias
+    - 是否启用命令别名，关闭后 `command_prefixes` 的配置将会作废，锁定为 `!!po`
+    - 类型: `bool`
+    - 默认值: `true`
+- auto_fix
+    - 是否自动修复订单
+    - 类型: `bool`
+    - 默认值: `false`
+- auto_register
+    - 是否自动为新玩家注册
+    - 类型: `bool`
+    - 默认值: `true`
+- max_storage
+    - 订单的最大存储量
+    - 类型: `int`
+    - 默认值: `5`
+- command_prefixes
+    - 命令的根节点
+    - 类型: `list[str]`
+    - 默认值: `["!!po", "!!post"]`
+- command_permission
+    - 命令权限，下面的配置都是 `Literal[0, 1, 2, 3, 4]` 类型，超出范围的MCDR会报错
+    - 配置:
+        - root
+            - 根命令权限
+            - 默认值: 0
+        - post
+            - 发送邮件(`!!po p`)的权限，同时包括列出自己发出的邮件的权限(`!!po pl`)
+            - 默认值: 0
+        - receive
+            - 接收邮件(`!!po r`)的权限，同时包括列出自己未收取的邮件的权限(`!!po rl`)
+            - 默认值: 0
+        - cancel
+            - 取消邮件(`!!po c`)的权限
+            - 默认值: 0
+        - list_player
+            - 列出已注册玩家的权限
+            - 默认值: 2
+        - list_orders
+            - 列出所有邮件的权限
+            - 默认值: 2
+        - player
+            - 子命令 `player` 的权限
+            - 默认值: 3
+        - save
+            - 保存配置和订单数据
+            - 默认值: 3
+        - reload
+            - 重载配置和订单数据
+            - 默认值: 3
 
 ## ATTENTIONS!!
 
 - 可能会有部分带有特殊复杂NBT标签的物品无法传送，会提示检测不到可传送的物品，所以尝试一下即可
-- 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
+- **切勿传送原版非法堆叠数的物品**，例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
 
-> [!WARNING]
-> ***切勿传送原版非法堆叠数的物品!!!***<br>
-> 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
+## known issues
 
-## pics
+1. ~~因引用的`PlayerInfoAPI插件`在查询不到数据时的默认响应时间timeout较长，即在收寄时的检测副手为空的响应时间较长  ~~
+   ~~所以在收寄过程时可能需要稍作等待~~
+   **~~但服务器开启并设置好MCDR可连接的rcon则不会出现此问题~~**~~，所以墙裂建议配置rcon~~
+    - 目前 `PlayerInfoAPI` 已经弃用，`MCDRpost` 改用`MinecraftDataAPI`
+2. **必须使用Rcon获取信息，请一定配置好服务器和MCDR的Rcon**
 
-![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)<br>
-![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)<br>
-![po p](https://s1.ax1x.com/2020/04/16/Jk02X4.png)<br>
+# pics
+
+![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)  
+![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)  
+![po p](https://s1.ax1x.com/2020/04/16/Jk02X4.png)  
