@@ -19,7 +19,10 @@ class CommandManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
-        self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
+        if self._post_manager.config_manager.configuration.allow_alias:
+            self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
+        else:
+            self._prefixes = ["!!po"]
         self._perm: CommandPermission = post_manager.config_manager.configuration.command_permission
 
     def register(self) -> None:
