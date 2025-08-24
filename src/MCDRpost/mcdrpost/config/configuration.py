@@ -1,4 +1,4 @@
-from mcdreforged.api.utils import Serializable
+from mcdreforged import Serializable
 
 
 class CommandPermission(Serializable):
@@ -38,6 +38,7 @@ class Configuration(Serializable):
         allow_alias (bool): 是否允许命令别名，如果为 False,则只会注册 !!po
         command_prefixes (list[str]): MCDR 命令前缀，可以注册多个作为别名，只需要放在一个列表内即可, !!po 一定会生效
         auto_fix (bool): 是否自动修复无效订单
+        auto_register (bool):是否自动为新玩家注册
         receive_tip_delay (float): 登录之后收件箱提示的延迟时间，单位为秒
         command_permission (CommandPermission): 命令权限配置
     """
@@ -45,8 +46,9 @@ class Configuration(Serializable):
     allow_alias: bool = True
     command_prefixes: list[str] = ['!!po', "!!post"]
     auto_fix: bool = False
+    auto_register: bool = True
     receive_tip_delay: float = 3
     command_permission: CommandPermission = CommandPermission()
 
 
-__all__ = ['Configuration']
+__all__ = ['Configuration', 'CommandPermission']

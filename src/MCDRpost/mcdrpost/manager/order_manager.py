@@ -130,8 +130,8 @@ class OrderManager:
             raise TypeError("不支持非 OrderInfo 类型的订单信息")
 
         order_id = self.get_next_id()
-        self._order_data.orders[str(order_id)] = Order.deserialize(
-            order.serialize(),
+        self._order_data.orders[str(order_id)] = Order(
+            **order.serialize(),
             id=order_id,
         )
         self._sender_orders[order.sender].append(order_id)

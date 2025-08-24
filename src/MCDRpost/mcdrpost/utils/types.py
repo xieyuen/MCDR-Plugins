@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 
 class ReplaceFunction(Protocol):

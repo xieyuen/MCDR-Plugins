@@ -1,4 +1,4 @@
-from mcdreforged.api.types import PluginServerInterface
+from mcdreforged import PluginServerInterface
 
 from mcdrpost.utils import tr
 from mcdrpost.utils.translation_tags import Tags

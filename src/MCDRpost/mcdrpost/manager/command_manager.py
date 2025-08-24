@@ -1,8 +1,7 @@
 from typing import Literal as LiteralType, TYPE_CHECKING
 
-from mcdreforged.api.command import GreedyText, Integer, Literal, RequirementNotMet, Text
-from mcdreforged.api.rtext import RAction, RColor, RText, RTextList
-from mcdreforged.api.types import CommandSource, InfoCommandSource, PluginServerInterface
+from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
+    RColor, RText, RTextList, RequirementNotMet, Text
 
 from mcdrpost.config.configuration import CommandPermission
 from mcdrpost.constants import END_LINE
@@ -19,7 +18,10 @@ class CommandManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
-        self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
+        if self._post_manager.config_manager.configuration.allow_alias:
+            self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
+        else:
+            self._prefixes = ["!!po"]
         self._perm: CommandPermission = post_manager.config_manager.configuration.command_permission
 
     def register(self) -> None:
@@ -153,6 +155,7 @@ class CommandManager:
 
         if not all_orders:
             src.reply(tr(Tags.no_orders))
+            return
 
         msg = ""
 
