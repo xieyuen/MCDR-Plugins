@@ -1,18 +1,18 @@
 allow_alias: true
 auto_fix: false
 auto_register: true
-command_prefixes:
-  - "!!po"
-  - "!!post"
-max_storage: 5
-receive_tip_delay: 3.0
 command_permission:
-  root: 0
+  cancel: 0
+  list_orders: 2
+  list_player: 2
+  player: 3
   post: 0
   receive: 0
-  cancel: 0
-  list_player: 2
-  list_orders: 2
-  player: 3
-  save: 3
   reload: 3
+  root: 0
+  save: 3
+command_prefixes:
+- '!!po'
+- '!!post'
+max_storage: 5
+receive_tip_delay: 3
