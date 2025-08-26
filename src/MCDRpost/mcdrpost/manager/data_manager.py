@@ -136,3 +136,54 @@ class DataManager:
             **order.serialize(),
             id=order_id,
         )
+        self._sender_index[order.sender].append(order_id)
+        self._sender_index[order.sender].sort()
+        self._receiver_index[order.receiver].append(order_id)
+        self._receiver_index[order.receiver].sort()
+        return order_id
+
+    def remove_order(self, order_id: int) -> bool:
+        if str(order_id) not in self._order_data.orders:
+            return False
+        order = self._order_data.orders[str(order_id)]
+
+        self._sender_index[order.sender].remove(order_id)
+        self._receiver_index[order.receiver].remove(order_id)
+        del self._order_data.orders[str(order_id)]
+        return True
+
+    def get_order(self, order_id: int) -> Order:
+        return self._order_data.orders[str(order_id)]
+
+    def get_orders(self) -> list[Order]:
+        return list(self._order_data.orders.values())
+
+    def get_orderid_by_sender(self, sender: str) -> list[int]:
+        return self._sender_index[sender]
+
+    def get_orderid_by_receiver(self, receiver: str) -> list[int]:
+        return self._receiver_index[receiver]
+
+    def get_orders_by_sender(self, sender: str) -> list[Order]:
+        return [
+            self._order_data.orders[str(order_id)]
+            for order_id in self._sender_index[sender]
+        ]
+
+    def get_orders_by_receiver(self, receiver: str) -> list[Order]:
+        return [
+            self._order_data.orders[str(order_id)]
+            for order_id in self._receiver_index[receiver]
+        ]
+
+    def has_unreceived_order(self, player: str) -> bool:
+        return bool(self._receiver_index[player])
+
+    def pop_order(self, order_id: int) -> Order:
+        order = self.get_order(order_id)
+        self.remove_order(order_id)
+        self.save()
+        return order
+
+
+__all__ = ["DataManager"]
