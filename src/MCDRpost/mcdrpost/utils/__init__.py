@@ -1,7 +1,6 @@
-import json
 import time
 
-from mcdreforged import PluginServerInterface
+from mcdreforged import PluginServerInterface, new_thread
 
 from mcdrpost import constants
 from mcdrpost.utils.translation_tags import Tags
@@ -25,6 +24,8 @@ def get_offhand_item(server: PluginServerInterface, player: str) -> dict | None:
     # api = server.get_plugin_instance('minecraft_data_api')
     import minecraft_data_api as api
 
+    offhand_item = None
+
     try:
         if server.is_rcon_running():
             offhand_item = api.convert_minecraft_json(
@@ -32,7 +33,13 @@ def get_offhand_item(server: PluginServerInterface, player: str) -> dict | None:
             )
         else:
             server.logger.warning(tr(Tags.rcon.not_running))
-            offhand_item = api.get_player_info(player, constants.OFFHAND_CODE)
+
+            @new_thread('MCDRpost | get offhand item')
+            def get():
+                nonlocal offhand_item
+                offhand_item = api.get_player_info(player, constants.OFFHAND_CODE)
+
+            get()
 
         if isinstance(offhand_item, dict):
             return offhand_item
@@ -42,14 +49,9 @@ def get_offhand_item(server: PluginServerInterface, player: str) -> dict | None:
         server.logger.error(e)
 
 
-def get_formatted_item(item_json: dict) -> str:
-    item_tag = item_json.get("tag", "")
-    return f"{item_json['id']}" + json.dumps(item_tag, ensure_ascii=False) + f"{item_json.get('Count', '')}"
-
-
 def tr(tag: str, *args):
     """translation"""
     return PluginServerInterface.get_instance().tr(f'mcdrpost.{tag}', *args)
 
 
-__all__ = ['get_formatted_time', 'get_offhand_item', 'get_formatted_item', 'tr']
+__all__ = ['get_formatted_time', 'get_offhand_item', 'tr']

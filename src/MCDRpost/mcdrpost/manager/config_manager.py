@@ -4,14 +4,15 @@ from mcdreforged import PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.configuration import Configuration
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils import tr
+from mcdrpost.utils.translation_tags import Tags
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa: F401
+    from mcdrpost.manager.post_manager import PostManager  # noqa
 
 
 class ConfigurationManager:
-    """配置管理器
+    """一个能够自动解析环境配置的配置管理器
 
     Attributes:
         configuration (Configuration): 插件配置
