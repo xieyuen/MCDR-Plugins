@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from mcdreforged import PluginServerInterface
 
-from new import constants
-from new.configuration import Configuration
-from new.utils import tr
-from new.utils.translation_tags import Tags
+from mcdrpost import constants
+from mcdrpost.configuration import Configuration
+from mcdrpost.utils import tr
+from mcdrpost.utils.translation_tags import Tags
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager  # noqa
