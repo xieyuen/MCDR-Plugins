@@ -40,6 +40,7 @@ class CommandManager:
                 self.generate_command_node(prefix)
             )
 
+    # helper methods
     def output_help_message(self, source: CommandSource, prefix: str) -> None:
         """辅助函数：打印帮助信息"""
         msgs_on_helper = RText('')
@@ -172,6 +173,16 @@ class CommandManager:
             .format(tr(Tags.list_orders_title), msg)
         )
 
+    def receive(self, src: InfoCommandSource, order_id):
+        if self._post_manager.receive(src, order_id, 'receive'):
+            src.reply(tr(Tags.receive_success, order_id))
+    def cancel(self, src: InfoCommandSource, order_id):
+        if self._post_manager.receive(src, order_id, 'cancel'):
+            src.reply(tr(Tags.cancel_success, order_id))
+
+
+    # nodes
+
     def gen_post_node(self, node_name: str) -> Literal:
         return (
             Literal(node_name).
@@ -217,12 +228,7 @@ class CommandManager:
                         self._data_manager.get_orderid_by_receiver(src.get_info().player)
                     ]
                 ).
-                runs(
-                    lambda src, ctx: (
-                        self._post_manager.receive(src, ctx['orderid']),
-                        src.reply(tr(Tags.receive_success, ctx['orderid']))
-                    )
-                )
+                runs(lambda src, ctx: self.receive(src, ctx['orderid']))
             )
         )
 
@@ -252,12 +258,7 @@ class CommandManager:
                         self._data_manager.get_orderid_by_sender(src.get_info().player)
                     ]
                 ).
-                runs(
-                    lambda src, ctx: (
-                        self._post_manager.receive(src, ctx['orderid']),
-                        src.reply(tr(Tags.cancel_success, ctx['orderid']))
-                    )
-                )
+                runs(lambda src, ctx: self.cancel(src, ctx['orderid']))
             )
         )
 
@@ -364,9 +365,10 @@ class CommandManager:
             then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
             then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
             then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
-            then(self.gen_player_node('player')).
-            then(self.gen_save_node('save')).
-            then(self.gen_reload_node('reload'))
+            then(self.gen_player_node('player'))#.
+            # 响应还没有做好，暂时关闭这两条命令
+            # then(self.gen_save_node('save')).
+            # then(self.gen_reload_node('reload'))
         )
 
 

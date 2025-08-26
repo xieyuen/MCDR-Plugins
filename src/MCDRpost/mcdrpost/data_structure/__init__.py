@@ -7,11 +7,11 @@ class Item(Serializable):
     """物品数据类，表示 Minecraft 中的物品
 
     Attributes:
-        components (dict[str, dict]): 物品的组件数据（1.20.5+版本特性，对于低版本这里储存对应的 tag）
+        components (dict): 物品的组件数据（1.20.5+版本特性，对于低版本这里储存对应的 tag）
         count (int): 物品数量
         id (str): 物品ID
     """
-    components: dict[str, dict]
+    components: dict = {}
     count: int
     id: str
 
@@ -56,8 +56,8 @@ class OrderData(Serializable):
     """订单数据类，包含所有订单和注册玩家信息
 
     Attributes:
-        orders (dict[str, Order]): 所有订单的字典，以订单ID为键，订单对象为值
         players (list[str]): 已注册玩家列表
+        orders (dict[str, Order]): 所有订单的字典，以订单ID为键，订单对象为值
     """
-    orders: dict[str, Order] = {}
     players: list[str] = []
+    orders: dict[str, Order] = {}

@@ -1,4 +1,5 @@
 import time
+from typing import Literal
 
 from mcdreforged import Info, InfoCommandSource, PluginServerInterface, new_thread
 
@@ -137,28 +138,36 @@ class PostManager:
         play_sound.successfully_post(self.server, sender, receiver)
         self.data_manager.save()
 
-    def receive(self, src: InfoCommandSource, order_id: int):
-        """接收订单
+    def receive(self, src: InfoCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
+        """接收订单的物品
 
         Args:
-            src (InfoCommandSource): 收件人的相关信息
+            src (InfoCommandSource): 命令源
             order_id (int): 被接收的订单的 ID
+            typ (Literal["cancel", "receive"]): 类型
+
+        Returns:
+            bool: 是否成功接收到物品
         """
         player = src.get_info().player
-
-        # 订单接收者不是 TA
-        if order_id not in self.data_manager.get_orders_by_receiver(player):
-            src.reply(tr(Tags.unchecked_orderid))
-            return
 
         # 副手有东西 拒绝接收
         if get_offhand_item(self.server, player):
             src.reply(tr(Tags.clear_offhand))
-            return
+            return False
+
+        # 不是 TA
+        if typ == 'receive' and order_id not in self.data_manager.get_orderid_by_receiver(player):
+            src.reply(tr(Tags.unchecked_orderid))
+            return False
+        elif typ == 'cancel' and order_id not in self.data_manager.get_orderid_by_sender(player):
+            src.reply(tr(Tags.unchecked_orderid))
+            return False
 
         order = self.data_manager.pop_order(order_id)
         self.replace(player, order.item)
         play_sound.receive(self.server, player)
+        return True
 
     def save(self):
         self.config_manager.save()
