@@ -121,13 +121,16 @@ class PostManager:
         if comment is None:
             comment = tr(Tags.no_comment)
 
+        item = get_offhand_item(self.server, sender)
+        if not item:
+            src.reply(tr(Tags.check_offhand))
+            return
+
         # create order
         order_id = self.data_manager.add_order(OrderInfo(
             sender=sender,
             receiver=receiver,
-            item=self.dict2item(
-                get_offhand_item(self.server, sender)
-            ),
+            item=self.dict2item(item),
             comment=comment,
             time=get_formatted_time(),
         ))
