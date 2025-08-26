@@ -26,14 +26,14 @@ class OrderInfo(Serializable):
         sender (str): 发件人
         time (str): 订单创建时间
     """
+    time: str
+    sender: str
+    receiver: str
     comment: str
     item: Item
-    receiver: str
-    sender: str
-    time: str
 
 
-class Order(OrderInfo):
+class Order(Serializable):
     """订单
 
     Attributes:
@@ -45,6 +45,11 @@ class Order(OrderInfo):
         time (str): 订单创建时间
     """
     id: int
+    time: str
+    sender: str
+    receiver: str
+    comment: str
+    item: Item
 
 
 class OrderData(Serializable):
