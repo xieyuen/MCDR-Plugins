@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import DefaultDict, TYPE_CHECKING
 
 from mcdrpost import constants
-from mcdrpost.order_data import Order, OrderData, OrderInfo, OrderInfoDict
+from mcdrpost.data_structure import Order, OrderData, OrderInfo
 from mcdrpost.utils import tr
 from mcdrpost.utils.exception import InvalidOrder
 from mcdrpost.utils.translation_tags import Tags
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager  # noqa
 
 
-class OrderManager:
+class DataManager:
     """订单管理器"""
 
     def __init__(self, post_manager: "PostManager") -> None:
@@ -26,8 +26,8 @@ class OrderManager:
         self._config = post_manager.config_manager.configuration
 
         # index
-        self._sender_orders: DefaultDict[str, list[int]] = defaultdict(list)
-        self._receiver_orders: DefaultDict[str, list[int]] = defaultdict(list)
+        self._sender_index: DefaultDict[str, list[int]] = defaultdict(list)
+        self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
         self._order_data: OrderData | None = None
@@ -35,11 +35,11 @@ class OrderManager:
 
     def _build_index(self) -> None:
         """构建索引"""
-        self._sender_orders.clear()
-        self._receiver_orders.clear()
+        self._sender_index.clear()
+        self._receiver_index.clear()
         for order in self._order_data.orders.values():
-            self._sender_orders[order.sender].append(order.id)
-            self._receiver_orders[order.receiver].append(order.id)
+            self._sender_index[order.sender].append(order.id)
+            self._receiver_index[order.receiver].append(order.id)
 
     def _check_orders(self) -> None:
         """检查订单
@@ -59,6 +59,7 @@ class OrderManager:
             self._order_data.orders[order_id].id = int(order_id)
 
     def reload(self) -> None:
+        self._post_manager.server.logger.info(tr(Tags.data.load))
         self._order_data = self._post_manager.server.load_config_simple(
             constants.ORDERS_DATA_FILE_NAME,
             target_class=OrderData,
@@ -68,6 +69,7 @@ class OrderManager:
         self._build_index()
 
     def save(self) -> None:
+        self._post_manager.server.logger.info(tr(Tags.data.save))
         self._post_manager.server.save_config_simple(
             self._order_data,
             constants.ORDERS_DATA_FILE_NAME,
@@ -100,7 +102,7 @@ class OrderManager:
     def get_players(self) -> list[str]:
         return self._order_data.players
 
-    def get_next_id(self) -> int:
+    def __get_next_id(self) -> int:
         """获取最小的有效 ID"""
         if not self._order_data.orders:
             return 1
@@ -112,11 +114,11 @@ class OrderManager:
 
         return order_id
 
-    def add_order(self, order: OrderInfo | OrderInfoDict) -> int:
+    def add_order(self, order: OrderInfo) -> int:
         """添加订单
 
         Args:
-            order (OrderInfo | OrderInfoDict): 订单信息
+            order (OrderInfo): 订单信息
 
         Returns:
             int: 订单 ID
@@ -124,26 +126,24 @@ class OrderManager:
         Raises:
             TypeError: 订单信息类型错误（检查传入的数据类型是否为 ``dict`` 或者 ``OrderInfo``）
         """
-        if isinstance(order, dict):
-            order = OrderInfo.deserialize(order)
-        elif not isinstance(order, OrderInfo):
+        if not isinstance(order, OrderInfo):
             raise TypeError("不支持非 OrderInfo 类型的订单信息")
 
-        order_id = self.get_next_id()
+        order_id = self.__get_next_id()
         self._order_data.orders[str(order_id)] = Order(
             **order.serialize(),
             id=order_id,
         )
-        self._sender_orders[order.sender].append(order_id)
-        self._receiver_orders[order.receiver].append(order_id)
+        self._sender_index[order.sender].append(order_id)
+        self._receiver_index[order.receiver].append(order_id)
         return order_id
 
     def remove_order(self, order_id: int) -> bool:
-        if order_id not in self._order_data.orders:
+        if str(order_id) not in self._order_data.orders:
             return False
         order = self._order_data.orders[str(order_id)]
-        self._sender_orders[order.sender].remove(order_id)
-        self._receiver_orders[order.receiver].remove(order_id)
+        self._sender_index[order.sender].remove(order_id)
+        self._receiver_index[order.receiver].remove(order_id)
         del self._order_data.orders[str(order_id)]
         return True
 
@@ -154,25 +154,25 @@ class OrderManager:
         return list(self._order_data.orders.values())
 
     def get_orderid_by_sender(self, sender: str) -> list[int]:
-        return self._sender_orders[sender]
+        return self._sender_index[sender]
 
     def get_orderid_by_receiver(self, receiver: str) -> list[int]:
-        return self._receiver_orders[receiver]
+        return self._receiver_index[receiver]
 
     def get_orders_by_sender(self, sender: str) -> list[Order]:
         return [
             self._order_data.orders[str(order_id)]
-            for order_id in self._sender_orders[sender]
+            for order_id in self._sender_index[sender]
         ]
 
     def get_orders_by_receiver(self, receiver: str) -> list[Order]:
         return [
             self._order_data.orders[str(order_id)]
-            for order_id in self._receiver_orders[receiver]
+            for order_id in self._receiver_index[receiver]
         ]
 
     def has_unreceived_order(self, player: str) -> bool:
-        return bool(self._receiver_orders[player])
+        return bool(self._receiver_index[player])
 
     def pop_order(self, order_id: int) -> Order:
         order = self.get_order(order_id)
@@ -181,4 +181,4 @@ class OrderManager:
         return order
 
 
-__all__ = ['OrderManager']
+__all__ = ['DataManager']

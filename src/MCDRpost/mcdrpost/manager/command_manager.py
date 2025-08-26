@@ -3,7 +3,7 @@ from typing import Literal as LiteralType, TYPE_CHECKING
 from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
     RColor, RText, RTextList, RequirementNotMet, Text
 
-from mcdrpost.config.configuration import CommandPermission
+from mcdrpost.configuration import CommandPermission
 from mcdrpost.constants import END_LINE
 from mcdrpost.utils import tr
 from mcdrpost.utils.translation_tags import Tags
@@ -18,11 +18,13 @@ class CommandManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
+        self._data_manager = post_manager.data_manager
+        self._perm: CommandPermission = post_manager.config_manager.configuration.command_permission
+
         if self._post_manager.config_manager.configuration.allow_alias:
             self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
         else:
             self._prefixes = ["!!po"]
-        self._perm: CommandPermission = post_manager.config_manager.configuration.command_permission
 
     def register(self) -> None:
         """注册命令树
@@ -101,7 +103,7 @@ class CommandManager:
 
     def output_post_list(self, src: InfoCommandSource) -> None:
         """辅助函数：输出玩家发送的订单列表"""
-        post_list = self._post_manager.order_manager.get_orders_by_sender(
+        post_list = self._data_manager.get_orders_by_sender(
             src.get_info().player
         )
 
@@ -126,7 +128,7 @@ class CommandManager:
 
     def output_receive_list(self, src: InfoCommandSource) -> None:
         """辅助函数：输出玩家待接收的邮件列表"""
-        receive_list = self._post_manager.order_manager.get_orders_by_receiver(
+        receive_list = self._data_manager.get_orders_by_receiver(
             src.get_info().player
         )
 
@@ -151,7 +153,7 @@ class CommandManager:
 
     def output_all_orders(self, src: InfoCommandSource) -> None:
         """辅助函数：输出所有订单列表"""
-        all_orders = self._post_manager.order_manager.get_orders()
+        all_orders = self._data_manager.get_orders()
 
         if not all_orders:
             src.reply(tr(Tags.no_orders))
@@ -180,7 +182,7 @@ class CommandManager:
             runs(lambda src: src.reply(tr(Tags.no_input_receiver))).
             then(
                 Text('receiver').
-                suggests(self._post_manager.order_manager.get_players).
+                suggests(self._data_manager.get_players).
                 runs(lambda src, ctx: self._post_manager.post(src, ctx['receiver'])).
                 then(
                     GreedyText('comment').
@@ -212,7 +214,7 @@ class CommandManager:
                 suggests(
                     lambda src: [
                         str(i) for i in
-                        self._post_manager.order_manager.get_orderid_by_receiver(src.get_info().player)
+                        self._data_manager.get_orderid_by_receiver(src.get_info().player)
                     ]
                 ).
                 runs(
@@ -247,7 +249,7 @@ class CommandManager:
                 suggests(
                     lambda src: [
                         str(i) for i in
-                        self._post_manager.order_manager.get_orderid_by_sender(src.get_info().player)
+                        self._data_manager.get_orderid_by_sender(src.get_info().player)
                     ]
                 ).
                 runs(
@@ -267,7 +269,7 @@ class CommandManager:
                 Literal('players').
                 requires(lambda src: src.has_permission(self._perm.list_player)).
                 runs(lambda src: src.reply(
-                    tr(Tags.list_player_title) + str(self._post_manager.order_manager.get_players())
+                    tr(Tags.list_player_title) + str(self._data_manager.get_players())
                 ))
             ).
             then(
@@ -304,7 +306,7 @@ class CommandManager:
                 runs(lambda src: src.reply(tr(Tags.command_incomplete))).
                 then(
                     Text('player_id').
-                    runs(lambda src, ctx: self._post_manager.order_manager.add_player(ctx['player_id']))
+                    runs(lambda src, ctx: self._data_manager.add_player(ctx['player_id']))
                 )
             ).
             then(
@@ -312,8 +314,8 @@ class CommandManager:
                 runs(lambda src: src.reply(tr(Tags.command_incomplete))).
                 then(
                     Text('player_id').
-                    suggests(self._post_manager.order_manager.get_players).
-                    runs(lambda src, ctx: self._post_manager.order_manager.remove_player(ctx['player_id']))
+                    suggests(self._data_manager.get_players).
+                    runs(lambda src, ctx: self._data_manager.remove_player(ctx['player_id']))
                 )
             )
         )
@@ -338,7 +340,7 @@ class CommandManager:
             ).
             then(
                 Literal('orders').
-                runs(getattr(self._post_manager.order_manager, t))
+                runs(getattr(self._data_manager, t))
             )
         )
 
@@ -355,18 +357,13 @@ class CommandManager:
             requires(lambda src: src.has_permission(self._perm.root)).
             on_error(RequirementNotMet, lambda src: src.reply(tr(Tags.no_permission)), handled=True).
             runs(lambda src: self.output_help_message(src, prefix)).
-            then(self.gen_post_node('p')).
-            then(self.gen_post_node('post')).
-            then(self.gen_post_list_node('pl')).
-            then(self.gen_post_list_node('post_list')).
-            then(self.gen_receive_node('r')).
-            then(self.gen_receive_node('receive')).
-            then(self.gen_receive_list_node('rl')).
-            then(self.gen_receive_list_node('receive_list')).
-            then(self.gen_cancel_node('c')).
-            then(self.gen_cancel_node('cancel')).
-            then(self.gen_list_node('ls')).
-            then(self.gen_list_node('list')).
+            # 下面的一行就是一条命令，多个 then 意味着别名/缩写
+            then(self.gen_post_node('p')).then(self.gen_post_node('post')).
+            then(self.gen_post_list_node('pl')).then(self.gen_post_list_node('post_list')).
+            then(self.gen_receive_node('r')).then(self.gen_receive_node('receive')).
+            then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
+            then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
+            then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
             then(self.gen_player_node('player')).
             then(self.gen_save_node('save')).
             then(self.gen_reload_node('reload'))
