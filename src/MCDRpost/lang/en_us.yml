@@ -58,17 +58,16 @@ mcdrpost:
   wait_for_receive: "§6[MCDRpost] §eYou have a pending shipment~ Use §7!!po receive_list§e to check"
   config:
     display:
-      max_storage_num: "the maximum of personal storage is: {0}"
+      max_storage: "the maximum of personal storage is: {0}"
       allow_alias: 'alias allowance: {0}'
       command_prefix: "the prefix of command includes: {0}"
       auto_fix: "autofix allowance: {0}"
       receive_tip_delay: "the delay of pending shipment noticing when login is: {0} second(s)"
-    set:
-      max_storage_num: "the maximum od personal storage is already set to {0}"
-      allow_alias: "alias allowance is already set to {0}"
-      command_prefix: "the prefix of commands is already set to {0}"
-      auto_fix: "autofix allowance is already set to {0}"
-      receive_tip_delay: "the delay of noticing is already set to {0} second(s)"
+    load: "loaded configuration"
+    save: "saved configuration"
+  data:
+    load: "loaded order data"
+    save: "saved order data"
   error:
     invalid_order: "There is an invalid order which has 2 different order id: {0} and {1}"
   auto_fix:
