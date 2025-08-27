@@ -5,11 +5,10 @@ from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, L
 
 from mcdrpost.configuration import CommandPermission
 from mcdrpost.constants import END_LINE
-from mcdrpost.utils import tr
-from mcdrpost.utils.translation_tags import Tags
+from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa
+    from mcdrpost.manager.post_manager import PostManager
 
 
 class CommandManager:
@@ -176,10 +175,10 @@ class CommandManager:
     def receive(self, src: InfoCommandSource, order_id):
         if self._post_manager.receive(src, order_id, 'receive'):
             src.reply(tr(Tags.receive_success, order_id))
+
     def cancel(self, src: InfoCommandSource, order_id):
         if self._post_manager.receive(src, order_id, 'cancel'):
             src.reply(tr(Tags.cancel_success, order_id))
-
 
     # nodes
 
@@ -365,7 +364,7 @@ class CommandManager:
             then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
             then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
             then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
-            then(self.gen_player_node('player'))#.
+            then(self.gen_player_node('player'))  # .
             # 响应还没有做好，暂时关闭这两条命令
             # then(self.gen_save_node('save')).
             # then(self.gen_reload_node('reload'))

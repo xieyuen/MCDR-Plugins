@@ -14,26 +14,30 @@ A MCDR plugin for post/teleport items
 
 ![MCDRpost help](https://s1.ax1x.com/2020/04/16/Jk8ysP.png)
 
-# Install
+## Install
 
-将在 release 下载的 `.mcdr` 插件文件放入插件目录下重载插件即可  
-**当前必须使用Rcon获取信息，请一定配置好服务器和MCDR的Rcon**  
-*MCDRpost(ver1.0.0+)依赖[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)
-，请先安装[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)*  
-~~*旧版本依赖[PlayerInfoAPI插件](https://github.com/TISUnion/PlayerInfoAPI)*~~
+将在 release/catalogue 下载的 `.mcdr` 插件文件放入插件目录下重载插件即可  
+*MCDRpost(ver1.0.0+)依赖[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)，请先安装[Minecraft Data API插件](https://github.com/MCDReforged/MinecraftDataAPI)*
 
-在MPM弃用之后的MCDR中，可以直接使用
+> [!IMPORTANT]
+> 请一定配置好 RCON!<br>
+> 请一定配置好 RCON!<br>
+> 请一定配置好 RCON!<br>
+> 重要的事情说三遍~
 
-```text
-!!MCDR plg install mcdrpost
-!!MCDR confirm
-```
 
-来安装 2.1.0 版本的 MCDRpost
+> [!NOTE]
+> 
+> 在MCDR中，可以直接使用
+>
+> ```text
+> !!MCDR plg install mcdrpost
+> !!MCDR confirm
+> ```
+>
+> 来安装 MCDRpost, 这也是推荐做法
 
-> 我还没有与Fallen和Flyky取得联系，仓库内的新版本的更新暂不支持自动下载
-
-# Feature
+## Feature
 
 **使用该插件可以将副手的物品发送给别的玩家**  
 也可以发送给离线玩家（但该玩家必须曾经进过服务器）  
@@ -42,7 +46,7 @@ A MCDR plugin for post/teleport items
 - 玩家发出物品后，物品(订单)将会存放在【中转站】
 - 需要收件人收取订单才能收到物品，之后【中转站】会删除该订单
 - 还未查收的订单可以取消，物品会从【中转站】退回，并删除订单
-- 每人存放【中转站】的订单数有上限（防止作为储存箱等的滥用），默认为 5[^1]
+- 每人存放【中转站】的订单数有上限（防止作为储存箱等的滥用），默认为 5
 - 如果你要问为啥一定是副手用 `replaceitem` 传送接收呢 ，因为
     - 用 `give` 传到身上任意栏位，如果身上东西多的话，传回来还要找一下，比较麻烦，还不容易找到传回来的是哪个东西
     - 如果身上东西满了的话 `give` 是拿不到物品的，防止粗心大意的小天才
@@ -65,14 +69,19 @@ A MCDR plugin for post/teleport items
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
-*Added in version 3.1.0:* 支持命令的全写，例如`!!post post Flyky full-name-support` `list`
+*Added in version 3.1.0:* 支持命令的全写，例如`!!post post Flyky full-name-support`
 
 *Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，等同于 `pl` 和 `rl`
 
 ## Configurations
 
 MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 中
-但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`，详细配置如下
+但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`
+
+**点击快速跳转**
+
+- [2.x](#211-及以下)
+- [3.x](#300-版本或以上)
 
 ### 2.1.1 及以下
 
@@ -88,79 +97,56 @@ OrderJsonDirectory = './config/MCDRpost/'
 OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ```
 
-各个属性的含义如下：
+这些属性就是配置，含义见下表
 
-- `Prefix`
-    - 这是插件命令的前缀，接收一个 `str`
-    - 默认为 `!!po`
-- `MaxStorageNum`
-    - 每个人的最大订单存储数量，接收一个 `int`，设定为 -1 则无限制
-    - 默认为 5
-- `SaveDelay`
-    - 保存间隔，也就是在新增 `SaveDelay` 个订单时保存一次，接收一个 `int`
-    - 默认为 1
-- `OrderJsonDirectory`
-    - 订单数据文件储存的文件夹，应是一个写着有效路径 `str`
-    - 默认为 `'./config/MCDRpost/'`
-- `OrderJsonFile`
-    - 订单数据文件的名称，应是一个 `.json` 文件
+| 属性                   | 类型    | 默认值                                   | 描述                        |
+|----------------------|-------|---------------------------------------|:--------------------------|
+| `Prefix`             | `str` | `'!!po'`                              | 插件命令的前缀                   |
+| `MaxStorageNum`      | `int` | `5`                                   | 每个玩家最大存储的订单数量             |
+| `SaveDelay`          | `int` | `1`                                   | 新增 `SaveDelay` 个订单时保存一次   |
+| `OrderJsonDirectory` | `str` | `'./config/MCDRpost/'`                | 订单数据文件储存的文件夹              |
+| `OrderJsonFile`      | `str` | `'./config/MCDRpost/PostOrders.json'` | 订单数据文件的名称，应是一个 `.json` 文件 |
 
 ### 3.0.0 版本或以上
 
-在 3.0.0 和 3.1.0 版本中，@xieyuen 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
+在 3.0.0 版本中, @xieyuen 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
 
-以下是配置文件的内容，[点此查看默认配置文件](<demo/config.yml>)
+下表是配置文件的内容，[点此查看默认配置文件](<demo/config.yml>)
 
-- allow_alias
-    - 是否启用命令别名，关闭后 `command_prefixes` 的配置将会作废，锁定为 `!!po`
-    - 类型: `bool`
-    - 默认值: `true`
-- auto_fix
-    - 是否自动修复订单
-    - 类型: `bool`
-    - 默认值: `false`
-- auto_register
-    - 是否自动为新玩家注册
-    - 类型: `bool`
-    - 默认值: `true`
-- max_storage
-    - 订单的最大存储量
-    - 类型: `int`
-    - 默认值: `5`
-- command_prefixes
-    - 命令的根节点
-    - 类型: `list[str]`
-    - 默认值: `["!!po", "!!post"]`
-- command_permission
-    - 命令权限，下面的配置都是 `Literal[0, 1, 2, 3, 4]` 类型，超出范围的MCDR会报错
-    - 配置:
-        - root
-            - 根命令权限
-            - 默认值: 0
-        - post
-            - 发送邮件(`!!po p`)的权限，同时包括列出自己发出的邮件的权限(`!!po pl`)
-            - 默认值: 0
-        - receive
-            - 接收邮件(`!!po r`)的权限，同时包括列出自己未收取的邮件的权限(`!!po rl`)
-            - 默认值: 0
-        - cancel
-            - 取消邮件(`!!po c`)的权限
-            - 默认值: 0
-        - list_player
-            - 列出已注册玩家的权限
-            - 默认值: 2
-        - list_orders
-            - 列出所有邮件的权限
-            - 默认值: 2
-        - player
-            - 子命令 `player` 的权限
-            - 默认值: 3
-        - save
-            - 保存配置和订单数据
-            - 默认值: 3
-        - reload
-            - 重载配置和订单数据
-            - 默认值: 3
+[config gist demo](https://gist.github.com/42a1705764347c08784251c3b6ee8c83)
+
+#### 配置表
+
+|         属性         | Python类型  |        默认值         | 描述           |
+|:------------------:|:---------:|:------------------:|:-------------|
+|    allow_alias     |   bool    |        true        | 是否允许别名[^1]   |
+|      auto_fix      |   bool    |       false        | 是否自动修复订单     |
+|   auto_register    |   bool    |        true        | 是否自动为新玩家注册   |
+|    max_storage     |    int    |         5          | 订单最大存储量      |
+| receive_tip_delay  |   float   |        3.0         | 提示延迟         |
+|  command_prefixes  | list[str] | ['!!po', '!!post'] |              |
+| command_permission |   dict    |         ~          | 见[权限表](#权限表) |
+
+[^1]: 关闭别名之后，`command_prefixes` 配置将会作废，锁定为 `!!po`
+
+#### 权限表
+
+> [!NOTE]
+> MCDReforged的权限系统支持5种权限: `owner`, `admin`, `helper`, `user`, `guest`,
+> 在设定权限的时候，用 0~4 五个数字代替权限等级，
+> 其中 `0` 表示 `owner`， `1` 表示 `admin`， `2` 表示 `helper`， `3` 表示 `user`， `4` 表示 `guest`
+
+|      属性      | 默认权限 | 描述                     |
+|:------------:|:----:|:-----------------------|
+|     root     |  0   | 根命令的权限                 |
+|     post     |  0   | 发送邮件的权限(同时包括列出发件列表的权限) |
+|   receive    |  0   | 接收邮件的权限(同时包括列出收件列表的权限) |
+|    cancel    |  0   | 取消邮件的权限                |
+| list_orders  |  2   | 获得中转站全部订单信息的权限         |
+| list_players |  2   | 获得全部已注册玩家的权限           |
+|    player    |  3   | `player` 子命令的权限        |
+|    reload    |  3   | 重载插件数据的权限(暂时关闭该命令)     |
+|     save     |  3   | 保存插件数据的权限(暂时关闭该命令)     |
 
 ## ATTENTIONS!!
 
@@ -175,7 +161,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
     - 目前 `PlayerInfoAPI` 已经弃用，`MCDRpost` 改用`MinecraftDataAPI`
 2. **必须使用Rcon获取信息，请一定配置好服务器和MCDR的Rcon**
 
-# pics
+## pics
 
 ![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)  
 ![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)  

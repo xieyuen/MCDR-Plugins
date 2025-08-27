@@ -10,8 +10,9 @@ from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.utils import get_formatted_time, get_offhand_item, play_sound, tr
-from mcdrpost.utils.translation_tags import Tags
+from mcdrpost.utils import get_formatted_time
+from mcdrpost.utils.interaction import get_offhand_item, play_sound
+from mcdrpost.utils.translation import Tags, tr
 
 
 class PostManager:
@@ -68,7 +69,7 @@ class PostManager:
 
         # 已注册的玩家，向他推送订单消息（如果有）
         if self.data_manager.has_unreceived_order(player):
-            @new_thread('MCDRpost receive tip')
+            @new_thread('MCDRpost | send receive tip')
             def send_receive_tip():
                 time.sleep(self.config_manager.configuration.receive_tip_delay)
                 server.tell(player, tr(Tags.wait_for_receive))
@@ -85,7 +86,7 @@ class PostManager:
 
     # Helper methods
     def replace(self, player: str, item: Item):
-        return self.version_manager.replace(player, self.version_manager.item2str(item))
+        return self.version_manager.replace(player, item)
 
     def dict2item(self, item: dict) -> Item:
         return self.version_manager.dict2item(item)

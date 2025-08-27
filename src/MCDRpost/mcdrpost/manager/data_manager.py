@@ -3,12 +3,11 @@ from typing import DefaultDict, TYPE_CHECKING
 
 from mcdrpost import constants
 from mcdrpost.data_structure import Order, OrderData, OrderInfo
-from mcdrpost.utils import tr
 from mcdrpost.utils.exception import InvalidOrder
-from mcdrpost.utils.translation_tags import Tags
+from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa
+    from mcdrpost.manager.post_manager import PostManager
 
 
 class DataManager:
