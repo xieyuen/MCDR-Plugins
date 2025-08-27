@@ -11,8 +11,7 @@
 
 MCDRpost: 一个用于邮寄/传送物品的MCDR插件
 
->> Note:
->
+> [!NOTE]
 > 插件需要配置 Rcon 才能稳定运行
 
 点此查看 [README](src/MCDRpost/README.md)
