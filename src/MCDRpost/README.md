@@ -114,6 +114,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 下表是配置文件的内容，[点此查看默认配置文件](<demo/config.yml>)
 
 > gist demo
+
 <script src="https://gist.github.com/xieyuen/42a1705764347c08784251c3b6ee8c83.js"></script>
 
 #### 配置表
