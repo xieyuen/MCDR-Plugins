@@ -7,11 +7,13 @@ from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa
+    from mcdrpost.manager.post_manager import PostManager
 
+if False:
+    print()
 
 class ConfigurationManager:
-    """一个能够自动解析环境配置的配置管理器
+    """配置管理器
 
     Attributes:
         configuration (Configuration): 插件配置

@@ -8,7 +8,7 @@ from mcdrpost.constants import END_LINE
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa
+    from mcdrpost.manager.post_manager import PostManager
 
 
 class CommandManager:
