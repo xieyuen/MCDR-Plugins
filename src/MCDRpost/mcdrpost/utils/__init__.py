@@ -1,9 +1,6 @@
 import time
 
-from mcdreforged import PluginServerInterface, new_thread
-
-from mcdrpost import constants
-from mcdrpost.utils.translation_tags import Tags
+from mcdrpost.utils.translation import Tags
 
 
 def get_formatted_time() -> str:
@@ -11,47 +8,4 @@ def get_formatted_time() -> str:
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
-def get_offhand_item(server: PluginServerInterface, player: str) -> dict | None:
-    """获取玩家副手物品，建议开启 Rcon
-
-    Args:
-        server (PluginServerInterface): MCDR插件接口
-        player (str): 玩家名
-
-    Returns:
-        dict | None: 物品信息，若获取失败或返回 None
-    """
-    # api = server.get_plugin_instance('minecraft_data_api')
-    import minecraft_data_api as api
-
-    offhand_item = None
-
-    try:
-        if server.is_rcon_running():
-            offhand_item = api.convert_minecraft_json(
-                server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
-            )
-        else:
-            server.logger.warning(tr(Tags.rcon.not_running))
-
-            @new_thread('MCDRpost | get offhand item')
-            def get():
-                nonlocal offhand_item
-                offhand_item = api.get_player_info(player, constants.OFFHAND_CODE)
-
-            get()
-
-        if isinstance(offhand_item, dict):
-            return offhand_item
-
-    except Exception as e:
-        server.logger.error(f"Error occurred during getting {player}'s offhand item")
-        server.logger.error(e)
-
-
-def tr(tag: str, *args):
-    """translation"""
-    return PluginServerInterface.get_instance().tr(f'mcdrpost.{tag}', *args)
-
-
-__all__ = ['get_formatted_time', 'get_offhand_item', 'tr']
+__all__ = ['get_formatted_time']
