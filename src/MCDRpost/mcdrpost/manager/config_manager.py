@@ -9,8 +9,6 @@ from mcdrpost.utils.translation import Tags, tr
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
 
-if False:
-    print()
 
 class ConfigurationManager:
     """配置管理器
