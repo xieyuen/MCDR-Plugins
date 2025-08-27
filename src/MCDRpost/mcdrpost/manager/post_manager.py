@@ -69,7 +69,7 @@ class PostManager:
 
         # 已注册的玩家，向他推送订单消息（如果有）
         if self.data_manager.has_unreceived_order(player):
-            @new_thread('MCDRpost receive tip')
+            @new_thread('MCDRpost | send receive tip')
             def send_receive_tip():
                 time.sleep(self.config_manager.configuration.receive_tip_delay)
                 server.tell(player, tr(Tags.wait_for_receive))

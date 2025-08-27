@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
-from mcdrpost.version import after17before20_5, after20_5, before17
+from mcdrpost.utils.types import Dict2ItemFunction, Item2StrFunction, ReplaceFunction
+from mcdrpost.version import after1_20_5, before1_17, from_1_17_to_1_20_5
 
 if TYPE_CHECKING:
     from new.manager.post_manager import PostManager  # noqa
@@ -26,11 +27,11 @@ class VersionManager:
         Args:
             pm (PostManager): PostManager 实例
         """
-        self._post_manager = pm
+        self._server = pm.server
         self.environment: Environment = Environment(pm.server)
-        self._replace = None
-        self._dict2item = None
-        self._item2str = None
+        self._replace: ReplaceFunction | None = None
+        self._dict2item: Dict2ItemFunction | None = None
+        self._item2str: Item2StrFunction | None = None
 
     def refresh(self) -> None:
         """刷新版本相关函数引用
@@ -38,17 +39,17 @@ class VersionManager:
         根据当前服务器版本，更新内部函数引用
         """
         if self.environment.server_version < "1.17":
-            self._replace = before17.replace
-            self._dict2item = before17.dict2item
-            self._item2str = before17.item2str
+            self._replace = before1_17.replace
+            self._dict2item = before1_17.dict2item
+            self._item2str = before1_17.item2str
         elif self.environment.server_version < "1.20.5":
-            self._replace = after17before20_5.replace
-            self._dict2item = after17before20_5.dict2item
-            self._item2str = after17before20_5.item2str
+            self._replace = from_1_17_to_1_20_5.replace
+            self._dict2item = from_1_17_to_1_20_5.dict2item
+            self._item2str = from_1_17_to_1_20_5.item2str
         else:
-            self._replace = after20_5.replace
-            self._dict2item = after20_5.dict2item
-            self._item2str = after20_5.item2str
+            self._replace = after1_20_5.replace
+            self._dict2item = after1_20_5.dict2item
+            self._item2str = after1_20_5.item2str
 
     # 下面是是依赖版本的函数
 
@@ -59,7 +60,7 @@ class VersionManager:
             player (str): 玩家名
             item (str): 物品字符串
         """
-        self._replace(self._post_manager.server, player, self._item2str(item))
+        self._replace(self._server, player, self._item2str(item))  # noqa
 
     def dict2item(self, item: dict) -> Item:
         """将字典转换为物品对象
@@ -70,4 +71,4 @@ class VersionManager:
         Returns:
             Item: 物品对象
         """
-        return self._dict2item(item)
+        return self._dict2item(item)  # noqa
