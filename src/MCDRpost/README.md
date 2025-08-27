@@ -113,15 +113,13 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 下表是配置文件的内容，[点此查看默认配置文件](<demo/config.yml>)
 
-> gist demo
-
-<script src="https://gist.github.com/xieyuen/42a1705764347c08784251c3b6ee8c83.js"></script>
+[config gist demo](https://gist.github.com/42a1705764347c08784251c3b6ee8c83)
 
 #### 配置表
 
 |         属性         | Python类型  |        默认值         | 描述           |
 |:------------------:|:---------:|:------------------:|:-------------|
-|    allow_alias     |   bool    |        true        | 是否允许别名[^2]   |
+|    allow_alias     |   bool    |        true        | 是否允许别名[^1]   |
 |      auto_fix      |   bool    |       false        | 是否自动修复订单     |
 |   auto_register    |   bool    |        true        | 是否自动为新玩家注册   |
 |    max_storage     |    int    |         5          | 订单最大存储量      |
@@ -129,7 +127,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 |  command_prefixes  | list[str] | ['!!po', '!!post'] |              |
 | command_permission |   dict    |         ~          | 见[权限表](#权限表) |
 
-[^2]: 关闭别名之后，`command_prefixes` 配置将会作废，锁定为 `!!po`
+[^1]: 关闭别名之后，`command_prefixes` 配置将会作废，锁定为 `!!po`
 
 #### 权限表
 
