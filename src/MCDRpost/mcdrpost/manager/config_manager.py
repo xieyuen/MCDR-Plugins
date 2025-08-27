@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING
 from mcdreforged import PluginServerInterface
 
 from mcdrpost import constants
-from mcdrpost.config.configuration import Configuration
-from mcdrpost.config.environment import Environment
+from mcdrpost.configuration import Configuration
+from mcdrpost.utils import tr
+from mcdrpost.utils.translation_tags import Tags
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager  # noqa
@@ -14,18 +15,20 @@ class ConfigurationManager:
     """一个能够自动解析环境配置的配置管理器
 
     Attributes:
-        environment (Environment): 环境配置，主要是 MC 版本
         configuration (Configuration): 插件配置
     """
 
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
-        self.environment: Environment = Environment(self._server)
-        self.configuration: Configuration | None = None
-        self.reload()
+        self.configuration: Configuration = self._server.load_config_simple(
+            constants.CONFIG_FILE_NAME,
+            target_class=Configuration,
+            file_format=constants.CONFIG_FILE_TYPE,
+        )
 
     def reload(self) -> None:
+        self._server.logger.info(tr(Tags.config.load))
         self.configuration = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
@@ -33,11 +36,15 @@ class ConfigurationManager:
         )
 
     def save(self) -> None:
+        self._server.logger.info(tr(Tags.config.save))
         self._server.save_config_simple(
             self.configuration,
             constants.CONFIG_FILE_NAME,
             file_format=constants.CONFIG_FILE_TYPE
         )
+
+    def get_configuration(self) -> Configuration:
+        return self.configuration
 
 
 __all__ = ['ConfigurationManager']

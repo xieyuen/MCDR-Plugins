@@ -70,18 +70,19 @@ class Tags:
     wait_for_receive = 'wait_for_receive'
 
     class config:
-        max_storage_num = 'config.max_storage_num'
-        allow_alias = 'config.allow_alias'
-        command_prefix = 'config.command_prefix'
-        auto_fix = 'config.auto_fix'
-        receive_tip_delay = 'config.receive_tip_delay'
+        class display:
+            max_storage = 'config.display.max_storage'
+            allow_alias = 'config.display.allow_alias'
+            command_prefix = 'config.display.command_prefix'
+            auto_fix = 'config.display.auto_fix'
+            receive_tip_delay = 'config.display.receive_tip_delay'
 
-        class set:
-            max_storage_num = 'config.set.max_storage_num'
-            allow_alias = 'config.set.allow_alias'
-            command_prefix = 'config.set.command_prefix'
-            auto_fix = 'config.set.auto_fix'
-            receive_tip_delay = 'config.set.receive_tip_delay'
+        load = 'config.load'
+        save = 'config.save'
+
+    class data:
+        load = 'data.load'
+        save = 'data.save'
 
     class error:
         invalid_order = 'error.invalid_order'

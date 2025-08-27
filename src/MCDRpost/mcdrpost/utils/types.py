@@ -5,3 +5,4 @@ from mcdreforged import PluginServerInterface
 
 class ReplaceFunction(Protocol):
     def __call__(self, server: PluginServerInterface, player: str, item: str) -> None: ...
+

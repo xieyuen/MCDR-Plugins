@@ -1,21 +1,60 @@
 {
-    "players": ["Flyky", "RainbowerWe"],
-    "orders": {
-      "1": {
-        "id": 1,
-        "time": "2020-04-15 21:38:39",
-        "sender": "Flyky",
-        "receiver": "RainbowerWe",
-        "item": "minecraft:diamond_pickaxe{Enchantments: [{lvl: 3 s,id: \"minecraft:unbreaking\"}]}",
-        "comment": "测试1"
-      },
-      "2": {
-        "id": 2,
-        "time": "2020-04-15 22:00:39",
-        "sender": "Flyky",
-        "receiver": "RainbowerWe",
-        "item": "",
-        "comment": "测试2"
+  "players": [
+    "xieyuen",
+    "Server"
+  ],
+  "orders": {
+    "1": {
+      "id": 1,
+      "time": "2025-08-26 23:54:51",
+      "sender": "xieyuen",
+      "receiver": "Server",
+      "comment": "无备注信息",
+      "item": {
+        "components": {},
+        "count": 16,
+        "id": "minecraft:ender_pearl"
+      }
+    },
+    "2": {
+      "id": 2,
+      "time": "2025-08-26 23:54:54",
+      "sender": "xieyuen",
+      "receiver": "Server",
+      "comment": "无备注信息",
+      "item": {
+        "components": {},
+        "count": 64,
+        "id": "minecraft:diamond"
+      }
+    },
+    "3": {
+      "id": 3,
+      "time": "2025-08-26 23:55:10",
+      "sender": "xieyuen",
+      "receiver": "Server",
+      "comment": "无备注信息",
+      "item": {
+        "components": {},
+        "count": 64,
+        "id": "minecraft:mycelium"
+      }
+    },
+    "4": {
+      "id": 4,
+      "time": "2025-08-26 23:58:10",
+      "sender": "xieyuen",
+      "receiver": "Server",
+      "comment": "无备注信息",
+      "item": {
+        "components": {
+          "minecraft:potion_contents": {
+            "potion": "minecraft:long_slowness"
+          }
+        },
+        "count": 64,
+        "id": "minecraft:tipped_arrow"
       }
     }
+  }
 }

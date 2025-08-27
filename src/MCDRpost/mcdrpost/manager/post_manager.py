@@ -1,17 +1,17 @@
 import time
+from typing import Literal
 
 from mcdreforged import Info, InfoCommandSource, PluginServerInterface, new_thread
 
 import minecraft_data_api as api
 from mcdrpost import constants
+from mcdrpost.data_structure import Item, OrderInfo
 from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
-from mcdrpost.manager.order_manager import OrderManager
-from mcdrpost.order_data import OrderInfo
-from mcdrpost.utils import get_formatted_item, get_formatted_time, get_offhand_item, play_sound, tr
-from mcdrpost.utils.replace_offhand_item import replace_for_17, replace_for_lower_17
+from mcdrpost.manager.data_manager import DataManager
+from mcdrpost.manager.version_manager import VersionManager
+from mcdrpost.utils import get_formatted_time, get_offhand_item, play_sound, tr
 from mcdrpost.utils.translation_tags import Tags
-from mcdrpost.utils.types import ReplaceFunction
 
 
 class PostManager:
@@ -20,33 +20,19 @@ class PostManager:
     Attributes:
         server (PluginServerInterface): MCDR插件接口
         config_manager (ConfigurationManager): 配置管理
-        order_manager (OrderManager): 订单管理
+        data_manager (DataManager): 订单管理
         command_manager (CommandManager): 命令注册
     """
 
     def __init__(self, server: PluginServerInterface) -> None:
         self.server: PluginServerInterface = server
         self.config_manager: ConfigurationManager = ConfigurationManager(self)
-        self.order_manager: OrderManager = OrderManager(self)
+        self.data_manager: DataManager = DataManager(self)
         self.command_manager: CommandManager = CommandManager(self)
-        self._replace: ReplaceFunction = replace_for_lower_17
+        self.version_manager: VersionManager = VersionManager(self)
 
-    def _refresh_replace(self) -> None:
-        if self.config_manager.environment.item_command():
-            self._replace: ReplaceFunction = replace_for_17
-        else:
-            self._replace: ReplaceFunction = replace_for_lower_17
-
-    def replace(self, player: str, item: str) -> None:
-        """替换副手物品
-
-        Args:
-            player (str): 玩家名
-            item (str): 要替换的物品 id
-        """
-        self._replace(self.server, player, item)
-
-    def on_load(self, _server: PluginServerInterface, _prev_module) -> None:
+    # Events Handle
+    def on_load(self, server: PluginServerInterface, _prev_module) -> None:
         """事件: 插件加载--在这里会注册插件的命令
 
         .. note::
@@ -54,25 +40,24 @@ class PostManager:
                 而非一般的在 on_load() 内得到 PluginServerInterface 实例再实例化
         """
         self.command_manager.register()
+        if server.is_server_running():
+            self.on_server_startup(server)
 
     def on_unload(self, _server: PluginServerInterface) -> None:
         """事件: 插件卸载--保存配置文件和订单信息"""
         self.config_manager.save()
-        self.order_manager.save()
+        self.data_manager.save()
 
     def on_player_joined(self, server: PluginServerInterface, player: str, _info: Info) -> None:
-        """事件: 玩家加入服务器
-
-        由于 MCDRpost 不支持向未注册的玩家发送物品，要注册也不能让腐竹一个个加
-        我们会在玩家加入的时候自动注册，对于老玩家，如果有未接收的订单我们会推送消息
-        """
-        if not self.order_manager.is_player_registered(player):
+        """事件: 玩家加入服务器"""
+        if not self.data_manager.is_player_registered(player):
             if self.config_manager.configuration.auto_register:
                 # 还未注册的玩家
-                self.order_manager.add_player(player)
+                self.data_manager.add_player(player)
                 server.logger.info(tr(Tags.login_log, player))
-                self.order_manager.save()
+                self.data_manager.save()
                 return
+
             # 通知权限在admin以上的管理员有新玩家加入
             player_list = api.get_server_player_list()[-1]
             for online_player in player_list:
@@ -82,8 +67,8 @@ class PostManager:
             return
 
         # 已注册的玩家，向他推送订单消息（如果有）
-        if self.order_manager.has_unreceived_order(player):
-            @new_thread('MCDRpost-send receive tip')
+        if self.data_manager.has_unreceived_order(player):
+            @new_thread('MCDRpost receive tip')
             def send_receive_tip():
                 time.sleep(self.config_manager.configuration.receive_tip_delay)
                 server.tell(player, tr(Tags.wait_for_receive))
@@ -92,11 +77,18 @@ class PostManager:
             send_receive_tip()
 
     def on_server_startup(self, _server: PluginServerInterface):
-        self._refresh_replace()
+        self.version_manager.refresh()
 
     def on_server_stop(self, _server: PluginServerInterface, _server_return_code: int):
         """事件: 服务器关闭--保存配置信息和订单信息"""
         self.save()
+
+    # Helper methods
+    def replace(self, player: str, item: Item):
+        return self.version_manager.replace(player, self.version_manager.item2str(item))
+
+    def dict2item(self, item: dict) -> Item:
+        return self.version_manager.dict2item(item)
 
     def is_storage_full(self, player: str) -> bool:
         """玩家发送的订单是否抵达上限
@@ -106,7 +98,7 @@ class PostManager:
         """
         if self.config_manager.configuration.max_storage == -1:
             return False
-        return len(self.order_manager.get_orders_by_sender(player)) >= self.config_manager.configuration.max_storage
+        return len(self.data_manager.get_orderid_by_sender(player)) >= self.config_manager.configuration.max_storage
 
     def post(self, src: InfoCommandSource, receiver: str, comment: str = None) -> None:
         """发送订单
@@ -129,15 +121,16 @@ class PostManager:
         if comment is None:
             comment = tr(Tags.no_comment)
 
-        item = get_formatted_item(
-            get_offhand_item(self.server, sender)
-        )
+        item = get_offhand_item(self.server, sender)
+        if not item:
+            src.reply(tr(Tags.check_offhand))
+            return
 
         # create order
-        order_id = self.order_manager.add_order(OrderInfo(
+        order_id = self.data_manager.add_order(OrderInfo(
             sender=sender,
             receiver=receiver,
-            item=item,
+            item=self.dict2item(item),
             comment=comment,
             time=get_formatted_time(),
         ))
@@ -146,38 +139,46 @@ class PostManager:
         src.reply(tr(Tags.reply_success_post))
         self.server.tell(receiver, tr(Tags.hint_receive, order_id))
         play_sound.successfully_post(self.server, sender, receiver)
-        self.order_manager.save()
+        self.data_manager.save()
 
-    def receive(self, src: InfoCommandSource, order_id: int):
-        """接收订单
+    def receive(self, src: InfoCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
+        """接收订单的物品
 
         Args:
-            src (InfoCommandSource): 收件人的相关信息
+            src (InfoCommandSource): 命令源
             order_id (int): 被接收的订单的 ID
+            typ (Literal["cancel", "receive"]): 类型
+
+        Returns:
+            bool: 是否成功接收到物品
         """
         player = src.get_info().player
-
-        # 订单接收者不是 TA
-        if order_id not in self.order_manager.get_orders_by_receiver(player):
-            src.reply(tr(Tags.unchecked_orderid))
-            return
 
         # 副手有东西 拒绝接收
         if get_offhand_item(self.server, player):
             src.reply(tr(Tags.clear_offhand))
-            return
+            return False
 
-        order = self.order_manager.pop_order(order_id)
+        # 不是 TA
+        if typ == 'receive' and order_id not in self.data_manager.get_orderid_by_receiver(player):
+            src.reply(tr(Tags.unchecked_orderid))
+            return False
+        elif typ == 'cancel' and order_id not in self.data_manager.get_orderid_by_sender(player):
+            src.reply(tr(Tags.unchecked_orderid))
+            return False
+
+        order = self.data_manager.pop_order(order_id)
         self.replace(player, order.item)
         play_sound.receive(self.server, player)
+        return True
 
     def save(self):
         self.config_manager.save()
-        self.order_manager.save()
+        self.data_manager.save()
 
     def reload(self):
         self.config_manager.reload()
-        self.order_manager.reload()
+        self.data_manager.reload()
 
 
 __all__ = ['PostManager']
