@@ -1,4 +1,11 @@
-__all__ = ['Tags']
+from mcdreforged import PluginServerInterface
+
+__all__ = ['Tags', 'tr']
+
+
+def tr(tag: str, *args):
+    """translation"""
+    return PluginServerInterface.get_instance().tr(f'mcdrpost.{tag}', *args)
 
 
 class Tags:

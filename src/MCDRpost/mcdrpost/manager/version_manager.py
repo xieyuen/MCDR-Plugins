@@ -52,14 +52,14 @@ class VersionManager:
 
     # 下面是是依赖版本的函数
 
-    def replace(self, player: str, item: str) -> None:
+    def replace(self, player: str, item: Item) -> None:
         """替换玩家副手物品
 
         Args:
             player (str): 玩家名
             item (str): 物品字符串
         """
-        self._replace(self._post_manager.server, player, item)
+        self._replace(self._post_manager.server, player, self._item2str(item))
 
     def dict2item(self, item: dict) -> Item:
         """将字典转换为物品对象
@@ -71,14 +71,3 @@ class VersionManager:
             Item: 物品对象
         """
         return self._dict2item(item)
-
-    def item2str(self, item: Item) -> str:
-        """将物品对象转换为命令字符串
-
-        Args:
-            item (Item): 物品对象
-
-        Returns:
-            str: 物品命令字符串
-        """
-        return self._item2str(item)
