@@ -8,7 +8,7 @@ from mcdrpost.utils.types import Dict2ItemFunction, Item2StrFunction, ReplaceFun
 from mcdrpost.version import after1_20_5, before1_17, from_1_17_to_1_20_5
 
 if TYPE_CHECKING:
-    from new.manager.post_manager import PostManager  # noqa
+    from mcdrpost.manager.post_manager import PostManager
 
 
 class VersionManager:
