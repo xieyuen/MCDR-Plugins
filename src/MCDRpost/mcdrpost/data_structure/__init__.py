@@ -13,7 +13,7 @@ class Item(Serializable):
     """
     id: str
     count: int
-    components: dict = {}
+    components: dict
 
 
 class OrderInfo(Serializable):

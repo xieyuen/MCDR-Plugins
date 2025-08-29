@@ -78,6 +78,7 @@ class PostManager:
             send_receive_tip()
 
     def on_server_startup(self, _server: PluginServerInterface):
+        """事件: 服务器完全开启--刷新游戏版本设置"""
         self.version_manager.refresh()
 
     def on_server_stop(self, _server: PluginServerInterface, _server_return_code: int):
@@ -86,7 +87,7 @@ class PostManager:
 
     # Helper methods
     def replace(self, player: str, item: Item):
-        return self.version_manager.replace(player, item)
+        return self.version_manager.replace(player, self.version_manager.item2str(item))
 
     def dict2item(self, item: dict) -> Item:
         return self.version_manager.dict2item(item)
