@@ -53,7 +53,7 @@ class VersionManager:
 
     # 下面是是依赖版本的函数
 
-    def replace(self, player: str, item: str) -> None:
+    def replace(self, player: str, item: Item) -> None:
         """替换玩家副手物品
 
         Args:

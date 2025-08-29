@@ -87,7 +87,7 @@ class PostManager:
 
     # Helper methods
     def replace(self, player: str, item: Item):
-        return self.version_manager.replace(player, self.version_manager.item2str(item))
+        return self.version_manager.replace(player, item)
 
     def dict2item(self, item: dict) -> Item:
         return self.version_manager.dict2item(item)
