@@ -30,7 +30,7 @@ class DataManager:
 
         # load data
         self._order_data: OrderData = self._post_manager.server.load_config_simple(
-            constants.ORDERS_DATA_FILE_NAME,
+            constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE
         )
@@ -51,7 +51,7 @@ class DataManager:
         主要是订单的 ID 能不能对上索引
 
         .. versionchanged:: v3.1.1
-            改用索引作为订单 ID
+            修复时使用索引作为订单 ID
         """
         for order_id, order in self._order_data.orders.items():
             if str(order.id) == order_id:
@@ -65,7 +65,7 @@ class DataManager:
     def reload(self) -> None:
         self._post_manager.server.logger.info(tr(Tags.data.load))
         self._order_data = self._post_manager.server.load_config_simple(
-            constants.ORDERS_DATA_FILE_NAME,
+            constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE
         )
@@ -78,7 +78,7 @@ class DataManager:
         self._order_data.orders = dict(sorted(self._order_data.orders.items(), key=lambda item: int(item[0])))
         self._post_manager.server.save_config_simple(
             self._order_data,
-            constants.ORDERS_DATA_FILE_NAME,
+            constants.ORDER_DATA_FILE_NAME,
             file_format=constants.ORDERS_DATA_FILE_TYPE,
         )
 
