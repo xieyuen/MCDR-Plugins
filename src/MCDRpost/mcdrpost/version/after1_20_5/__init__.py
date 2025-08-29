@@ -8,16 +8,14 @@ def replace(server: PluginServerInterface, player: str, item: str):
 
 
 def dict2item(item: dict) -> Item:
-    return Item(
-        id=item['id'],
-        count=item['count'],
-        components=item.get('components', {})
-    )
+    return Item.deserialize(item)
 
 
 def item2str(item: Item) -> str:
-    comp_str = '['
+    if not item.components:
+        return f"{item.id} {item.count}"
+    components_str = '['
     for k, v in item.components.items():
-        comp_str += f' {k}={v},'
-    comp_str += ']'
-    return f'{item.id}{comp_str} {item.count}'
+        components_str += f' {k}={v},'
+    components_str += ']'
+    return f'{item.id}{components_str} {item.count}'

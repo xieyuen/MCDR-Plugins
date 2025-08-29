@@ -1,4 +1,4 @@
-from typing import Literal as LiteralType, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
     RColor, RText, RTextList, RequirementNotMet, Text
@@ -8,7 +8,7 @@ from mcdrpost.constants import END_LINE
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager
+    from mcdrpost.manager.post_manager import PostManager  # noqa: F401
 
 
 class CommandManager:
@@ -320,36 +320,6 @@ class CommandManager:
             )
         )
 
-    def _gen_save_load_node(self, node_name: str, t: LiteralType["save", "reload"]) -> Literal:
-        """生成 save/load 节点
-
-        这两个节点很相似，提取公共部分到这里
-        """
-        return (
-            Literal(node_name).
-            requires(lambda src: src.has_permission(getattr(self._perm, t))).
-            on_error(RequirementNotMet, lambda src: src.reply(tr(Tags.no_permission)), handled=True).
-            runs(getattr(self._post_manager, t)).
-            then(
-                Literal('all').
-                runs(getattr(self._post_manager, t))
-            ).
-            then(
-                Literal('config').
-                runs(getattr(self._post_manager.config_manager, t))
-            ).
-            then(
-                Literal('orders').
-                runs(getattr(self._data_manager, t))
-            )
-        )
-
-    def gen_save_node(self, node_name: str) -> Literal:
-        return self._gen_save_load_node(node_name, 'save')
-
-    def gen_reload_node(self, node_name: str) -> Literal:
-        return self._gen_save_load_node(node_name, 'reload')
-
     def generate_command_node(self, prefix: str) -> Literal:
         """生成指令树"""
         return (
@@ -364,10 +334,7 @@ class CommandManager:
             then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
             then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
             then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
-            then(self.gen_player_node('player'))  # .
-            # 响应还没有做好，暂时关闭这两条命令
-            # then(self.gen_save_node('save')).
-            # then(self.gen_reload_node('reload'))
+            then(self.gen_player_node('player'))
         )
 
 

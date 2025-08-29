@@ -16,8 +16,6 @@ class CommandPermission(Serializable):
         list_player (int): 列出玩家命令权限等级
         list_orders (int): 列出订单命令权限等级
         player (int): 玩家命令权限等级
-        save (int): 保存命令权限等级
-        reload (int): 重载命令权限等级
     """
     root: int = 0
     post: int = 0
