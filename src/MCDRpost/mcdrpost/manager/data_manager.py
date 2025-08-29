@@ -29,8 +29,13 @@ class DataManager:
         self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
-        self._order_data: OrderData | None = None
-        self.reload()
+        self._order_data: OrderData = self._post_manager.server.load_config_simple(
+            constants.ORDERS_DATA_FILE_NAME,
+            target_class=OrderData,
+            file_format=constants.ORDERS_DATA_FILE_TYPE
+        )
+        self._check_orders()
+        self._build_index()
 
     def _build_index(self) -> None:
         """构建索引"""
