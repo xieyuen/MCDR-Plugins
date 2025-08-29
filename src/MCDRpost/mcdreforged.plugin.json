@@ -12,7 +12,7 @@
   ],
   "link": "https://github.com/xieyuen/MCDRpost/",
   "dependencies": {
-    "python": ">=3.11",
+    "python": ">=3.10",
     "mcdreforged": ">=2.15.0",
     "minecraft_data_api": "*"
   },
