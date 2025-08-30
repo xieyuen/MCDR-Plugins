@@ -4,8 +4,10 @@ from typing import TYPE_CHECKING
 
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
-from mcdrpost.utils.types import Dict2ItemFunction, Item2StrFunction, ReplaceFunction
-from mcdrpost.version import after1_20_5, before1_17, from_1_17_to_1_20_5
+from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.before_1_17 import Before17Handler
+from mcdrpost.version_handler.since_1_17 import Since17Handler
+from mcdrpost.version_handler.since_1_20_5 import Since20Handler
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
@@ -19,6 +21,7 @@ class VersionManager:
 
     Attributes:
         environment (Environment): 环境信息对象，包含服务器版本等信息
+        handler (AbstractVersionHandler): MC 版本处理器
     """
 
     def __init__(self, pm: "PostManager"):
@@ -29,9 +32,7 @@ class VersionManager:
         """
         self._server = pm.server
         self.environment: Environment = Environment(pm.server)
-        self._replace: ReplaceFunction | None = None
-        self._dict2item: Dict2ItemFunction | None = None
-        self._item2str: Item2StrFunction | None = None
+        self.handler: AbstractVersionHandler | None = None
 
     def refresh(self) -> None:
         """刷新版本相关函数引用
@@ -39,17 +40,11 @@ class VersionManager:
         根据当前服务器版本，更新内部函数引用
         """
         if self.environment.server_version < "1.17":
-            self._replace = before1_17.replace
-            self._dict2item = before1_17.dict2item
-            self._item2str = before1_17.item2str
+            self.handler = Before17Handler(self._server)
         elif self.environment.server_version < "1.20.5":
-            self._replace = from_1_17_to_1_20_5.replace
-            self._dict2item = from_1_17_to_1_20_5.dict2item
-            self._item2str = from_1_17_to_1_20_5.item2str
+            self.handler = Since17Handler(self._server)
         else:
-            self._replace = after1_20_5.replace
-            self._dict2item = after1_20_5.dict2item
-            self._item2str = after1_20_5.item2str
+            self.handler = Since20Handler(self._server)
 
     # 下面是是依赖版本的函数
 
@@ -60,7 +55,7 @@ class VersionManager:
             player (str): 玩家名
             item (str): 物品字符串
         """
-        self._replace(self._server, player, item)  # noqa
+        self.handler.replace(player, item)
 
     def dict2item(self, item: dict) -> Item:
         """将字典转换为物品对象
@@ -71,7 +66,7 @@ class VersionManager:
         Returns:
             Item: 物品对象
         """
-        return self._dict2item(item)  # noqa
+        return self.handler.dict2item(item)
 
     def item2str(self, item: Item) -> str:
         """将物品对象转换为物品字符串
@@ -82,4 +77,4 @@ class VersionManager:
         Returns:
             str: 物品字符串
         """
-        return self._item2str(item)  # noqa
+        return self.handler.item2str(item)
