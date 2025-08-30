@@ -1,15 +1,11 @@
 from typing import override
 
-from mcdreforged import PluginServerInterface
-
 from mcdrpost.data_structure import Item
-from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+from mcdrpost.manager.version_manager import VersionManager
+from mcdrpost.version_handler import AbstractVersionHandler
 
 
 class Since17Handler(AbstractVersionHandler):
-    def __init__(self, server: PluginServerInterface):
-        self.server = server
-
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:
@@ -27,3 +23,6 @@ class Since17Handler(AbstractVersionHandler):
     @override
     def replace(self, player: str, item: str) -> None:
         self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
+
+
+VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version() <= '1.20.5')

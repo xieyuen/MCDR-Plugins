@@ -1,9 +1,8 @@
 from typing import override
 
-from mcdreforged import PluginServerInterface
-
 from mcdrpost.data_structure import Item
-from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+from mcdrpost.manager.version_manager import VersionManager
+from mcdrpost.version_handler import AbstractVersionHandler
 
 
 class Since20Handler(AbstractVersionHandler):
@@ -27,5 +26,5 @@ class Since20Handler(AbstractVersionHandler):
         components_str += ']'
         return f'{item.id}{components_str} {item.count}'
 
-    def __init__(self, server: PluginServerInterface) -> None:
-        self.server = server
+
+VersionManager.register_handler(Since20Handler, lambda server: server.get_server_version() >= "1.20.5")

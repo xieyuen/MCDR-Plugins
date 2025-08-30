@@ -1,8 +1,9 @@
-from typing import Protocol
+from typing import Callable, Protocol
 
 from mcdreforged import PluginServerInterface
 
 from mcdrpost.data_structure import Item
+from mcdrpost.environment import Environment
 
 
 class ReplaceFunction(Protocol):
@@ -15,3 +16,6 @@ class Item2StrFunction(Protocol):
 
 class Dict2ItemFunction(Protocol):
     def __call__(self, item: dict) -> Item: ...
+
+
+Checker = Callable[[Environment], bool]
