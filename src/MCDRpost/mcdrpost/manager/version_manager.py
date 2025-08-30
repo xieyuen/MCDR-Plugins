@@ -14,14 +14,14 @@ if TYPE_CHECKING:
 
 
 class VersionManager:
-    """版本管理器，用于处理不同Minecraft版本的特性差异
+    """版本管理器，用于处理不同 Minecraft 版本的特性差异
 
     根据服务器的 Minecraft 版本，为不同版本提供相应的功能实现，包括物品替换、
     字典转物品对象、物品对象转字符串等功能。
 
     Attributes:
         environment (Environment): 环境信息对象，包含服务器版本等信息
-        handler (AbstractVersionHandler): MC 版本处理器
+        handler (AbstractVersionHandler): Minecraft 版本处理器
     """
 
     def __init__(self, pm: "PostManager"):
