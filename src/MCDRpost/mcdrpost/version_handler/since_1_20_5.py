@@ -27,4 +27,4 @@ class Since20Handler(AbstractVersionHandler):
         return f'{item.id}{components_str} {item.count}'
 
 
-VersionManager.register_handler(Since20Handler, lambda server: server.get_server_version() >= "1.20.5")
+VersionManager.register_handler(Since20Handler, lambda env: env.server_version >= "1.20.5")

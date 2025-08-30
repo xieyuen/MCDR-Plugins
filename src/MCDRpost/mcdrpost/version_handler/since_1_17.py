@@ -25,4 +25,4 @@ class Since17Handler(AbstractVersionHandler):
         self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
 
 
-VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version() <= '1.20.5')
+VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version() < '1.20.5')

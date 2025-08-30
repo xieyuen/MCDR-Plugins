@@ -25,4 +25,4 @@ class Before17Handler(AbstractVersionHandler):
         return f'{item.id}{item.components} {item.count}'
 
 
-VersionManager.register_handler(Before17Handler, lambda env: env.server_version > "1.17")
+VersionManager.register_handler(Before17Handler, lambda env: env.server_version < "1.17")
