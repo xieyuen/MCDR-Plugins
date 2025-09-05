@@ -1,10 +1,18 @@
 # MCDRpost
 
-## Original Author
+## Copyright Information
 
 - 原作者: [Flyky](https://github.com/Flyky)
 - 原仓库: [MCDRpost](https://github.com/Flyky/MCDRpost)
 - 维护者: [xieyuen](https://github.com/xieyuen)
+
+> [!WARNING]
+> 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
+> 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
+>     - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
+>     - 建议手动更新订单数据结构
+
+[^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见 Flyky/MCDRpost#10
 
 ## Introduce
 
@@ -34,7 +42,7 @@ A MCDR plugin for post/teleport items
 将在 release 或 catalogue 下载的 `.mcdr` 插件文件放入插件目录下加载即可
 
 > [!NOTE]
-> 
+>
 > 在MCDR中，可以直接使用
 >
 > ```text
@@ -75,9 +83,9 @@ A MCDR plugin for post/teleport items
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
-*Added in version 3.1.0:* 支持命令的全写，例如`!!post post Flyky full-name-support`
+*Added in version 3.1.0:* 支持命令的全写，例如`!!po post Flyky full-name-support`
 
-*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，等同于 `pl` 和 `rl`
+*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，效果等同于 `!!po pl` 和 `!!po rl`
 
 ## Configurations
 
@@ -118,7 +126,8 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 ### 3.0.0 版本或以上
 
-在 3.0.0 版本中, [xieyuen](https://github.com/xieyuen) 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
+在 3.0.0 版本中, [xieyuen](https://github.com/xieyuen) 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件
+`config.yml` 中
 
 下表是配置文件的内容
 
@@ -144,6 +153,8 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > MCDReforged的权限系统支持5种权限: `owner`, `admin`, `helper`, `user`, `guest`,
 > 在设定权限的时候，用 0~4 五个数字代替权限等级，
 > 其中 `0` 表示 `owner`， `1` 表示 `admin`， `2` 表示 `helper`， `3` 表示 `user`， `4` 表示 `guest`
+>
+>> 此部分的官方文档见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
 
 |      属性      | 默认权限 | 描述                     |
 |:------------:|:----:|:-----------------------|
@@ -160,14 +171,11 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ## ATTENTIONS!!
 
 - 可能会有部分带有特殊复杂NBT标签的物品无法传送，会提示检测不到可传送的物品，所以尝试一下即可
- 
+- 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
+
 > [!WARNING]
 > ***切勿传送原版非法堆叠数的物品!!!***<br>
-> 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收，永远卡死在中转站，只能手动修改数据文件删除
-
-## known issues
-
-- 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
+> 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
 
 ## pics
 
