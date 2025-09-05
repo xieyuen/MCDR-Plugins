@@ -2,7 +2,7 @@ from typing import override
 
 from mcdrpost.data_structure import Item
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
 
 
 class Since20Handler(AbstractVersionHandler):
