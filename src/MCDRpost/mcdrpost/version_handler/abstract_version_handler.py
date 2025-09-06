@@ -12,8 +12,8 @@ class AbstractVersionHandler(ABC):
         server (PluginServerInterface): psi 实例
     """
 
-    def __init__(self, server: PluginServerInterface):
-        self.server = server
+    def __init__(self) -> None:
+        self.server: PluginServerInterface = PluginServerInterface.psi()
 
     @abstractmethod
     def replace(self, player: str, item: str) -> None:
