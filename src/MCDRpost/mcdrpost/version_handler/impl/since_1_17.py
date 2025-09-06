@@ -2,7 +2,7 @@ from typing import override
 
 from mcdrpost.data_structure import Item
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
 
 
 class Since17Handler(AbstractVersionHandler):
@@ -25,4 +25,4 @@ class Since17Handler(AbstractVersionHandler):
         self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
 
 
-VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version() < '1.20.5')
+VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version < '1.20.5')
