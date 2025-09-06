@@ -9,11 +9,10 @@
 > [!WARNING]
 > 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
 > 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
-     >
+>     - *Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，见 [README](<../MCDRpost-migration/README.md>) 或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
 
->     - 建议手动更新订单数据结构
 
 [^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
 Flyky/MCDRpost#10
