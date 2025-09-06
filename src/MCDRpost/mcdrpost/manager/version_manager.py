@@ -28,7 +28,7 @@ class VersionManager:
             handler (type[AbstractVersionHandler]): 要注册的 handler 类
             checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
         """
-        cls._handlers.append((checker, handler(PluginServerInterface.psi())))
+        cls._handlers.append((checker, handler()))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
