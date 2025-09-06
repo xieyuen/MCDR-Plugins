@@ -5,7 +5,7 @@ from mcdreforged import PluginServerInterface
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.utils.types import Checker
-from mcdrpost.version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
 
 
 class VersionManager:
@@ -18,11 +18,17 @@ class VersionManager:
         environment (Environment): 环境信息对象，包含服务器版本等信息
     """
 
-    _handlers: dict[Checker, type[AbstractVersionHandler]] = {}
+    _handlers: list[tuple[Checker, AbstractVersionHandler]] = []
 
     @classmethod
     def register_handler(cls, handler: type[AbstractVersionHandler], checker: Checker) -> None:
-        cls._handlers[checker] = handler
+        """注册 Handler
+
+        Args:
+            handler (type[AbstractVersionHandler]): 要注册的 handler 类
+            checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
+        """
+        cls._handlers.append((checker, handler(PluginServerInterface.psi())))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
@@ -39,12 +45,10 @@ class VersionManager:
 
         根据当前服务器版本，更新内部函数引用
         """
-        for checker, handler in self._handlers.items():
-            # 尝试以environment为参数调用checker
+        for checker, handler in self._handlers:
             if checker(self.environment):
-                self._handler = handler(self._server)
+                self._handler = handler
                 break
-
         else:
             raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
 

@@ -1,10 +1,22 @@
 # MCDRpost
 
-## Original Author
+## Copyright Information
 
 - 原作者: [Flyky](https://github.com/Flyky)
 - 原仓库: [MCDRpost](https://github.com/Flyky/MCDRpost)
 - 维护者: [xieyuen](https://github.com/xieyuen)
+
+> [!WARNING]
+> 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
+> 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
+     >
+
+- 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
+
+>     - 建议手动更新订单数据结构
+
+[^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
+Flyky/MCDRpost#10
 
 ## Introduce
 
@@ -34,7 +46,7 @@ A MCDR plugin for post/teleport items
 将在 release 或 catalogue 下载的 `.mcdr` 插件文件放入插件目录下加载即可
 
 > [!NOTE]
-> 
+>
 > 在MCDR中，可以直接使用
 >
 > ```text
@@ -62,22 +74,25 @@ A MCDR plugin for post/teleport items
 
 ## Usage
 
-- `!!po` 显示帮助信息
-- `!!po p [收件人id] [备注]` 将副手物品发送给[收件人]，[备注]为可选项
-- `!!po rl` 列出收件列表。包括[发件人]，[寄件时间]，[备注消息]和[单号]
-- `!!po r [单号]` 确认收取该单号的物品到副手(收取前将副手清空)
-- `!!po pl` 列出发件(待收取)列表，包括[收件人]，[寄件时间]，[备注消息]和[单号]
-- `!!po c [单号]` 取消传送物品(收件人还未收件前)，该单号物品退回到副手(取消前将副手清空)
-- `!!po ls players` 查看可被寄送的注册玩家列表
-- `!!po ls orders` 查看当前中转站内所有订单 [helper以上权限可用]
-- `!!po player add [玩家id]` 手动注册玩家到可寄送玩家列表 [admin以上权限可用]
-- `!!po player remove [玩家id]` 删除某注册的玩家 [admin以上权限可用]
+|                命令                |              别名               | 说明            |
+|:--------------------------------:|:-----------------------------:|:--------------|
+|             `!!post`             |            `!!po`             | 显示帮助信息        |
+| `!!post post <player> [comment]` |  `!!po p <player> [comment]`  | 发送副手物品，可以没有备注 |
+|    `!!post receive <orderid>`    |      `!!po r <orderid>`       | 接收输入单号的物品到副手  |
+|    `!!post cancel <orderid>`     |    `!!po cancel <orderid>`    | 取消订单，仅限对方未收取时 |
+|        `!!post post_list`        |           `!!po pl`           | 列出发件列表        |
+|        `!!post list post`        |        `!!po ls post`         | 列出发件列表        |
+|      `!!post receive_list`       |           `!!po rl`           | 列出收件列表        |
+|      `!!post list receive`       |       `!!po ls receive`       | 列出收件列表        |
+|      `!!post list players`       |       `!!po ls players`       | 列出已注册玩家名单     |
+|   `!!post player add <player>`   |  `!!po player add <player>`   | 注册一个新玩家       |
+| `!!post player remove <player>`  | `!!po player remove <player>` | 删除已经注册的玩家     |
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
-*Added in version 3.1.0:* 支持命令的全写，例如`!!post post Flyky full-name-support`
+*Added in version 3.1.0:* 支持命令的全写，例如`!!po post Flyky full-name-support`
 
-*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，等同于 `pl` 和 `rl`
+*Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，效果等同于 `!!po pl` 和 `!!po rl`
 
 ## Configurations
 
@@ -105,34 +120,35 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 这些属性就是配置，含义见下表
 
-|          属性          |  类型   |                  默认值                  | 描述                        |
-|:--------------------:|:-----:|:-------------------------------------:|:--------------------------|
-|       `Prefix`       | `str` |               `'!!po'`                | 插件命令的前缀                   |
-|   `MaxStorageNum`    | `int` |                  `5`                  | 每个玩家最大存储的订单数量，-1 不限制      |
-|     `SaveDelay`      | `int` |                  `1`                  | 新增 `SaveDelay` 个订单时保存一次   |
-| `OrderJsonDirectory` | `str` |        `'./config/MCDRpost/'`         | 订单数据文件储存的文件夹              |
-|   `OrderJsonFile`    | `str` | `'./config/MCDRpost/PostOrders.json'` | 订单数据文件的名称，应是一个 `.json` 文件 |
+|         属性         |  类型   |                  默认值                  | 描述                        |
+|:------------------:|:-----:|:-------------------------------------:|:--------------------------|
+|       Prefix       | `str` |               `'!!po'`                | 插件命令的前缀                   |
+|   MaxStorageNum    | `int` |                  `5`                  | 每个玩家最大存储的订单数量，-1 不限制      |
+|     SaveDelay      | `int` |                  `1`                  | 新增 `SaveDelay` 个订单时保存一次   |
+| OrderJsonDirectory | `str` |        `'./config/MCDRpost/'`         | 订单数据文件储存的文件夹              |
+|   OrderJsonFile    | `str` | `'./config/MCDRpost/PostOrders.json'` | 订单数据文件的名称，应是一个 `.json` 文件 |
 
 > [!NOTE]
 > Line 18 处的 `command_item = -2` 请别动，这是用来自动检测版本的
 
 ### 3.0.0 版本或以上
 
-在 3.0.0 版本中, [xieyuen](https://github.com/xieyuen) 对插件进行了模块化重构，配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
+在 3.0.0 版本中, [xieyuen](https://github.com/xieyuen) 对插件进行了模块化重构，
+配置不再是写死在代码中，而是放到了配置文件 `config.yml` 中
 
-下表是配置文件的内容
+下面的 [配置表](#配置表) 是最新版本配置文件的内容
 
 #### 配置表
 
-|         属性         | Python类型  |        默认值         | 描述                 |
-|:------------------:|:---------:|:------------------:|:-------------------|
-|    allow_alias     |   bool    |        true        | 是否允许别名             |
-|      auto_fix      |   bool    |       false        | 是否自动修复订单           |
-|   auto_register    |   bool    |        true        | 是否自动为新玩家注册         |
-|    max_storage     |    int    |         5          | 订单最大存储量，设置为 -1 不限制 |
-| receive_tip_delay  |   float   |        3.0         | 提示延迟               |
-|  command_prefixes  | list[str] | ['!!po', '!!post'] | 命令根节点              |
-| command_permission |   dict    |         ~          | 见[权限表](#权限表)       |
+|         属性         |  Python类型   |         默认值          | 描述                 |
+|:------------------:|:-----------:|:--------------------:|:-------------------|
+|    allow_alias     |   `bool`    |        `true`        | 是否允许别名             |
+|      auto_fix      |   `bool`    |       `false`        | 是否自动修复订单           |
+|   auto_register    |   `bool`    |        `true`        | 是否自动为新玩家注册         |
+|    max_storage     |    `int`    |         `5`          | 订单最大存储量，设置为 -1 不限制 |
+| receive_tip_delay  |   `float`   |        `3.0`         | 提示延迟               |
+|  command_prefixes  | `list[str]` | `['!!po', '!!post']` | 命令根节点              |
+| command_permission |   `dict`    |          ~           | 见[权限表](#权限表)       |
 
 > [!NOTE]
 > 将 `allow_alias` 设定为 `false` 之后，`command_prefixes` 配置将会作废，锁定为 `!!po`<br>
@@ -144,6 +160,8 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > MCDReforged的权限系统支持5种权限: `owner`, `admin`, `helper`, `user`, `guest`,
 > 在设定权限的时候，用 0~4 五个数字代替权限等级，
 > 其中 `0` 表示 `owner`， `1` 表示 `admin`， `2` 表示 `helper`， `3` 表示 `user`， `4` 表示 `guest`
+>
+>> 此部分的官方文档见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
 
 |      属性      | 默认权限 | 描述                     |
 |:------------:|:----:|:-----------------------|
@@ -160,14 +178,11 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ## ATTENTIONS!!
 
 - 可能会有部分带有特殊复杂NBT标签的物品无法传送，会提示检测不到可传送的物品，所以尝试一下即可
- 
+- 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
+
 > [!WARNING]
 > ***切勿传送原版非法堆叠数的物品!!!***<br>
-> 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收，永远卡死在中转站，只能手动修改数据文件删除
-
-## known issues
-
-- 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
+> 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
 
 ## pics
 
