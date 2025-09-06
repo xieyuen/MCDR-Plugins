@@ -30,7 +30,7 @@ class PostManager:
         self.config_manager: ConfigurationManager = ConfigurationManager(self)
         self.data_manager: DataManager = DataManager(self)
         self.command_manager: CommandManager = CommandManager(self)
-        self.version_manager: VersionManager = VersionManager(self)
+        self.version_manager: VersionManager = VersionManager(self.server)
 
     # Events Handle
     def on_load(self, server: PluginServerInterface, _prev_module) -> None:
@@ -87,7 +87,7 @@ class PostManager:
 
     # Helper methods
     def replace(self, player: str, item: Item):
-        return self.version_manager.replace(player, item)
+        return self.version_manager.replace(player, self.version_manager.item2str(item))
 
     def dict2item(self, item: dict) -> Item:
         return self.version_manager.dict2item(item)

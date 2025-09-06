@@ -7,8 +7,11 @@
 from mcdreforged import PluginServerInterface
 
 from mcdrpost.manager.post_manager import PostManager
+from mcdrpost.version_handler import register_all_handlers
 
 manager: PostManager = PostManager(PluginServerInterface.psi())
+
+register_all_handlers()
 
 
 def on_load(server: PluginServerInterface, prev_module):
@@ -17,6 +20,7 @@ def on_load(server: PluginServerInterface, prev_module):
 
 def on_unload(server: PluginServerInterface):
     manager.on_unload(server)
+
 
 def on_server_startup(server: PluginServerInterface):
     manager.on_server_startup(server)
