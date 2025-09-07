@@ -103,3 +103,5 @@ class Tags:
     class env:
         server_no_start = 'env.server_no_start'
         version = 'env.version'
+
+    reload_success = 'reload_success'

@@ -6,6 +6,9 @@ from mcdreforged import Serializable
 class Item(Serializable):
     """物品数据类，表示 Minecraft 中的物品
 
+    .. note::
+        Minecraft 1.20.5 之后的 components 数据和之前的 tag 标签都存放在 components中
+
     Attributes:
         id (str): 物品ID
         count (int): 物品数量
@@ -53,7 +56,9 @@ class Order(Serializable):
 
 
 class OrderData(Serializable):
-    """订单数据类，包含所有订单和注册玩家信息
+    """订单数据存储结构
+
+    orders.json 的结构在这里定义
 
     Attributes:
         players (list[str]): 已注册玩家列表

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import final
 
 from mcdreforged import PluginServerInterface
 
@@ -12,6 +13,7 @@ class AbstractVersionHandler(ABC):
         server (PluginServerInterface): psi 实例
     """
 
+    @final
     def __init__(self) -> None:
         self.server: PluginServerInterface = PluginServerInterface.psi()
 

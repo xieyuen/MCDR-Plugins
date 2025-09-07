@@ -1,5 +1,6 @@
 from mcdreforged import PluginServerInterface, new_thread
 
+import minecraft_data_api as api
 from mcdrpost import constants
 from mcdrpost.utils.translation import Tags, tr
 
@@ -14,9 +15,6 @@ def get_offhand_item(server: PluginServerInterface, player: str) -> dict | None:
     Returns:
         dict | None: 物品信息，若获取失败或返回 None
     """
-    # api = server.get_plugin_instance('minecraft_data_api')
-    import minecraft_data_api as api
-
     offhand_item = None
 
     try:
