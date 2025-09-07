@@ -13,7 +13,11 @@ class Since20Handler(AbstractVersionHandler):
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:
-        return Item.deserialize(item)
+        return Item(
+            id=item['id'],
+            count=item['count'],
+            components=item.get('components', {})
+        )
 
     @staticmethod
     @override

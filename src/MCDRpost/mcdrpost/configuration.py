@@ -24,7 +24,6 @@ class CommandPermission(Serializable):
     list_player: int = 2
     list_orders: int = 2
     player: int = 3
-    save: int = 3
     reload: int = 3
 
 

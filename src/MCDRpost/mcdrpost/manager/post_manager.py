@@ -5,6 +5,7 @@ from mcdreforged import Info, InfoCommandSource, PluginServerInterface, new_thre
 
 import minecraft_data_api as api
 from mcdrpost import constants
+from mcdrpost.configuration import Configuration
 from mcdrpost.data_structure import Item, OrderInfo
 from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
@@ -32,6 +33,10 @@ class PostManager:
         self.command_manager: CommandManager = CommandManager(self)
         self.version_manager: VersionManager = VersionManager(self.server)
 
+    @property
+    def configuration(self) -> Configuration:
+        return self.config_manager.get_configuration()
+
     # Events Handle
     def on_load(self, server: PluginServerInterface, _prev_module) -> None:
         """事件: 插件加载--在这里会注册插件的命令
@@ -40,19 +45,20 @@ class PostManager:
             PostManager在插件导入时通过 ``PluginServerInterface.psi()`` 获取到 PluginServerInterface 实例进行实例化，
                 而非一般的在 on_load() 内得到 PluginServerInterface 实例再实例化
         """
+        self.config_manager.reload()
+        self.data_manager.reload()
         self.command_manager.register()
         if server.is_server_running():
             self.on_server_startup(server)
 
     def on_unload(self, _server: PluginServerInterface) -> None:
-        """事件: 插件卸载--保存配置文件和订单信息"""
-        self.config_manager.save()
+        """事件: 插件卸载--保存订单信息"""
         self.data_manager.save()
 
     def on_player_joined(self, server: PluginServerInterface, player: str, _info: Info) -> None:
         """事件: 玩家加入服务器"""
         if not self.data_manager.is_player_registered(player):
-            if self.config_manager.configuration.auto_register:
+            if self.configuration.auto_register:
                 # 还未注册的玩家
                 self.data_manager.add_player(player)
                 server.logger.info(tr(Tags.login_log, player))
@@ -71,7 +77,7 @@ class PostManager:
         if self.data_manager.has_unreceived_order(player):
             @new_thread('MCDRpost | send receive tip')
             def send_receive_tip():
-                time.sleep(self.config_manager.configuration.receive_tip_delay)
+                time.sleep(self.configuration.receive_tip_delay)
                 server.tell(player, tr(Tags.wait_for_receive))
                 play_sound.has_something_to_receive(server, player)
 
@@ -83,7 +89,7 @@ class PostManager:
 
     def on_server_stop(self, _server: PluginServerInterface, _server_return_code: int):
         """事件: 服务器关闭--保存配置信息和订单信息"""
-        self.save()
+        self.data_manager.save()
 
     # Helper methods
     def replace(self, player: str, item: Item):
@@ -98,9 +104,9 @@ class PostManager:
         Args:
             player (str): 玩家 ID
         """
-        if self.config_manager.configuration.max_storage == -1:
+        if self.configuration.max_storage == -1:
             return False
-        return len(self.data_manager.get_orderid_by_sender(player)) >= self.config_manager.configuration.max_storage
+        return len(self.data_manager.get_orderid_by_sender(player)) >= self.configuration.max_storage
 
     def post(self, src: InfoCommandSource, receiver: str, comment: str = None) -> None:
         """发送订单
@@ -113,7 +119,7 @@ class PostManager:
         sender = src.get_info().player
 
         if self.is_storage_full(sender):
-            src.reply(tr(Tags.at_max_storage, self.config_manager.configuration.max_storage))
+            src.reply(tr(Tags.at_max_storage, self.configuration.max_storage))
             return
 
         if sender == receiver:
@@ -174,11 +180,7 @@ class PostManager:
         play_sound.receive(self.server, player)
         return True
 
-    def save(self):
-        self.config_manager.save()
-        self.data_manager.save()
-
-    def reload(self):
+    def reload(self) -> None:
         self.config_manager.reload()
         self.data_manager.reload()
 

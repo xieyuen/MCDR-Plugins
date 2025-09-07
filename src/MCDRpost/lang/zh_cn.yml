@@ -69,7 +69,7 @@ mcdrpost:
     load: "已加载订单数据"
     save: "已保存订单数据"
   error:
-    invalid_order: " 有订单占用了两个 id: {0} 和 {1}"
+    invalid_order: "有订单占用了两个 id: {0} 和 {1}"
   auto_fix:
     invalid_order: "将使用 {0} 作为订单 id"
   rcon:
@@ -77,3 +77,4 @@ mcdrpost:
   env:
     server_no_start: "Minecraft 服务器未启动，无法获取版本信息"
     version: "检测到 Minecraft 服务器版本: {0}"
+  reload_success: "已重新加载 MCDRpost 配置和数据文件"

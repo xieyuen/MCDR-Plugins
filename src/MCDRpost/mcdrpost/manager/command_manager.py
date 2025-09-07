@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
     RColor, RText, RTextList, RequirementNotMet, Text
 
-from mcdrpost.configuration import CommandPermission
+from mcdrpost.configuration import CommandPermission, Configuration
 from mcdrpost.constants import END_LINE
 from mcdrpost.utils.translation import Tags, tr
 
@@ -18,12 +18,19 @@ class CommandManager:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
         self._data_manager = post_manager.data_manager
-        self._perm: CommandPermission = post_manager.config_manager.configuration.command_permission
 
-        if self._post_manager.config_manager.configuration.allow_alias:
-            self._prefixes: list[str] = post_manager.config_manager.configuration.command_prefixes
+        if self._config.allow_alias:
+            self._prefixes: list[str] = self._config.command_prefixes
         else:
             self._prefixes = ["!!po"]
+
+    @property
+    def _config(self) -> Configuration:
+        return self._post_manager.configuration
+
+    @property
+    def _perm(self) -> CommandPermission:
+        return self._config.command_permission
 
     def register(self) -> None:
         """注册命令树
@@ -320,6 +327,14 @@ class CommandManager:
             )
         )
 
+    def gen_reload_node(self, prefix) -> Literal:
+        return (
+            Literal(prefix)
+            .requires(lambda src: src.has_permission(self._perm.reload))
+            .on_error(RequirementNotMet, lambda src: src.reply(tr(Tags.no_permission)), handled=True)
+            .runs(lambda src: (self._post_manager.reload(), src.reply(tr(Tags.reload_success))))
+        )
+
     def generate_command_node(self, prefix: str) -> Literal:
         """生成指令树"""
         return (
@@ -334,7 +349,8 @@ class CommandManager:
             then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
             then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
             then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
-            then(self.gen_player_node('player'))
+            then(self.gen_player_node('player')).
+            then(self.gen_reload_node('reload'))
         )
 
 

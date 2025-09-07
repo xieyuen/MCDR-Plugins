@@ -31,6 +31,9 @@ A MCDR plugin for post/teleport items
 - Python >= 3.10
 - MCDReforged >= 2.15.0
 - [Minecraft Data API](https://github.com/MCDReforged/MinecraftDataAPI) 任意版本
+- Minecraft >= 1.9[^1]
+
+[^1]: Minecraft 1.9 才有的副手你难道还想在 1.8 使用？
 
 - 开启 Minecraft Rcon
 
@@ -182,6 +185,10 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > [!WARNING]
 > ***切勿传送原版非法堆叠数的物品!!!***<br>
 > 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
+
+> [!IMPORTANT]
+> 如果您的 Minecraft 服务器要从 1.20.5 以下升级到 1.20.5 版本或以上，请让玩家们清空中转站，
+> 因为订单数据的 nbt 不能自动地转化成新版本的 components，升级之后订单的物品会因为标签结构改变而不能取走
 
 ## pics
 
