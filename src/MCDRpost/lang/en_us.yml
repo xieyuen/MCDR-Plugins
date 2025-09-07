@@ -69,7 +69,7 @@ mcdrpost:
     load: "loaded order data"
     save: "saved order data"
   error:
-    invalid_order: "There is an invalid order which has 2 different order id: {0} and {1}"
+    invalid_order: "There is an order with 2 different order id: {0} and {1}"
   auto_fix:
     invalid_order: "The invalid order will be fixed to use {0} as order id"
   rcon:
@@ -77,3 +77,4 @@ mcdrpost:
   env:
     server_no_start: "Minecraft Server is not started, Unable to get the version"
     version: "Minecraft Server Version: {0}"
+  reload_success: "successfully reload configuration and data"
