@@ -1,11 +1,13 @@
 """版本管理器，根据 Minecraft 版本提供相应的功能实现"""
+from typing import Callable, final
 
 from mcdreforged import PluginServerInterface
 
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
-from mcdrpost.utils.types import Checker
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+
+Checker = Callable[[Environment], bool]
 
 
 class VersionManager:
@@ -21,6 +23,7 @@ class VersionManager:
     _handlers: list[tuple[Checker, AbstractVersionHandler]] = []
 
     @classmethod
+    @final
     def register_handler(cls, handler: type[AbstractVersionHandler], checker: Checker) -> None:
         """注册 Handler
 
