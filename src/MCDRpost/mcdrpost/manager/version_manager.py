@@ -21,6 +21,7 @@ class VersionManager:
     """
 
     _handlers: list[tuple[Checker, AbstractVersionHandler]] = []
+    _builtin_handlers: list[tuple[Checker, AbstractVersionHandler]] = []
 
     @classmethod
     @final
@@ -31,7 +32,10 @@ class VersionManager:
             handler (type[AbstractVersionHandler]): 要注册的 handler 类
             checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
         """
-        cls._handlers.append((checker, handler()))
+        if handler.is_builtin:
+            cls._builtin_handlers.append((checker, handler()))
+        else:
+            cls._handlers.append((checker, handler()))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
@@ -47,13 +51,24 @@ class VersionManager:
         """刷新版本相关函数引用
 
         根据当前服务器版本，更新内部函数引用
+
+        .. note::
+            插件会优先使用外部注册的 Handler
+
+        Raises:
+            RuntimeError: 如果没有找到合适的 VersionHandler 的话
         """
         for checker, handler in self._handlers:
             if checker(self.environment):
                 self._handler = handler
-                break
-        else:
-            raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
+                return
+
+        for checker, handler in self._builtin_handlers:
+            if checker(self.environment):
+                self._handler = handler
+                return
+
+        raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
 
     # 下面是是依赖版本的函数
     def replace(self, player: str, item: str) -> None:
