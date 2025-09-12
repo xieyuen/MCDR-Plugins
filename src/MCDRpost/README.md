@@ -9,10 +9,12 @@
 > [!WARNING]
 > 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
 > 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
->     - *Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，见 [README](<../MCDRpost-migration/README.md>) 或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
+
+*Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，
+见 [README](<../MCDRpost-migration/README.md>) 
+或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
-
 
 [^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
 Flyky/MCDRpost#10
@@ -195,3 +197,10 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)<br>
 ![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)<br>
 ![po p](https://s1.ax1x.com/2020/04/16/Jk02X4.png)<br>
+
+## API
+
+> [!NOTE]
+> 这里是高级用户的自定义内容，如果你在使用插件的时候没有问题，可以忽略这段内容
+
+点击 [此处](./custom_handler.md) 跳转至 MCDRpost 自定义 Handler 文档

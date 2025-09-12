@@ -41,8 +41,11 @@ class PostManager:
     def on_load(self, server: PluginServerInterface, _prev_module) -> None:
         """事件: 插件加载--在这里会注册插件的命令
 
+        如果服务端已经运行（也就是重新加载插件的情况），会自动地引发服务端启动完成事件
+
         .. note::
-            PostManager在插件导入时通过 ``PluginServerInterface.psi()`` 获取到 PluginServerInterface 实例进行实例化，
+            PostManager在插件导入时通过 ``PluginServerInterface.psi()`` 获取到
+                PluginServerInterface 实例进行实例化，
                 而非一般的在 on_load() 内得到 PluginServerInterface 实例再实例化
         """
         self.config_manager.reload()
@@ -92,10 +95,17 @@ class PostManager:
         self.data_manager.save()
 
     # Helper methods
-    def replace(self, player: str, item: Item):
-        return self.version_manager.replace(player, self.version_manager.item2str(item))
+    def replace(self, player: str, item: Item) -> None:
+        """替换玩家的副手物品
+
+        Args:
+            player (str): 玩家 id
+            item (Item): 要替换的物品
+        """
+        self.version_manager.replace(player, self.version_manager.item2str(item))
 
     def dict2item(self, item: dict) -> Item:
+        """把读取到的物品数据转化成 Item"""
         return self.version_manager.dict2item(item)
 
     def is_storage_full(self, player: str) -> bool:

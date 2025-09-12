@@ -17,6 +17,12 @@ class AbstractVersionHandler(ABC):
     def __init__(self) -> None:
         self.server: PluginServerInterface = PluginServerInterface.psi()
 
+    @final
+    @property
+    def is_builtin(self) -> bool:
+        """此处理器是否为 MCDRpost 内置的处理器"""
+        return isinstance(self, BuiltinVersionHandler)
+
     @abstractmethod
     def replace(self, player: str, item: str) -> None:
         """替换玩家副手物品
@@ -52,3 +58,7 @@ class AbstractVersionHandler(ABC):
             str: 物品字符串
         """
         raise NotImplementedError
+
+
+class BuiltinVersionHandler(AbstractVersionHandler, ABC):
+    """内置版本处理器"""
