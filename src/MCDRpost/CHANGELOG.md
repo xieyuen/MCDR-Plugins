@@ -1,5 +1,9 @@
 # 更新日志
 
+## 3.3.2-beta4
+
+- 实现了自定义 Handler
+
 ## 3.3.2-beta3
 
 1. 删除了 `utils.types` 模块
