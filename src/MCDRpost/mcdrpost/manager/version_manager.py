@@ -32,10 +32,11 @@ class VersionManager:
             handler (type[AbstractVersionHandler]): 要注册的 handler 类
             checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
         """
+        handler = handler()
         if handler.is_builtin:
-            cls._builtin_handlers.append((checker, handler()))
+            cls._builtin_handlers.append((checker, handler))
         else:
-            cls._handlers.append((checker, handler()))
+            cls._handlers.append((checker, handler))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
