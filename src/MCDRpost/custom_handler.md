@@ -1,3 +1,5 @@
+from test.plugins.test_data_api import PLUGIN_METADATAfrom typing import override
+
 # MCDRpost API
 
 一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况，MCDRpost可能无法满足需求，
@@ -57,6 +59,85 @@
 
 这里是 MCDRpost 读取的环境信息，当然你也可以通过 Environment._server 获得 PluginServerInterface 实例
 
-##### property sever_version
+##### property server_version
 
 Minecraft 服务端版本号
+
+## Example
+
+我们建议使用插件定义你的 Handler，下面是一个单文件插件的例子
+
+```python
+PLUGIN_METADATA = {
+    'id': 'example_handler',
+    'version': '1.0.0',
+    'name': 'Example Handler',
+    'author': 'xieyuen',
+    'description': 'An example of custom handler',
+    'dependencies': {
+        'mcdrpost': '>=3.3.2-beta4'
+    }
+}
+
+
+def on_load(_server, _old):
+    from mcdrpost.api import register_handler, AbstractVersionHandler, Item
+
+    class ExampleHandler(AbstractVersionHandler):
+        def replace(self, player: str, item: str) -> None:
+            self.server.execute(f'item replace entity {player} with {item}')
+
+        @staticmethod
+        def item2str(item: Item) -> str:
+            return f'{item.id}{item.components} {item.count}'
+
+        @staticmethod
+        def dict2item(item: dict) -> Item:
+            return Item(
+                id=item['id'],
+                count=item['Count'],
+                components=item.get('tag', {})
+            )
+
+    register_handler(
+        ExampleHandler,
+        lambda env: env.server_version >= '1.17'
+    )
+
+```
+
+> [!NOTE]
+> 在 `on_load()` 函数中定义是为了保证能够加载插件，
+> 因为 MCDR 要先读取 Metadata 才知道插件依赖 MCDRpost，而此时 MCDRpost 不一定已经被加载
+> 放在函数中先不运行就可以避免没有优先加载 MCDRpost 导致的问题
+>
+> **注意：如果是多文件插件就没有这种问题，放在外面定义就好**
+
+如果是用多文件插件的话，你甚至不需要定义 `on_load`
+
+```python
+from mcdrpost.api import AbstractVersionHandler, Item, register_handler
+
+
+class ExampleHandler(AbstractVersionHandler):
+    def replace(self, player: str, item: str) -> None:
+        self.server.execute(f'item replace entity {player} with {item}')
+
+    @staticmethod
+    def item2str(item: Item) -> str:
+        return f'{item.id}{item.components} {item.count}'
+
+    @staticmethod
+    def dict2item(item: dict) -> Item:
+        return Item(
+            id=item['id'],
+            count=item['Count'],
+            components=item.get('tag', {})
+        )
+
+
+register_handler(
+    ExampleHandler,
+    lambda env: env.server_version >= '1.17'
+)
+```

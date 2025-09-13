@@ -19,10 +19,7 @@ class CommandManager:
         self._server: PluginServerInterface = post_manager.server
         self._data_manager = post_manager.data_manager
 
-        if self._config.allow_alias:
-            self._prefixes: list[str] = self._config.command_prefixes
-        else:
-            self._prefixes = ["!!po"]
+        self._prefixes = ["!!po"]
 
     @property
     def _config(self) -> Configuration:
@@ -37,6 +34,9 @@ class CommandManager:
 
         在 on_load 中调用
         """
+        if self._config.allow_alias:
+            self._prefixes = self._config.command_prefixes
+
         for prefix in self._prefixes:
             self._server.register_help_message(prefix, {
                 "en_us": "post/teleport weapon hands items",
