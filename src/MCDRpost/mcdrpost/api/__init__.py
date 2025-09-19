@@ -7,6 +7,8 @@
 """
 from typing import Callable
 
+from mcdrpost.api.default_version_handler import DefaultVersionHandler
+from mcdrpost.constants import OFFHAND_CODE
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.manager.version_manager import VersionManager
@@ -18,8 +20,13 @@ def register_handler(handler: type[AbstractVersionHandler], checker: Callable[[E
 
 
 __all__ = [
-    "Item",
-    "Environment",
-    "AbstractVersionHandler",
-    "register_handler",
+    # typing
+    'Item', 'Environment',
+
+    # custom handler
+    'AbstractVersionHandler', 'DefaultVersionHandler',
+    'register_handler',
+
+    # constants
+    'OFFHAND_CODE',
 ]

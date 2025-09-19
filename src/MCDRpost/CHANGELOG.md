@@ -1,5 +1,22 @@
 # 更新日志
 
+## 3.3.2-beta5
+
+1. 重构了 `AbstractVersionHandler` 类
+    - 删除了 `item2str` 和 `dict2item` 方法
+    - 新增了 (abstractmethod) `get_offhand_item` 方法
+    - `is_builtin` 不再是 property 而是 classmethod
+2. 新增了 `DefaultVersionHandler` 类并且暴露至 api
+3. 重构了 `BulitinVersionHandler`
+    - 新增 `get_offhand_item` 实现
+    - 新增 `replace` 实现（仅在 `Since9Handler` 中被覆盖）
+    - 新增 (abstractmethod) `item2str` 方法
+    - 新增 (abstractmethod) `dict2item` 方法
+4. API
+    - 暴露 `DefaultVersionHandler` 类
+    - 暴露 `OFFHAND_CODE` 常量
+
+
 ## 3.3.2-beta4
 
 - 实现了自定义 Handler
@@ -29,7 +46,7 @@
 ## 3.3.0
 
 - 实现对 Minecraft 1.20.5 版本及以上的支持
-  1. 改变了原来订单中物品的储存方式，拆分得更加细致
+    1. 改变了原来订单中物品的储存方式，拆分得更加细致
 
 > [!WARNING]
 > 此版本和旧版本不兼容，需要更新数据文件
@@ -49,7 +66,7 @@
 ## 3.0.0 & 3.1.0
 
 重构了旧代码，具体包括：
- 
+
 1. 模块化重构
 2. 利用面向对象实现 MCDRpost 主要功能
 3. 增加了配置文件

@@ -1,9 +1,18 @@
-from test.plugins.test_data_api import PLUGIN_METADATAfrom typing import override
-
-# MCDRpost API
+# MCDRpost API--Custom Handler
 
 一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况，MCDRpost可能无法满足需求，
 考虑到插件对 Minecraft 的兼容性，插件暴露了一定的 API 用于 Minecraft 一些特殊服务端的适配
+
+核心 API 有:
+
+- class
+    - [AbstractVersionHandler](#abstractversionhandlerabc)
+    - DefaultVersionHandler
+- function
+    - [register_handler](#function-register_handler)
+- types
+    - [Item](#class-itemserializable)
+    - [Environment](#class-environment)
 
 ### AbstractVersionHandler(ABC)
 
@@ -13,27 +22,32 @@ from test.plugins.test_data_api import PLUGIN_METADATAfrom typing import overrid
 > 如果你使用了自定义的 VersionHandler，MCDRpost 总是优先使用你的Handler，
 > 除非 Minecraft 版本不支持你的 Handler
 
-#### method item2str(self, item: Item) -> str:
+#### method replace
 
-这个方法需要把 `Item` 对象转换为 `str`，
-参数是物品的信息，应该返回一个物品字符串，例如：
+|   参数   |   类型   | 描述    |
+|:------:|:------:|:------|
+| player | `str`  | 玩家 ID |
+|  item  | `Item` | 物品信息  |
 
-物品 附魔耐久3的钻石剑
-`Item(id="minecraft:diamond_sword", count=1, components={"minecraft:enchantments": {"levels": {"minecraft:unbreaking": 3}}})`
-应该被翻译为（如果是原版 1.20.5 或以上的服务端）
-`'minecraft:diamond_sword[minecraft:enchantments={"levels":{"minecraft:unbreaking": 3}}]'`
+这个方法需要实现物品替换的命令，参数是玩家的名称和物品的信息
 
-#### method dict2item(self, item: dict) -> Item:
+#### method get_offhand_item
 
-这个方法是把物品信息转换成 Item 对象，
-其中物品信息是一个由 Minecraft 服务端的 `/data get` 命令得到的一个字典
+|   参数   |   类型   | 描述    |
+|:------:|:------:|:------|
+| player | `str`  | 玩家 ID |
+|  返回值   | `Item` | 物品信息  |
 
-#### method replace(self, player: str, item: str) -> None:
+这是 MCDRpost 获取玩家副手物品信息的方法
 
-这个方法需要实现物品替换的命令，参数是玩家的名称和物品的信息，
-物品信息是由 [item2str](#method-item2strself-item-item---str) 方法生成的字符串
+API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 
-### function register_handler(handler: type[AbstractVersionHandler], checker: Callable[[Environment], bool])
+### function register_handler
+
+|   参数    |               类型                | 说明                                         |
+|:-------:|:-------------------------------:|:-------------------------------------------|
+| handler | `type[AbstractVersionHandler]`  | 要注册的 Handler 类                             |
+| checker | `Callable[[Environment], bool]` | 当 checker 返回 True 时 MCDRpost 才会使用此 handler |
 
 当你实现了自定义的 Handler，你需要向 MCDRpost 注册你的 Handler，否则插件不会使用你的 Handler
 
@@ -45,15 +59,11 @@ from test.plugins.test_data_api import PLUGIN_METADATAfrom typing import overrid
 
 这是 MCDRpost 储存物品信息的数据结构，包含三个属性:
 
-1. id
-    - 物品的 id, 注意要包括命名空间，比如 `minecraft:diamond`
-    - type: `str`
-2. count
-    - 物品的数量
-    - type: `int`
-3. components
-    - 物品的 nbt/components 信息，这应该是一个 python 字典
-    - type: `dict
+|     属性     |   类型   | 描述                                       |
+|:----------:|:------:|:-----------------------------------------|
+|     id     | `str`  | 物品的 id, 注意要包括命名空间，比如 `minecraft:diamond` |
+|   count    | `int`  | 物品的数量                                    |
+| components | `dict` | 物品的 nbt/components 信息                    |
 
 #### class Environment
 
@@ -75,17 +85,18 @@ PLUGIN_METADATA = {
     'author': 'xieyuen',
     'description': 'An example of custom handler',
     'dependencies': {
-        'mcdrpost': '>=3.3.2-beta4'
+        'mcdrpost': '>=3.3.2'
     }
 }
 
 
 def on_load(_server, _old):
-    from mcdrpost.api import register_handler, AbstractVersionHandler, Item
+    import minecraft_data_api as api
+    from mcdrpost.api import AbstractVersionHandler, Item, OFFHAND_CODE, register_handler
 
     class ExampleHandler(AbstractVersionHandler):
-        def replace(self, player: str, item: str) -> None:
-            self.server.execute(f'item replace entity {player} with {item}')
+        def replace(self, player: str, item: Item) -> None:
+            self.server.execute(f'item replace entity {player} with {self.item2str(item)}')
 
         @staticmethod
         def item2str(item: Item) -> str:
@@ -99,11 +110,19 @@ def on_load(_server, _old):
                 components=item.get('tag', {})
             )
 
+        def get_offhand_item(self, player: str) -> Item:
+            item = api.convert_minecraft_json(
+                self.server.rcon_query(
+                    f'data get entity {player} {OFFHAND_CODE}'
+                )
+            )
+
+            return self.dict2item(item)
+
     register_handler(
         ExampleHandler,
         lambda env: env.server_version >= '1.17'
     )
-
 ```
 
 > [!NOTE]
@@ -116,12 +135,13 @@ def on_load(_server, _old):
 如果是用多文件插件的话，你甚至不需要定义 `on_load`
 
 ```python
-from mcdrpost.api import AbstractVersionHandler, Item, register_handler
+import minecraft_data_api as api
+from mcdrpost.api import AbstractVersionHandler, Item, OFFHAND_CODE, register_handler
 
 
 class ExampleHandler(AbstractVersionHandler):
-    def replace(self, player: str, item: str) -> None:
-        self.server.execute(f'item replace entity {player} with {item}')
+    def replace(self, player: str, item: Item) -> None:
+        self.server.execute(f'item replace entity {player} with {self.item2str(item)}')
 
     @staticmethod
     def item2str(item: Item) -> str:
@@ -134,6 +154,15 @@ class ExampleHandler(AbstractVersionHandler):
             count=item['Count'],
             components=item.get('tag', {})
         )
+
+    def get_offhand_item(self, player: str) -> Item:
+        item = api.convert_minecraft_json(
+            self.server.rcon_query(
+                f'data get entity {player} {OFFHAND_CODE}'
+            )
+        )
+
+        return self.dict2item(item)
 
 
 register_handler(
