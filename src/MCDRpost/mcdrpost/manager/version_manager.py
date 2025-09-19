@@ -32,11 +32,10 @@ class VersionManager:
             handler (type[AbstractVersionHandler]): 要注册的 handler 类
             checker (Callable[[Environment], bool]): 判断 handler 是否应该使用
         """
-        handler = handler()
         if handler.is_builtin:
-            cls._builtin_handlers.append((checker, handler))
+            cls._builtin_handlers.append((checker, handler()))
         else:
-            cls._handlers.append((checker, handler))
+            cls._handlers.append((checker, handler()))
 
     def __init__(self, server: PluginServerInterface) -> None:
         """初始化版本管理器
@@ -72,7 +71,7 @@ class VersionManager:
         raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
 
     # 下面是是依赖版本的函数
-    def replace(self, player: str, item: str) -> None:
+    def replace(self, player: str, item: Item) -> None:
         """替换玩家副手物品
 
         Args:
@@ -81,24 +80,10 @@ class VersionManager:
         """
         self._handler.replace(player, item)
 
-    def dict2item(self, item: dict) -> Item:
-        """将字典转换为物品对象
+    def get_offhand_item(self, player: str) -> Item:
+        """获取玩家副手物品
 
         Args:
-            item (dict): 物品字典
-
-        Returns:
-            Item: 物品对象
+            player (str): 玩家名
         """
-        return self._handler.dict2item(item)
-
-    def item2str(self, item: Item) -> str:
-        """将物品对象转换为物品字符串
-
-        Args:
-            item (Item): 物品对象
-
-        Returns:
-            str: 物品字符串
-        """
-        return self._handler.item2str(item)
+        return self._handler.get_offhand_item(player)

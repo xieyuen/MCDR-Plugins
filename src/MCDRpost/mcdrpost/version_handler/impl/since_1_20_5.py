@@ -6,10 +6,6 @@ from mcdrpost.version_handler.abstract_version_handler import BuiltinVersionHand
 
 
 class Since20Handler(BuiltinVersionHandler):
-    @override
-    def replace(self, player: str, item: str) -> None:
-        self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
-
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:

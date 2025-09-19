@@ -11,8 +11,8 @@ from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.utils import get_formatted_time
-from mcdrpost.utils.interaction import get_offhand_item, play_sound
+from mcdrpost.utils import get_formatted_time, play_sound
+from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import Tags, tr
 
 
@@ -102,11 +102,18 @@ class PostManager:
             player (str): 玩家 id
             item (Item): 要替换的物品
         """
-        self.version_manager.replace(player, self.version_manager.item2str(item))
+        self.version_manager.replace(player, item)
 
-    def dict2item(self, item: dict) -> Item:
-        """把读取到的物品数据转化成 Item"""
-        return self.version_manager.dict2item(item)
+    def get_offhand_item(self, player: str) -> Item:
+        """获取玩家副手物品
+
+        Args:
+            player (str): 玩家 ID
+        """
+        item = self.version_manager.get_offhand_item(player)
+        if not item:
+            raise InvalidItem(item)
+        return item
 
     def is_storage_full(self, player: str) -> bool:
         """玩家发送的订单是否抵达上限
@@ -139,8 +146,14 @@ class PostManager:
         if comment is None:
             comment = tr(Tags.no_comment)
 
-        item = get_offhand_item(self.server, sender)
-        if not item:
+        try:
+            item = self.get_offhand_item(sender)
+        except InvalidItem as e:
+            self.server.logger.warning(e)
+            src.reply(tr(Tags.check_offhand))
+            return
+        except Exception as e:
+            self.server.logger.error(e)
             src.reply(tr(Tags.check_offhand))
             return
 
@@ -148,7 +161,7 @@ class PostManager:
         order_id = self.data_manager.add_order(OrderInfo(
             sender=sender,
             receiver=receiver,
-            item=self.dict2item(item),
+            item=item,
             comment=comment,
             time=get_formatted_time(),
         ))
@@ -173,7 +186,7 @@ class PostManager:
         player = src.get_info().player
 
         # 副手有东西 拒绝接收
-        if get_offhand_item(self.server, player):
+        if self.get_offhand_item(player):
             src.reply(tr(Tags.clear_offhand))
             return False
 

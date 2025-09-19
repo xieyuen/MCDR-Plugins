@@ -20,9 +20,5 @@ class Since17Handler(BuiltinVersionHandler):
     def item2str(item: Item) -> str:
         return f'{item.id}{item.components} {item.count}'
 
-    @override
-    def replace(self, player: str, item: str) -> None:
-        self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
-
 
 VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version < '1.20.5')
