@@ -5,16 +5,18 @@
 
 核心 API 有:
 
-- class
-    - [AbstractVersionHandler](#abstractversionhandlerabc)
-    - DefaultVersionHandler
-- function
+- classes
+    - [AbstractVersionHandler](#class-abstractversionhandlerabc)
+    - [DefaultVersionHandler](#class-defaultversionhandlerabstractversionhandler)
+- functions
     - [register_handler](#function-register_handler)
 - types
     - [Item](#class-itemserializable)
     - [Environment](#class-environment)
+- constants
+    - OFFHAND_CODE
 
-### AbstractVersionHandler(ABC)
+### class AbstractVersionHandler(ABC)
 
 `AbstractVersionHandler` 是一个抽象类，继承并且实现内部的方法就可以适配你自己的 Minecraft 服务端
 
@@ -42,6 +44,10 @@
 
 API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 
+### class DefaultVersionHandler(AbstractVersionHandler)
+
+这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单 Handler,
+
 ### function register_handler
 
 |   参数    |               类型                | 说明                                         |
@@ -53,7 +59,7 @@ API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 
 注意，checker参数是决定 你的 Handler 是否生效的函数，参数是 [Environment](#class-environment) 对象，返回一个布尔值
 
-### Type Annotations
+### Types
 
 #### class Item(Serializable)
 
@@ -69,9 +75,11 @@ API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 
 这里是 MCDRpost 读取的环境信息，当然你也可以通过 Environment._server 获得 PluginServerInterface 实例
 
-##### property server_version
-
-Minecraft 服务端版本号
+|       属性        |         类型         | 描述                                        |
+|:---------------:|:------------------:|:------------------------------------------|
+| server_version  | `Union[str, None]` | Minecraft 服务器版本，当 MCDR 没有获取到版本信息时为 `None` |
+| is_rcon_running |       `bool`       | RCON 是否正在运行                               |
+|  mcdr_handler   |       `str`        | MCDR 正在使用的 Handler (相当于服务端的类型)            |
 
 ## Example
 
@@ -85,7 +93,7 @@ PLUGIN_METADATA = {
     'author': 'xieyuen',
     'description': 'An example of custom handler',
     'dependencies': {
-        'mcdrpost': '>=3.3.2'
+        'mcdrpost': '>=3.3.2-beta5'
     }
 }
 
@@ -121,18 +129,20 @@ def on_load(_server, _old):
 
     register_handler(
         ExampleHandler,
-        lambda env: env.server_version >= '1.17'
+        lambda env: '1.20.5' > env.server_version >= '1.17'
     )
 ```
 
 > [!NOTE]
-> 在 `on_load()` 函数中定义是为了保证能够加载插件，
+> 在 `on_load()` 函数中定义是为了保证 MCDR 能正确加载插件，
 > 因为 MCDR 要先读取 Metadata 才知道插件依赖 MCDRpost，而此时 MCDRpost 不一定已经被加载
 > 放在函数中先不运行就可以避免没有优先加载 MCDRpost 导致的问题
 >
 > **注意：如果是多文件插件就没有这种问题，放在外面定义就好**
 
-如果是用多文件插件的话，你甚至不需要定义 `on_load`
+如果是用多文件插件的话，你甚至不需要定义 `on_load`, 只需要在入口点内定义 Handler 并注册就好
+
+example_handler/entry.py
 
 ```python
 import minecraft_data_api as api
@@ -167,6 +177,6 @@ class ExampleHandler(AbstractVersionHandler):
 
 register_handler(
     ExampleHandler,
-    lambda env: env.server_version >= '1.17'
+    lambda env: '1.20.5' > env.server_version >= '1.17'
 )
 ```
