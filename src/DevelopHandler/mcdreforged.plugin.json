@@ -1,0 +1,14 @@
+{
+    "id": "develop_handler",
+    "version": "0.1.1",
+    "name": "Develop Handler",
+    "description": "一个用于方便插件开发的 MCDR Handler",
+    "author": [
+        "xieyuen"
+    ],
+    "link": "https://github.com/xieyuen/MCDR-Plugins/",
+    "dependencies": {
+        "python": ">=3.10",
+        "mcdreforged": ">=2.15.0"
+    }
+}
