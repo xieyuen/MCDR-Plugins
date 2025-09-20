@@ -1,6 +1,6 @@
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.utils.semantic_version import SemanticVersion
+from mcdrpost.utils.version import SemanticVersion
 
 
 class Environment:
