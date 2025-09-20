@@ -16,6 +16,18 @@
 - constants
     - OFFHAND_CODE
 
+你可以在导入的时候使用下面的方式：
+
+```python
+from mcdrpost.api import *
+```
+
+当然如果不希望污染全局变量也可以这样：
+
+```python
+from mcdrpost import api as mp
+```
+
 ### class AbstractVersionHandler(ABC)
 
 `AbstractVersionHandler` 是一个抽象类，继承并且实现内部的方法就可以适配你自己的 Minecraft 服务端

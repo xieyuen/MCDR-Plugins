@@ -4,6 +4,14 @@
 防止一些不支持原版命令的服务端导致 MCDRpost 不能正常运行
 
 当然，如果想要使用自定义的命令来得到物品信息也可以，但请不要忘记转换成 Item 类型
+
+我们建议的导入方式：
+
+.. code-block:: python
+
+    from mcdrpost import api as mcdrpost
+
+
 """
 from typing import Callable
 
@@ -16,6 +24,12 @@ from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHan
 
 
 def register_handler(handler: type[AbstractVersionHandler], checker: Callable[[Environment], bool]):
+    """向 MCDRpost 注册 Handler
+
+    Args:
+        handler (type[AbstractVersionHandler]): Handler 类
+        checker (Callable[[Environment], bool]): 检查器
+    """
     VersionManager.register_handler(handler, checker)
 
 
