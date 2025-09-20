@@ -186,7 +186,11 @@ class PostManager:
         player = src.get_info().player
 
         # 副手有东西 拒绝接收
-        if self.get_offhand_item(player):
+        try:
+            self.get_offhand_item(player)
+        except InvalidItem:
+            pass
+        else:
             src.reply(tr(Tags.clear_offhand))
             return False
 
