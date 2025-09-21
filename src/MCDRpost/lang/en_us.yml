@@ -57,12 +57,6 @@ mcdrpost:
   command_incomplete: "§e* Incomplete command, §7!!po§e to check help message"
   wait_for_receive: "§6[MCDRpost] §eYou have a pending shipment~ Use §7!!po receive_list§e to check"
   config:
-    display:
-      max_storage: "the maximum of personal storage is: {0}"
-      allow_alias: 'alias allowance: {0}'
-      command_prefix: "the prefix of command includes: {0}"
-      auto_fix: "autofix allowance: {0}"
-      receive_tip_delay: "the delay of pending shipment noticing when login is: {0} second(s)"
     load: "loaded configuration"
     save: "saved configuration"
   data:
@@ -70,6 +64,7 @@ mcdrpost:
     save: "saved order data"
   error:
     invalid_order: "There is an order with 2 different order id: {0} and {1}"
+    running: "An error occurred when MCDRpost is running, please check the log"
   auto_fix:
     invalid_order: "The invalid order will be fixed to use {0} as order id"
   rcon:

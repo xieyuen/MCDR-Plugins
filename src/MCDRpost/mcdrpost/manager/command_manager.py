@@ -352,6 +352,3 @@ class CommandManager:
             then(self.gen_player_node('player')).
             then(self.gen_reload_node('reload'))
         )
-
-
-__all__ = ['CommandManager']

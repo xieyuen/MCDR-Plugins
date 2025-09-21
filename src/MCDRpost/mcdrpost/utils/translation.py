@@ -1,7 +1,5 @@
 from mcdreforged import PluginServerInterface
 
-__all__ = ['Tags', 'tr']
-
 
 def tr(tag: str, *args):
     """translation"""
@@ -77,13 +75,6 @@ class Tags:
     wait_for_receive = 'wait_for_receive'
 
     class config:
-        class display:
-            max_storage = 'config.display.max_storage'
-            allow_alias = 'config.display.allow_alias'
-            command_prefix = 'config.display.command_prefix'
-            auto_fix = 'config.display.auto_fix'
-            receive_tip_delay = 'config.display.receive_tip_delay'
-
         load = 'config.load'
         save = 'config.save'
 
@@ -93,6 +84,7 @@ class Tags:
 
     class error:
         invalid_order = 'error.invalid_order'
+        running = 'error.running'
 
     class auto_fix:
         invalid_order = 'auto_fix.invalid_order'

@@ -12,7 +12,6 @@ from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.utils import get_formatted_time, play_sound
-from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import Tags, tr
 
 
@@ -104,7 +103,7 @@ class PostManager:
         """
         self.version_manager.replace(player, item)
 
-    def get_offhand_item(self, player: str) -> Item:
+    def get_offhand_item(self, player: str) -> Item | None:
         """获取玩家副手物品
 
         Args:
@@ -112,7 +111,7 @@ class PostManager:
         """
         item = self.version_manager.get_offhand_item(player)
         if not item:
-            raise InvalidItem(item)
+            return None
         return item
 
     def is_storage_full(self, player: str) -> bool:
@@ -148,12 +147,11 @@ class PostManager:
 
         try:
             item = self.get_offhand_item(sender)
-        except InvalidItem as e:
-            self.server.logger.warning(e)
-            src.reply(tr(Tags.check_offhand))
-            return
-        except Exception as e:
-            self.server.logger.error(e)
+        except:
+            src.reply(tr(Tags.error.running))
+            raise
+
+        if item is not None:
             src.reply(tr(Tags.check_offhand))
             return
 
@@ -187,10 +185,12 @@ class PostManager:
 
         # 副手有东西 拒绝接收
         try:
-            self.get_offhand_item(player)
-        except InvalidItem:
-            pass
-        else:
+            item = self.get_offhand_item(player)
+        except:
+            src.reply(tr(Tags.error.running))
+            raise
+
+        if item is not None:
             src.reply(tr(Tags.clear_offhand))
             return False
 
@@ -210,6 +210,3 @@ class PostManager:
     def reload(self) -> None:
         self.config_manager.reload()
         self.data_manager.reload()
-
-
-__all__ = ['PostManager']

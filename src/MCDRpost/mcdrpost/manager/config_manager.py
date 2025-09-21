@@ -29,6 +29,3 @@ class ConfigurationManager:
 
     def get_configuration(self) -> Configuration:
         return self._configuration
-
-
-__all__ = ['ConfigurationManager']

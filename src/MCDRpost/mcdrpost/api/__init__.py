@@ -4,19 +4,11 @@
 防止一些不支持原版命令的服务端导致 MCDRpost 不能正常运行
 
 当然，如果想要使用自定义的命令来得到物品信息也可以，但请不要忘记转换成 Item 类型
-
-我们建议的导入方式：
-
-.. code-block:: python
-
-    from mcdrpost import api as mcdrpost
-
-
 """
 from typing import Callable
 
 from mcdrpost.api.default_version_handler import DefaultVersionHandler
-from mcdrpost.constants import OFFHAND_CODE
+from mcdrpost.constants import AIR, OFFHAND_CODE
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.manager.version_manager import VersionManager
@@ -42,5 +34,5 @@ __all__ = [
     'register_handler',
 
     # constants
-    'OFFHAND_CODE',
+    'OFFHAND_CODE', 'AIR',
 ]
