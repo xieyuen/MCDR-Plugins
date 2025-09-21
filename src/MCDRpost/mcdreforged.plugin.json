@@ -10,7 +10,7 @@
         "Flyky",
         "xieyuen"
     ],
-    "link": "https://github.com/xieyuen/MCDRpost/",
+    "link": "https://github.com/xieyuen/MCDR-Plugins/",
     "dependencies": {
         "python": ">=3.10",
         "mcdreforged": ">=2.15.0",
