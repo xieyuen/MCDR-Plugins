@@ -8,3 +8,7 @@ class InvalidOrder(InvalidData):
 
 class InvalidRegisteredPlayerList(InvalidData):
     pass
+
+
+class InvalidItem(InvalidData):
+    pass

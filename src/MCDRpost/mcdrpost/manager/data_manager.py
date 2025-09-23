@@ -22,20 +22,13 @@ class DataManager:
         # initialize
         self._post_manager: "PostManager" = post_manager
         self._logger = post_manager.server.logger
-        self._config = post_manager.config_manager.configuration
 
         # index
         self._sender_index: DefaultDict[str, list[int]] = defaultdict(list)
         self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
-        self._order_data: OrderData = self._post_manager.server.load_config_simple(
-            constants.ORDER_DATA_FILE_NAME,
-            target_class=OrderData,
-            file_format=constants.ORDERS_DATA_FILE_TYPE
-        )
-        self._check_orders()
-        self._build_index()
+        self._order_data: OrderData | None = None
 
     def _build_index(self) -> None:
         """构建索引"""
@@ -53,14 +46,19 @@ class DataManager:
         .. versionchanged:: v3.1.1
             修复时使用索引作为订单 ID
         """
+        is_fixed = False
         for order_id, order in self._order_data.orders.items():
             if str(order.id) == order_id:
                 continue
-            if not self._config.auto_fix:
+            if not self._post_manager.configuration.auto_fix:
                 raise InvalidOrder(tr(Tags.error.invalid_order, order_id, order.id))
             self._logger.error(tr(Tags.error.invalid_order, order_id, order.id))
             self._logger.error(tr(Tags.auto_fix.invalid_order, order_id))
             self._order_data.orders[order_id].id = int(order_id)
+            is_fixed = True
+
+        if is_fixed:
+            self.save()
 
     def reload(self) -> None:
         self._post_manager.server.logger.info(tr(Tags.data.load))
@@ -188,6 +186,3 @@ class DataManager:
         self.remove_order(order_id)
         self.save()
         return order
-
-
-__all__ = ["DataManager"]

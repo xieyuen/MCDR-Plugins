@@ -2,18 +2,18 @@ from typing import override
 
 from mcdrpost.data_structure import Item
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.abstract_version_handler import BuiltinVersionHandler
 
 
-class Since20Handler(AbstractVersionHandler):
-    @override
-    def replace(self, player: str, item: str) -> None:
-        self.server.execute(f'item replace entity {player} weapon.offhand with {item}')
-
+class Since20Handler(BuiltinVersionHandler):
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:
-        return Item.deserialize(item)
+        return Item(
+            id=item['id'],
+            count=item['count'],
+            components=item.get('components', {})
+        )
 
     @staticmethod
     @override
