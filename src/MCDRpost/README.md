@@ -5,13 +5,16 @@
 - 原作者: [Flyky](https://github.com/Flyky)
 - 原仓库: [MCDRpost](https://github.com/Flyky/MCDRpost)
 - 维护者: [xieyuen](https://github.com/xieyuen)
+- LICENSE: [GPL 3.0](../../LICENSE)
+
+## Update Information
 
 > [!WARNING]
 > 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
 > 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
 
 *Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，
-见 [README](<../MCDRpost-migration/README.md>) 
+见 [README](<../MCDRpost-migration/README.md>)
 或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
@@ -33,17 +36,13 @@ A MCDR plugin for post/teleport items
 - Python >= 3.10
 - MCDReforged >= 2.15.0
 - [Minecraft Data API](https://github.com/MCDReforged/MinecraftDataAPI) 任意版本
-- Minecraft >= 1.9[^1]
+- Minecraft >= 1.9[^2]
+    - 在不自定义 Handler 的情况下，MCDRpost 使用 MinecraftDataAPI 获取物品信息
 
-[^1]: Minecraft 1.9 才有的副手你难道还想在 1.8 使用？
-
-- 开启 Minecraft Rcon
+[^2]: Minecraft 1.9 才有的副手你难道还想在 1.8 使用？
 
 > [!IMPORTANT]
-> 请一定配置好 RCON!<br>
-> 请一定配置好 RCON!<br>
-> 请一定配置好 RCON!<br>
-> 重要的事情说三遍~
+> 我们十分推荐开启服务器的 RCON，但 1.13 版本以下的除外
 
 ## Install
 
@@ -53,9 +52,8 @@ A MCDR plugin for post/teleport items
 >
 > 在MCDR中，可以直接使用
 >
-> ```text
-> !!MCDR plg install mcdrpost
-> !!MCDR confirm
+> ```
+> !!MCDR plugin install mcdrpost
 > ```
 >
 > 来安装 MCDRpost, 这也是推荐做法
@@ -78,19 +76,19 @@ A MCDR plugin for post/teleport items
 
 ## Usage
 
-|                命令                |              别名               | 说明            |
-|:--------------------------------:|:-----------------------------:|:--------------|
-|             `!!post`             |            `!!po`             | 显示帮助信息        |
-| `!!post post <player> [comment]` |  `!!po p <player> [comment]`  | 发送副手物品，可以没有备注 |
-|    `!!post receive <orderid>`    |      `!!po r <orderid>`       | 接收输入单号的物品到副手  |
-|    `!!post cancel <orderid>`     |    `!!po cancel <orderid>`    | 取消订单，仅限对方未收取时 |
-|        `!!post post_list`        |           `!!po pl`           | 列出发件列表        |
-|        `!!post list post`        |        `!!po ls post`         | 列出发件列表        |
-|      `!!post receive_list`       |           `!!po rl`           | 列出收件列表        |
-|      `!!post list receive`       |       `!!po ls receive`       | 列出收件列表        |
-|      `!!post list players`       |       `!!po ls players`       | 列出已注册玩家名单     |
-|   `!!post player add <player>`   |  `!!po player add <player>`   | 注册一个新玩家       |
-| `!!post player remove <player>`  | `!!po player remove <player>` | 删除已经注册的玩家     |
+|                命令                |             缩写              | 说明            |
+|:--------------------------------:|:---------------------------:|:--------------|
+|             `!!post`             |           `!!po`            | 显示帮助信息        |
+| `!!post post <player> [comment]` | `!!po p <player> [comment]` | 发送副手物品，可以没有备注 |
+|    `!!post receive <orderid>`    |     `!!po r <orderid>`      | 接收输入单号的物品到副手  |
+|    `!!post cancel <orderid>`     |     `!!po c <orderid>`      | 取消订单，仅限对方未收取时 |
+|        `!!post post_list`        |          `!!po pl`          | 列出发件列表        |
+|        `!!post list post`        |       `!!po ls post`        | 列出发件列表        |
+|      `!!post receive_list`       |          `!!po rl`          | 列出收件列表        |
+|      `!!post list receive`       |      `!!po ls receive`      | 列出收件列表        |
+|      `!!post list players`       |      `!!po ls players`      | 列出已注册玩家名单     |
+|   `!!post player add <player>`   |                             | 注册一个新玩家       |
+| `!!post player remove <player>`  |                             | 删除已经注册的玩家     |
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
@@ -112,7 +110,7 @@ MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 
 
 对于 2.1.1 及以下的版本，**Flyky 并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
 
-在 `mcdrpost/__init__.py` 文件中 Line 13~17，有以下五行代码
+在 `mcdrpost/__init__.py` 文件中 Line 13 ~ 17，有以下五行代码
 
 ```python
 Prefix = '!!po'
