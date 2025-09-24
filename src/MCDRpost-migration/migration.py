@@ -1,7 +1,8 @@
 import json
 import os.path
 import re
-from typing import Any
+from datetime import datetime
+from typing import Any, Callable, Literal, TypeAlias
 
 from mcdreforged import Serializable
 
@@ -27,6 +28,50 @@ class NewOrderData(Serializable):
 
 
 AIR = Item(id='minecraft:air', count=1, components={})
+
+LEVELS: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
+
+
+class SimpleLogger:
+
+    def __init__(self):
+        self.format_str = '[{time}] [{level}] {msg}'
+
+    def __enter__(self):
+        self.log_file = open("migration.log", "w")
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.log_file.close()
+
+    def _log(self, msg: str, level: LEVELS):
+        text = self.format_str.format(time=datetime.now(), level=level, msg=msg)
+        print(text)
+        if hasattr(self, "log_file"):
+            self.log_file.write(text + '\n')
+            self.log_file.flush()
+
+    def info(self, msg: str):
+        self._log(msg, "INFO")
+
+    def warning(self, msg: str):
+        self._log(msg, "WARNING")
+
+    def error(self, msg: str):
+        self._log(msg, "ERROR")
+
+    def catch(self, func: Callable) -> Callable:
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                self.error(f"An error occurred: {e}")
+                raise
+
+        return wrapper
+
+
+logger = SimpleLogger()
 
 
 class OldOrdersData:
@@ -60,12 +105,12 @@ def fix_nbt_format(nbt_content: str) -> str:
     fixed = nbt_content
 
     # 修复数字和单位之间有空格的情况，如 "lvl: 3 s" -> "lvl: \"3s\""
-    fixed = re.sub(r':\s*(\d+)\s+([bslfd])\s*([,}])', r':"\1\2"\3', fixed)
+    fixed = re.sub(r':\s*(\d+)\s+([bslfd])\s*([,}])', r':\1\3', fixed)
     # 修复键值对之间的空格问题，如 "lvl: 3 s,id:" -> "lvl: \"3s\",id:"
     fixed = re.sub(r':\s*(\d+)\s+([bslfd])\s*,', r':"\1\2",', fixed)
     # 处理数组中的对象，修复其中的格式问题
     fixed = re.sub(r'\[\s*{', '[{', fixed)
-    fixed = re.sub(r'}\s*\]', '}]', fixed)
+    fixed = re.sub(r'}\s*]', '}]', fixed)
     # 修复未加引号的键（确保键名被双引号包围）
     fixed = re.sub(r'([{,])\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:', r'\1"\2":', fixed)
     # 处理开头的键（没有前导字符的情况）
@@ -104,7 +149,7 @@ def parse_nbt_content(nbt_content: str) -> dict:
             fixed_nbt = fix_nbt_format(nbt_content)
             return json.loads(fixed_nbt)
         except json.JSONDecodeError as e:
-            print(f"Warning: JSON解析错误: {e}")
+            logger.warning(f"JSON解析错误: {e}")
             return {"raw_nbt": nbt_content}
 
 
@@ -129,9 +174,6 @@ def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
         - 命名空间 (str): 物品的命名空间，如 'minecraft', 'create' 等
         - 物品ID (str): 物品的ID，如 'diamond_pickaxe', 'wrench' 等
         - NBT字典 (dict[str, Any]): NBT标签解析后的字典，如果没有NBT则为空字典
-
-    Raises:
-        不会显式抛出异常，但解析失败时返回None。
 
     Examples:
         >>> parse_item('minecraft:diamond_pickaxe{Enchantments: [{lvl: 3, id: "minecraft:unbreaking"}]}')
@@ -193,6 +235,7 @@ def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
     return None
 
 
+@logger.catch
 def main() -> None:
     if not is_in_mcdr_dir():
         raise RuntimeError("当前目录不是 MCDR 服务器的根目录，请把脚本放在 MCDR 的根目录运行")
@@ -205,22 +248,22 @@ def main() -> None:
         data_file_path = './config/MCDRpost/PostOrders.json'
 
     old_data = OldOrdersData(data_file_path)
-    print("正在加载旧版数据文件")
+    logger.info("正在加载旧版数据文件")
     try:
         old_data.load_json()
     except FileNotFoundError:
-        print("Error: 未找到旧版数据文件，请检查文件路径是否正确")
+        logger.error("未找到旧版数据文件，请检查文件路径是否正确")
         raise
 
-    print("正在转换数据结构 ...")
+    logger.info("正在转换数据结构 ...")
 
     new_order_data: dict[str, Order] = {}
     for order_id, old_order in old_data.orders.items():
         parse_res = parse_item(old_order['item'])
 
         if parse_res is None:
-            print(f"Warning: 非法的物品：{old_order['item']}")
-            print("Warning: 使用 minecraft:air 代替")
+            logger.warning(f"非法的物品：{old_order['item']}")
+            logger.warning("使用 minecraft:air 代替")
             item: Item = AIR
         else:
             count, namespace, item_id, nbt_dict = parse_res
@@ -244,11 +287,12 @@ def main() -> None:
         orders=new_order_data
     ).serialize()
 
-    print("正在保存数据到 config/MCDRpost/orders.json ...")
+    logger.info("正在保存数据到 config/MCDRpost/orders.json ...")
 
     with open('config/MCDRpost/orders.json', 'w', encoding='utf-8') as f:
         json.dump(new_data, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == '__main__':
-    main()
+    with logger:
+        main()
