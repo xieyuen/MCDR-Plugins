@@ -4,9 +4,8 @@ from mcdreforged import Serializable
 class CommandPermission(Serializable):
     """命令权限配置
 
-    MCDR 的权限只有 0, 1, 2, 3, 4 五个等级
+    MCDR 的权限只有 0, 1, 2, 3, 4 五个等级，
     分别对应的是 ``guest`` ``user`` ``helper`` ``admin`` ``owner`` 五个等级
-    这些都是 MCDR 合法的权限
 
     Attributes:
         root (int): 根命令权限等级
