@@ -12,6 +12,12 @@
 MCDRpost: 一个用于邮寄/传送物品的MCDR插件
 
 > [!NOTE]
-> 插件需要配置 Rcon 才能稳定运行
+> 建议配置 RCON
 
 点此查看 [README](src/MCDRpost/README.md)
+
+### DevelopHandler
+
+DevelopHandler: 让 MCDR 能够识别 say
+
+点此查看 [README](src/DevelopHandler/README.md)
