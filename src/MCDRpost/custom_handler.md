@@ -1,6 +1,6 @@
 # MCDRpost API--Custom Handler
 
-一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况，MCDRpost可能无法满足需求，
+一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况（比如1.9版本）[^1]，MCDRpost可能无法满足需求，
 考虑到插件对 Minecraft 的兼容性，插件暴露了一定的 API 用于 Minecraft 一些特殊服务端的适配
 
 核心 API 有:
@@ -192,3 +192,5 @@ register_handler(
     lambda env: '1.20.5' > env.server_version >= '1.17'
 )
 ```
+
+[^1]: 真的还有人在开 1.9 这么低版本的服务器吗

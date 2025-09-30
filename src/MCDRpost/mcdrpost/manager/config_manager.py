@@ -7,7 +7,7 @@ from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa: F401
+    from mcdrpost.manager.post_manager import PostManager
 
 
 class ConfigurationManager:

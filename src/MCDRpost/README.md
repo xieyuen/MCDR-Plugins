@@ -19,9 +19,6 @@
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
 
-[^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
-Flyky/MCDRpost#10
-
 ## Introduce
 
 A MCDR plugin for post/teleport items  
@@ -36,13 +33,10 @@ A MCDR plugin for post/teleport items
 - Python >= 3.10
 - MCDReforged >= 2.15.0
 - [Minecraft Data API](https://github.com/MCDReforged/MinecraftDataAPI) 任意版本
-- Minecraft >= 1.9[^2]
-    - 在不自定义 Handler 的情况下，MCDRpost 使用 MinecraftDataAPI 获取物品信息
-
-[^2]: Minecraft 1.9 才有的副手你难道还想在 1.8 使用？
+- Minecraft >= 1.13[^2]
 
 > [!IMPORTANT]
-> 我们十分推荐开启服务器的 RCON，但 1.13 版本以下的除外
+> 我们十分推荐开启服务器的 RCON
 
 ## Install
 
@@ -201,4 +195,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > [!NOTE]
 > 这里是高级用户的自定义内容，如果你在使用插件的时候没有问题，可以忽略这段内容
 
-点击 [此处](./custom_handler.md) 跳转至 MCDRpost 自定义 Handler 文档
+点击 [此处](custom_handler.md) 跳转至 MCDRpost 自定义 Handler 文档
+
+[^1]: Minecraft 1.20.5 用 components 代替了 tag，导致命令不能执行，Minecraft 报错见 Flyky/MCDRpost#10
+[^2]: 由于 `/data get entity` 在 1.13 版本才加入，所以 MCDRpost 在 1.13 以下的版本中无法使用，但是你可以自定义 Handler 来解决这个问题

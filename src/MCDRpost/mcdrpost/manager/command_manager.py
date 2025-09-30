@@ -1,14 +1,21 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
 
-from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, RAction, \
+from mcdreforged import AbstractNode, CommandSource, GreedyText, InfoCommandSource, Integer, Literal, \
+    PluginServerInterface, RAction, \
     RColor, RText, RTextList, RequirementNotMet, Text
 
 from mcdrpost.configuration import CommandPermission, Configuration
-from mcdrpost.constants import END_LINE
+from mcdrpost.constants import END_LINE, SIMPLE_HELP_MESSAGE
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager  # noqa: F401
+    from mcdrpost.manager.post_manager import PostManager
+
+T = TypeVar("T", bound=AbstractNode)
+
+
+def requirements_checker(node: T, permission: int, require_player: bool = False) -> T:
+    node.requires(lambda src: src.has_permission(permission))
 
 
 class CommandManager:
@@ -38,10 +45,7 @@ class CommandManager:
             self._prefixes = self._config.command_prefixes
 
         for prefix in self._prefixes:
-            self._server.register_help_message(prefix, {
-                "en_us": "post/teleport weapon hands items",
-                "zh_cn": "传送/收寄副手物品",
-            })
+            self._server.register_help_message(prefix, SIMPLE_HELP_MESSAGE)
             self._server.register_command(
                 self.generate_command_node(prefix)
             )
