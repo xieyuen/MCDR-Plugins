@@ -1,21 +1,16 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
-from mcdreforged import AbstractNode, CommandSource, GreedyText, InfoCommandSource, Integer, Literal, \
+from mcdreforged import CommandContext, CommandSource, GreedyText, InfoCommandSource, Integer, Literal, \
     PluginServerInterface, RAction, \
     RColor, RText, RTextList, RequirementNotMet, Text
 
 from mcdrpost.configuration import CommandPermission, Configuration
 from mcdrpost.constants import END_LINE, SIMPLE_HELP_MESSAGE
+from mcdrpost.utils import add_requirements
 from mcdrpost.utils.translation import Tags, tr
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
-
-T = TypeVar("T", bound=AbstractNode)
-
-
-def requirements_checker(node: T, permission: int, require_player: bool = False) -> T:
-    node.requires(lambda src: src.has_permission(permission))
 
 
 class CommandManager:
@@ -24,6 +19,8 @@ class CommandManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
+        self.logger = self._server.logger
+
         self._data_manager = post_manager.data_manager
 
         self._prefixes = ["!!po"]
@@ -191,15 +188,28 @@ class CommandManager:
         if self._post_manager.receive(src, order_id, 'cancel'):
             src.reply(tr(Tags.cancel_success, order_id))
 
-    # nodes
+    def add_player(self, src: CommandSource, ctx: CommandContext):
+        player = ctx['player_id']
+        if not self._data_manager.add_player(player):
+            src.reply(tr(Tags.has_player, player))
+            return
 
+        src.reply(tr(Tags.login_success, player))
+        self.logger.info(tr(Tags.login_log, player))
+
+    def remove_player(self, src: CommandSource, ctx: CommandContext):
+        player = ctx['player_id']
+        if not self._data_manager.remove_player(player):
+            src.reply(tr(Tags.cannot_del_player, player))
+            return
+
+        src.reply(tr(Tags.del_player_success, player))
+        self.logger.info(tr(Tags.del_player_log, player))
+
+    # nodes
     def gen_post_node(self, node_name: str) -> Literal:
-        return (
+        return add_requirements(
             Literal(node_name).
-            requires(lambda src: src.is_player and src.has_permission(self._perm.post)).
-            on_error(RequirementNotMet, lambda src: src.reply(
-                tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-            ), handled=True).
             runs(lambda src: src.reply(tr(Tags.no_input_receiver))).
             then(
                 Text('receiver').
@@ -209,26 +219,21 @@ class CommandManager:
                     GreedyText('comment').
                     runs(lambda src, ctx: self._post_manager.post(src, ctx['receiver'], ctx['comment']))
                 )
-            )
+            ),
+            permission=self._perm.post,
+            require_player=True
         )
 
     def gen_post_list_node(self, node_name: str) -> Literal:
-        return (
-            Literal(node_name).
-            requires(lambda src: src.is_player and src.has_permission(self._perm.post)).
-            on_error(RequirementNotMet, lambda src: src.reply(
-                tr(Tags.no_permission if not src.is_player else Tags.only_for_player)
-            ), handled=True).
-            runs(lambda src: self.output_post_list(src))
+        return add_requirements(
+            Literal(node_name).runs(lambda src: self.output_post_list(src)),
+            permission=self._perm.post,
+            require_player=True
         )
 
     def gen_receive_node(self, node_name: str) -> Literal:
-        return (
+        return add_requirements(
             Literal(node_name).
-            requires(lambda src: src.is_player and src.has_permission(self._perm.receive)).
-            on_error(RequirementNotMet, lambda src: src.reply(
-                tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-            ), handled=True).
             runs(lambda src: src.reply(tr(Tags.no_input_receive_orderid))).
             then(
                 Integer('orderid').
@@ -239,26 +244,21 @@ class CommandManager:
                     ]
                 ).
                 runs(lambda src, ctx: self.receive(src, ctx['orderid']))
-            )
+            ),
+            permission=self._perm.receive,
+            require_player=True
         )
 
     def gen_receive_list_node(self, node_name: str) -> Literal:
-        return (
-            Literal(node_name).
-            requires(lambda src: src.is_player and src.has_permission(self._perm.receive)).
-            on_error(RequirementNotMet, lambda src: src.reply(
-                tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-            ), handled=True).
-            runs(lambda src: self.output_receive_list(src))
+        return add_requirements(
+            Literal(node_name).runs(lambda src: self.output_receive_list(src)),
+            permission=self._perm.receive,
+            require_player=True
         )
 
     def gen_cancel_node(self, node_name: str) -> Literal:
-        return (
+        return add_requirements(
             Literal(node_name).
-            requires(lambda src: src.is_player and src.has_permission(self._perm.cancel)).
-            on_error(RequirementNotMet, lambda src: src.reply(
-                tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-            ), handled=True).
             runs(lambda src: src.reply(tr(Tags.no_input_cancel_orderid))).
             then(
                 Integer('orderid').
@@ -269,7 +269,9 @@ class CommandManager:
                     ]
                 ).
                 runs(lambda src, ctx: self.cancel(src, ctx['orderid']))
-            )
+            ),
+            permission=self._perm.cancel,
+            require_player=True
         )
 
     def gen_list_node(self, node_name: str) -> Literal:
@@ -290,19 +292,17 @@ class CommandManager:
                 runs(lambda src: self.output_all_orders(src))
             ).
             then(
-                Literal('receive').
-                requires(lambda src: src.is_player and src.has_permission(self._perm.receive)).
-                on_error(RequirementNotMet, lambda src: src.reply(
-                    tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-                ), handled=True).
-                runs(lambda src: self.output_receive_list(src))
+                add_requirements(
+                    Literal('receive').runs(lambda src: self.output_receive_list(src)),
+                    permission=self._perm.receive,
+                    require_player=True
+                )
             ).then(
-                Literal('post').
-                requires(lambda src: src.is_player and src.has_permission(self._perm.post)).
-                on_error(RequirementNotMet, lambda src: src.reply(
-                    tr(Tags.no_permission if src.is_player else Tags.only_for_player)
-                ), handled=True).
-                runs(lambda src: self.output_post_list(src))
+                add_requirements(
+                    Literal('post').runs(lambda src: self.output_post_list(src)),
+                    permission=self._perm.post,
+                    require_player=True
+                )
             )
         )
 
@@ -315,10 +315,7 @@ class CommandManager:
             then(
                 Literal('add').
                 runs(lambda src: src.reply(tr(Tags.command_incomplete))).
-                then(
-                    Text('player_id').
-                    runs(lambda src, ctx: self._data_manager.add_player(ctx['player_id']))
-                )
+                then(Text('player_id').runs(self.add_player))
             ).
             then(
                 Literal('remove').
@@ -326,7 +323,7 @@ class CommandManager:
                 then(
                     Text('player_id').
                     suggests(self._data_manager.get_players).
-                    runs(lambda src, ctx: self._data_manager.remove_player(ctx['player_id']))
+                    runs(self.remove_player)
                 )
             )
         )
