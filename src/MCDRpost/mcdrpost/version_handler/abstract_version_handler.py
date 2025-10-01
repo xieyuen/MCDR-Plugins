@@ -25,7 +25,7 @@ class AbstractVersionHandler(ABC):
     @final
     def is_builtin(cls) -> bool:
         """此处理器是否为 MCDRpost 内置的处理器"""
-        return issubclass(cls, BuiltinVersionHandler)
+        return cls in BuiltinVersionHandler.__subclasses__()
 
     @abstractmethod
     def replace(self, player: str, item: Item) -> None:
@@ -82,7 +82,9 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
         """for mc 1.17+"""
         self.server.execute(f'item replace entity {player} weapon.offhand with {self.item2str(item)}')
 
+    @override
     def get_offhand_item(self, player: str) -> Item:
+        """获取副手物品--通用实现"""
         if self.server.is_rcon_running():
             offhand_item = api.convert_minecraft_json(
                 self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')

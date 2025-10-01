@@ -16,7 +16,11 @@ class ConfigurationManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
-        self._configuration: Configuration | None = None
+        self._configuration: Configuration = self._server.load_config_simple(
+            constants.CONFIG_FILE_NAME,
+            target_class=Configuration,
+            file_format=constants.CONFIG_FILE_TYPE,
+        )
 
     def reload(self) -> None:
         """(重新)加载配置文件"""

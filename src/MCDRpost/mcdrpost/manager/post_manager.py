@@ -124,7 +124,7 @@ class PostManager:
             return False
         return len(self.data_manager.get_orderid_by_sender(player)) >= self.configuration.max_storage
 
-    def post(self, src: InfoCommandSource, receiver: str, comment: str = None) -> None:
+    def post(self, src: InfoCommandSource, receiver: str, comment: str | None = None) -> None:
         """发送订单
 
         Args:

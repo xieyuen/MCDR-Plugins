@@ -78,6 +78,8 @@ class VersionManager:
             player (str): 玩家名
             item (str): 物品字符串
         """
+        if self._handler is None:
+            raise RuntimeError("version handler is not initialized")
         self._handler.replace(player, item)
 
     def get_offhand_item(self, player: str) -> Item:
@@ -86,4 +88,6 @@ class VersionManager:
         Args:
             player (str): 玩家名
         """
+        if self._handler is None:
+            raise RuntimeError("version handler is not initialized")
         return self._handler.get_offhand_item(player)

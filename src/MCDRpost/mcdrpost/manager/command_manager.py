@@ -329,11 +329,15 @@ class CommandManager:
         )
 
     def gen_reload_node(self, prefix) -> Literal:
+        def reload(src: CommandSource):
+            self._post_manager.reload()
+            src.reply(tr(Tags.reload_success))
+
         return (
             Literal(prefix)
             .requires(lambda src: src.has_permission(self._perm.reload))
             .on_error(RequirementNotMet, lambda src: src.reply(tr(Tags.no_permission)), handled=True)
-            .runs(lambda src: (self._post_manager.reload(), src.reply(tr(Tags.reload_success))))
+            .runs(reload)
         )
 
     def generate_command_node(self, prefix: str) -> Literal:

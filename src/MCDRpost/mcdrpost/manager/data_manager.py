@@ -28,9 +28,13 @@ class DataManager:
         self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
-        self._order_data: OrderData | None = None
+        self._order_data: OrderData = self._post_manager.server.load_config_simple(
+            constants.ORDER_DATA_FILE_NAME,
+            target_class=OrderData,
+            file_format=constants.ORDERS_DATA_FILE_TYPE
+        )
 
-    def _build_index(self) -> None:
+    def build_index(self) -> None:
         """构建索引"""
         self._sender_index.clear()
         self._receiver_index.clear()
@@ -38,7 +42,7 @@ class DataManager:
             self._sender_index[order.sender].append(order.id)
             self._receiver_index[order.receiver].append(order.id)
 
-    def _check_orders(self) -> None:
+    def check_orders(self) -> None:
         """检查订单
 
         主要是订单的 ID 能不能对上索引
@@ -67,8 +71,8 @@ class DataManager:
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE
         )
-        self._check_orders()
-        self._build_index()
+        self.check_orders()
+        self.build_index()
 
     def save(self) -> None:
         self._post_manager.server.logger.info(tr(Tags.data.save))
