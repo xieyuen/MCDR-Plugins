@@ -95,4 +95,6 @@ class VersionManager:
 
     @property
     def play_sound(self) -> AbstractSoundPlayer:
+        if self._handler is None:
+            raise RuntimeError("version handler is not initialized")
         return self._handler.play_sound

@@ -12,6 +12,7 @@ from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.utils import get_formatted_time
+from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
 
 
@@ -103,6 +104,18 @@ class PostManager:
         """
         self.version_manager.replace(player, item)
 
+    def check_offhand_empty(self, player: str) -> bool:
+        """检查副手物品
+
+        Args:
+            player (str): 玩家 id
+        """
+        try:
+            item = self.get_offhand_item(player)
+        except InvalidItem:
+            return True
+        return item is None
+
     def get_offhand_item(self, player: str) -> Item | None:
         """获取玩家副手物品
 
@@ -147,11 +160,14 @@ class PostManager:
 
         try:
             item = self.get_offhand_item(sender)
+        except InvalidItem:
+            src.reply(TranslationKeys.check_offhand.tr())
+            return
         except:
             src.reply(TranslationKeys.error.running.tr())
             raise
 
-        if item is not None:
+        if item is None:
             src.reply(TranslationKeys.check_offhand.tr())
             return
 
@@ -184,13 +200,7 @@ class PostManager:
         player = src.get_info().player
 
         # 副手有东西 拒绝接收
-        try:
-            item = self.get_offhand_item(player)
-        except:
-            src.reply(TranslationKeys.error.running.tr())
-            raise
-
-        if item is not None:
+        if not self.check_offhand_empty(player):
             src.reply(TranslationKeys.clear_offhand.tr())
             return False
 
