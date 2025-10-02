@@ -1,7 +1,6 @@
 import time
-from typing import TypeVar
-
-from mcdreforged import AbstractNode, CommandSource, RequirementNotMet
+from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
 from mcdrpost.utils.translation import TranslationKeys
 
@@ -11,31 +10,27 @@ def get_formatted_time() -> str:
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
-# 其实想用 3.12 的泛型语法的
-# 但是还是要保证兼容性
-# TODO: 此注解应该在 MCDR 产生放弃 3.10 版本的更新时替换成 3.12 的新泛型语法
-__NodeType = TypeVar("__NodeType", bound=AbstractNode)
+# TODO: to 3.12 generic grammar (see dev/MCDRpost-3.12)
+ComparableType = TypeVar("ComparableType")
 
 
-def add_requirements(node: __NodeType, permission: int, require_player: bool = False) -> __NodeType:
-    def require_callback(src: CommandSource) -> bool:
-        if require_player and not src.is_player:
-            return False
-        if not src.has_permission(permission):
-            return False
-        return True
+class TotalOrdering(Generic[ComparableType], ABC):
+    @abstractmethod
+    def __eq__(self, other) -> bool:  # self == other
+        raise NotImplementedError
 
-    def on_require_not_met(src: CommandSource):
-        if require_player and not src.is_player:
-            src.reply(TranslationKeys.only_for_player.tr())
-            return
-        src.reply(TranslationKeys.no_permission.tr())
+    @abstractmethod
+    def __lt__(self, other: ComparableType) -> bool:  # self < other
+        raise NotImplementedError
 
-    node.requires(require_callback).on_error(
-        RequirementNotMet, on_require_not_met, handled=True
-    )
+    def __le__(self, other: ComparableType) -> bool:  # self <= other
+        return self < other or self == other
 
-    return node
+    def __gt__(self, other: ComparableType) -> bool:  # self > other
+        return not (self <= other)
+
+    def __ge__(self, other: ComparableType) -> bool:  # self >= other
+        return not (self < other)
 
 
-__all__ = ['get_formatted_time', 'add_requirements']
+__all__ = ['get_formatted_time', "TotalOrdering"]

@@ -12,10 +12,8 @@ class Environment:
         return self._server.get_server_information()
 
     @property
-    def server_version(self) -> SemanticVersion | None:
+    def server_version(self) -> SemanticVersion:
         """Minecraft 服务器版本"""
-        if self._info.version is None:
-            return None
         return SemanticVersion(self._info.version)
 
     @property

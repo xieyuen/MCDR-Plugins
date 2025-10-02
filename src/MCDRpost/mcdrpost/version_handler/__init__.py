@@ -2,7 +2,7 @@ import importlib
 from pathlib import Path
 
 
-def register_all_handlers():
+def register_builtin_handlers():
     """自动导入 version_handler/impl 目录下所有模块
 
     通过动态导入所有版本处理器模块，触发它们的自动注册机制

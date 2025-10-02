@@ -1,23 +1,44 @@
-from mcdreforged import PluginServerInterface, RTextBase, RTextMCDRTranslation
+from mcdreforged import ServerInterface, RTextBase, RTextMCDRTranslation
 
 
 class TranslationKeyItem:
-    """MCDRpost 翻译键"""
+    """MCDRpost 翻译键
+
+    用于封装翻译键的类，提供便捷的翻译文本获取方法。
+
+    Attributes:
+        key (str): 完整的翻译键，格式为 'mcdrpost.{value}'
+        value (str): 翻译键的值部分
+    """
 
     __FULL_KEY_TEMPLATE: str = 'mcdrpost.{key}'
-    __tr = PluginServerInterface.si().tr
-    __rtr = PluginServerInterface.si().rtr
+    __tr = ServerInterface.si().tr
+    __rtr = ServerInterface.si().rtr
 
     def __init__(self, value: str):
         self.key = self.__FULL_KEY_TEMPLATE.format(key=value)
         self.value = value
 
     def tr(self, *args) -> str | RTextBase:
-        """获取普通翻译，等同于 ``ServerInterface.si().tr(key_item.key, *args)``"""
+        """获取普通翻译，等同于 ``ServerInterface.si().tr(key_item.key, *args)``
+
+        Args:
+            *args: 传递给翻译字符串的参数
+
+        Returns:
+            str | RTextBase: 翻译后的文本或RText对象
+        """
         return self.__tr(self.key, *args)
 
     def rtr(self, *args) -> RTextMCDRTranslation:
-        """获取 RText 翻译，等同于 ``ServerInterface.si().rtr(key_item.key, *args)``"""
+        """获取 RText 翻译，等同于 ``ServerInterface.si().rtr(key_item.key, *args)``
+
+        Args:
+            *args: 传递给翻译字符串的参数
+
+        Returns:
+            RTextMCDRTranslation: 包含翻译键的RText对象
+        """
         return self.__rtr(self.key, *args)
 
 

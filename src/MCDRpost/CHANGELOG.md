@@ -7,6 +7,50 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.3]
+
+### Added
+
+- 新开分支专门准备放弃 Python 3.10 的版本
+
+### Changed
+
+- 内置处理器的条件函数替换成元组比较
+
+## [3.4.0-alpha.2]
+
+### Added
+
+- 补充了一些类型注解
+- 添加弃用提示
+
+### Changed
+
+- 简化协调器模块的命名
+
+### Deprecated
+
+|       弃用的配置        |          新配置           |
+|:------------------:|:----------------------:|
+|  command_prefixed  |   prefix.more_prefix   |
+|    allow_alias     | prefix.enable_addition |
+| command_permission |      permissions       |
+
+## [3.4.0-alpha.1]
+
+### Added
+
+- `env.server_version` 支持元组比较
+    - e.g. `env.server_version >= (1, 20, 5)`
+- 补充了 TranslationKeyItem 的 docstring
+
+### Changed
+
+- 重构了 CommandManager, 分离 UI 和命令解析
+    - 新增 CommandPreHandler 处理解析的类型与功能类的交互
+- 重构了 PostManager, 保持邮寄核心功能的单一职责
+    - 添加了 MCDRpostCoordinator 类作为协调器
+
 ## [3.3.3]
 
 ### Fixed
@@ -52,6 +96,11 @@
 ### Changed
 
 - 放弃对 1.9~1.13 的支持，当服务器使用此区间的版本时只使用外界注册的 Handler
+
+## [3.3.2] - [YANKED]
+
+> [!CAUTION]
+> Due to a critical bug, this version is yanked.
 
 ## [3.3.2-rc.2] - 2025-09-21
 
