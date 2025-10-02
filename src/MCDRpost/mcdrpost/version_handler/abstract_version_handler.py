@@ -7,7 +7,7 @@ import minecraft_data_api as api
 from mcdrpost import constants
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
 
 
 class AbstractVersionHandler(ABC):
@@ -90,7 +90,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
                 self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
             )
         else:
-            self.server.logger.warning(tr(Tags.rcon.not_running))
+            self.server.logger.warning(TranslationKeys.rcon.not_running.tr())
 
             @new_thread('MCDRpost | get offhand item')
             def get():

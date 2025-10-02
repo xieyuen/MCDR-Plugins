@@ -4,7 +4,7 @@ from mcdreforged import PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.configuration import Configuration
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
@@ -24,7 +24,7 @@ class ConfigurationManager:
 
     def reload(self) -> None:
         """(重新)加载配置文件"""
-        self._server.logger.info(tr(Tags.config.load))
+        self._server.logger.info(TranslationKeys.config.load.tr())
         self._configuration = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,

@@ -7,6 +7,13 @@
 
 ## [Unreleased]
 
+## [3.3.3-beta.1]
+
+### Changed
+
+- 新的翻译使用方式
+  - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便，换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
+
 ## [3.3.3-alpha.3]
 
 ### Fixed

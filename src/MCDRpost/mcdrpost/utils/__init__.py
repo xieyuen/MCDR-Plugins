@@ -3,7 +3,7 @@ from typing import TypeVar
 
 from mcdreforged import AbstractNode, CommandSource, RequirementNotMet
 
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
 
 
 def get_formatted_time() -> str:
@@ -24,9 +24,9 @@ def add_requirements(node: __Node, permission: int, require_player: bool = False
 
     def on_error(src: CommandSource):
         if require_player and not src.is_player:
-            src.reply(tr(Tags.only_for_player))
+            src.reply(TranslationKeys.only_for_player.tr())
             return
-        src.reply(tr(Tags.no_permission))
+        src.reply(TranslationKeys.no_permission.tr())
 
     node.requires(require_callback).on_error(
         RequirementNotMet, on_error, handled=True

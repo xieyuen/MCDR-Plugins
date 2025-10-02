@@ -12,7 +12,7 @@ from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.utils import get_formatted_time, play_sound
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
 
 
 class PostManager:
@@ -63,7 +63,7 @@ class PostManager:
             if self.configuration.auto_register:
                 # 还未注册的玩家
                 self.data_manager.add_player(player)
-                server.logger.info(tr(Tags.login_log, player))
+                server.logger.info(TranslationKeys.login_log.tr(player))
                 self.data_manager.save()
                 return
 
@@ -71,8 +71,8 @@ class PostManager:
             player_list = api.get_server_player_list()[-1]
             for online_player in player_list:
                 if server.get_permission_level(online_player) >= 3:
-                    server.tell(online_player, tr(Tags.new_player_joined, player))
-            server.logger.info(tr(Tags.new_player_joined, player))
+                    server.tell(online_player, TranslationKeys.new_player_joined.tr(player))
+            server.logger.info(TranslationKeys.new_player_joined.tr(player))
             return
 
         # 已注册的玩家，向他推送订单消息（如果有）
@@ -80,7 +80,7 @@ class PostManager:
             @new_thread('MCDRpost | send receive tip')
             def send_receive_tip():
                 time.sleep(self.configuration.receive_tip_delay)
-                server.tell(player, tr(Tags.wait_for_receive))
+                server.tell(player, TranslationKeys.wait_for_receive.tr())
                 play_sound.has_something_to_receive(server, player)
 
             send_receive_tip()
@@ -135,24 +135,24 @@ class PostManager:
         sender = src.get_info().player
 
         if self.is_storage_full(sender):
-            src.reply(tr(Tags.at_max_storage, self.configuration.max_storage))
+            src.reply(TranslationKeys.at_max_storage.tr(self.configuration.max_storage))
             return
 
         if sender == receiver:
-            src.reply(tr(Tags.same_person))
+            src.reply(TranslationKeys.same_person.tr())
             return
 
         if comment is None:
-            comment = tr(Tags.no_comment)
+            comment = TranslationKeys.no_comment.tr()
 
         try:
             item = self.get_offhand_item(sender)
         except:
-            src.reply(tr(Tags.error.running))
+            src.reply(TranslationKeys.error.running.tr())
             raise
 
         if item is not None:
-            src.reply(tr(Tags.check_offhand))
+            src.reply(TranslationKeys.check_offhand.tr())
             return
 
         # create order
@@ -165,8 +165,8 @@ class PostManager:
         ))
 
         self.replace(sender, constants.AIR)
-        src.reply(tr(Tags.reply_success_post))
-        self.server.tell(receiver, tr(Tags.hint_receive, order_id))
+        src.reply(TranslationKeys.reply_success_post.tr())
+        self.server.tell(receiver, TranslationKeys.hint_receive.tr(order_id))
         play_sound.successfully_post(self.server, sender, receiver)
         self.data_manager.save()
 
@@ -187,19 +187,19 @@ class PostManager:
         try:
             item = self.get_offhand_item(player)
         except:
-            src.reply(tr(Tags.error.running))
+            src.reply(TranslationKeys.error.running.tr())
             raise
 
         if item is not None:
-            src.reply(tr(Tags.clear_offhand))
+            src.reply(TranslationKeys.clear_offhand.tr())
             return False
 
         # 不是 TA
         if typ == 'receive' and order_id not in self.data_manager.get_orderid_by_receiver(player):
-            src.reply(tr(Tags.unchecked_orderid))
+            src.reply(TranslationKeys.unchecked_orderid.tr())
             return False
         elif typ == 'cancel' and order_id not in self.data_manager.get_orderid_by_sender(player):
-            src.reply(tr(Tags.unchecked_orderid))
+            src.reply(TranslationKeys.unchecked_orderid.tr())
             return False
 
         order = self.data_manager.pop_order(order_id)
