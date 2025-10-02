@@ -4,7 +4,7 @@ from typing import DefaultDict, TYPE_CHECKING
 from mcdrpost import constants
 from mcdrpost.data_structure import Order, OrderData, OrderInfo
 from mcdrpost.utils.exception import InvalidOrder
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
@@ -28,9 +28,13 @@ class DataManager:
         self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
-        self._order_data: OrderData | None = None
+        self._order_data: OrderData = self._post_manager.server.load_config_simple(
+            constants.ORDER_DATA_FILE_NAME,
+            target_class=OrderData,
+            file_format=constants.ORDERS_DATA_FILE_TYPE
+        )
 
-    def _build_index(self) -> None:
+    def build_index(self) -> None:
         """构建索引"""
         self._sender_index.clear()
         self._receiver_index.clear()
@@ -38,7 +42,7 @@ class DataManager:
             self._sender_index[order.sender].append(order.id)
             self._receiver_index[order.receiver].append(order.id)
 
-    def _check_orders(self) -> None:
+    def check_orders(self) -> None:
         """检查订单
 
         主要是订单的 ID 能不能对上索引
@@ -51,9 +55,9 @@ class DataManager:
             if str(order.id) == order_id:
                 continue
             if not self._post_manager.configuration.auto_fix:
-                raise InvalidOrder(tr(Tags.error.invalid_order, order_id, order.id))
-            self._logger.error(tr(Tags.error.invalid_order, order_id, order.id))
-            self._logger.error(tr(Tags.auto_fix.invalid_order, order_id))
+                raise InvalidOrder(TranslationKeys.error.invalid_order.tr(order_id, order.id))
+            self._logger.error(TranslationKeys.error.invalid_order.tr(order_id, order.id))
+            self._logger.error(TranslationKeys.auto_fix.invalid_order.tr(order_id))
             self._order_data.orders[order_id].id = int(order_id)
             is_fixed = True
 
@@ -61,17 +65,17 @@ class DataManager:
             self.save()
 
     def reload(self) -> None:
-        self._post_manager.server.logger.info(tr(Tags.data.load))
+        self._post_manager.server.logger.info(TranslationKeys.data.load.tr())
         self._order_data = self._post_manager.server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE
         )
-        self._check_orders()
-        self._build_index()
+        self.check_orders()
+        self.build_index()
 
     def save(self) -> None:
-        self._post_manager.server.logger.info(tr(Tags.data.save))
+        self._post_manager.server.logger.info(TranslationKeys.data.save.tr())
         # 直接对订单进行排序
         self._order_data.orders = dict(sorted(self._order_data.orders.items(), key=lambda item: int(item[0])))
         self._post_manager.server.save_config_simple(

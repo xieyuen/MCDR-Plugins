@@ -13,6 +13,8 @@ from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+from mcdrpost.version_handler.sound_player.abstract_sound_player import AbstractSoundPlayer
+from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer, OldSoundPlayer
 
 
 def register_handler(handler: type[AbstractVersionHandler], checker: Callable[[Environment], bool]):
@@ -32,6 +34,9 @@ __all__ = [
     # custom handler
     'AbstractVersionHandler', 'DefaultVersionHandler',
     'register_handler',
+
+    # custom handler: custom sound
+    'AbstractSoundPlayer', 'NewSoundPlayer', 'OldSoundPlayer',
 
     # constants
     'OFFHAND_CODE', 'AIR',

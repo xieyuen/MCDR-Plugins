@@ -7,7 +7,9 @@ import minecraft_data_api as api
 from mcdrpost import constants
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
-from mcdrpost.utils.translation import Tags, tr
+from mcdrpost.utils.translation import TranslationKeys
+from mcdrpost.version_handler.sound_player.abstract_sound_player import AbstractSoundPlayer
+from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer
 
 
 class AbstractVersionHandler(ABC):
@@ -15,17 +17,19 @@ class AbstractVersionHandler(ABC):
 
     Attributes:
         server (PluginServerInterface): psi 实例
+        sound_player (AbstractSoundPlayer): 音效播放器
     """
 
     @final
     def __init__(self) -> None:
         self.server: PluginServerInterface = PluginServerInterface.psi()
+        self.sound_player: AbstractSoundPlayer | None = None
 
     @classmethod
     @final
     def is_builtin(cls) -> bool:
         """此处理器是否为 MCDRpost 内置的处理器"""
-        return issubclass(cls, BuiltinVersionHandler)
+        return cls in BuiltinVersionHandler.__subclasses__()
 
     @abstractmethod
     def replace(self, player: str, item: Item) -> None:
@@ -46,6 +50,17 @@ class AbstractVersionHandler(ABC):
             player (str): 玩家 id
         """
         raise NotImplementedError
+
+    @property
+    def play_sound(self) -> AbstractSoundPlayer:
+        """播放提示音
+
+        你可以重写这个 property 来更换音效，但请注意刚实例化的 Handler 的 sound_player 属性
+        是 None，要判断一下并赋值
+        """
+        if self.sound_player is None:
+            self.sound_player = NewSoundPlayer(self.server)
+        return self.sound_player
 
 
 class BuiltinVersionHandler(AbstractVersionHandler, ABC):
@@ -82,13 +97,15 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
         """for mc 1.17+"""
         self.server.execute(f'item replace entity {player} weapon.offhand with {self.item2str(item)}')
 
+    @override
     def get_offhand_item(self, player: str) -> Item:
+        """获取副手物品--通用实现"""
         if self.server.is_rcon_running():
             offhand_item = api.convert_minecraft_json(
                 self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
             )
         else:
-            self.server.logger.warning(tr(Tags.rcon.not_running))
+            self.server.logger.warning(TranslationKeys.rcon.not_running.tr())
 
             @new_thread('MCDRpost | get offhand item')
             def get():

@@ -21,4 +21,4 @@ class Since17Handler(BuiltinVersionHandler):
         return f'{item.id}{item.components} {item.count}'
 
 
-VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version < '1.20.5')
+VersionManager.register_handler(Since17Handler, lambda env: "1.17" <= env.server_version < '1.20.5')  # type: ignore

@@ -7,6 +7,52 @@
 
 ## [Unreleased]
 
+## [3.3.3]
+
+### Fixed
+
+- 修复了无法发送/接受物品的 BUG
+
+## [3.3.3-beta.2]
+
+### Added
+
+- 提供自定义音效的 API
+    - 删除了原本的 play_sound 模块
+    - 添加抽象类: AbstractSoundPlayer
+    - 添加实现类: NewSoundPlayer 并暴露至 API
+    - 添加实现类: OldSoundPlayer 并暴露至 API
+    - 添加 property: AbstractVersionHandler.play_sound
+- 添加了一些注释和类型注解
+
+### Changed
+
+- 修改了部分变量/属性的名称
+
+|              原名称              |                  新名称                   |
+|:-----------------------------:|:--------------------------------------:|
+| TranslationKeyItem.__FULL_KEY | TranslationKeyItem.__FULL_KEY_TEMPLATE |
+|         utils.__Node          |            utils.__NodeType            |
+
+## [3.3.3-beta.1]
+
+### Changed
+
+- 新的翻译使用方式
+    - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便，换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
+
+## [3.3.3-alpha.3]
+
+### Fixed
+
+- 修复了 player 命令没有回复的问题
+
+## [3.3.3-alpha.2]
+
+### Changed
+
+- 放弃对 1.9~1.13 的支持，当服务器使用此区间的版本时只使用外界注册的 Handler
+
 ## [3.3.2-rc.2] - 2025-09-21
 
 ### Added
@@ -125,6 +171,7 @@
 ### Changed
 
 重构了旧代码，具体包括：
+
 - 模块化重构
 - 利用面向对象实现 MCDRpost 主要功能
 - 增加了配置文件

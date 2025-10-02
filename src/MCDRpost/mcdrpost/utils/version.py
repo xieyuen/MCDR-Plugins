@@ -29,15 +29,19 @@ class SemanticVersion:
         """是否是预发布版本"""
         return self.pre_release is not None
 
-    def __eq__(self, other: 'SemanticVersion | str') -> bool:
+    def __eq__(self, other) -> bool:
         if isinstance(other, str):
             other = SemanticVersion(other)
-        return self.version == other.version
+        if isinstance(other, SemanticVersion):
+            return self.version == other.version
+        return NotImplemented
 
-    def __lt__(self, other: 'SemanticVersion | str') -> bool:
+    def __lt__(self, other) -> bool:
         if isinstance(other, str):
             other = SemanticVersion(other)
-        return self.version < other.version
+        if isinstance(other, SemanticVersion):
+            return self.version < other.version
+        return NotImplemented
 
     def __str__(self) -> str:
         return str(self.version)

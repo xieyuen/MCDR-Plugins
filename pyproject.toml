@@ -17,3 +17,18 @@ minecraft-data-api = [
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple"
 default = true
+
+[tool.mypy]
+files = [
+    "src/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "mcdreforged.*",
+    "mcdreforged",
+    "mcdreforged.api.*",
+    "packaging",
+    "minecraft_data_api",
+]
+ignore_missing_imports = true

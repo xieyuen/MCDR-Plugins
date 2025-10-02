@@ -1,13 +1,13 @@
 # MCDRpost
 
-## Copyright Information
+## 版权信息
 
 - 原作者: [Flyky](https://github.com/Flyky)
 - 原仓库: [MCDRpost](https://github.com/Flyky/MCDRpost)
-- 维护者: [xieyuen](https://github.com/xieyuen)
+- 现维护者/开发者: [xieyuen](https://github.com/xieyuen)
 - LICENSE: [GPL 3.0](../../LICENSE)
 
-## Update Information
+## 一些更新信息
 
 > [!WARNING]
 > 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
@@ -19,32 +19,27 @@
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
 
-[^1]: Minecraft 1.20.5 删除了旧版的 tag 标签，改用新的 components 系统，导致命令不能执行，Minecraft 报错见
-Flyky/MCDRpost#10
+更新日志见 [CHANGELOG](CHANGELOG.md)
 
-## Introduce
+## 介绍
 
-A MCDR plugin for post/teleport items  
 一个用于邮寄/传送物品的MCDR插件
 
 [-> MCDReforged <-](https://github.com/Fallen-Breath/MCDReforged)
 
 ![MCDRpost help](https://s1.ax1x.com/2020/04/16/Jk8ysP.png)
 
-## Dependencies
+## 依赖
 
 - Python >= 3.10
 - MCDReforged >= 2.15.0
 - [Minecraft Data API](https://github.com/MCDReforged/MinecraftDataAPI) 任意版本
-- Minecraft >= 1.9[^2]
-    - 在不自定义 Handler 的情况下，MCDRpost 使用 MinecraftDataAPI 获取物品信息
-
-[^2]: Minecraft 1.9 才有的副手你难道还想在 1.8 使用？
+- Minecraft >= 1.13 (如果不使用自定义 Handler)[^2]
 
 > [!IMPORTANT]
-> 我们十分推荐开启服务器的 RCON，但 1.13 版本以下的除外
+> 我们十分推荐开启服务器的 RCON
 
-## Install
+## 安装
 
 将在 release 或 catalogue 下载的 `.mcdr` 插件文件放入插件目录下加载即可
 
@@ -58,7 +53,7 @@ A MCDR plugin for post/teleport items
 >
 > 来安装 MCDRpost, 这也是推荐做法
 
-## Feature
+## 功能
 
 **使用该插件可以将副手的物品发送给别的玩家**  
 也可以发送给离线玩家（但该玩家必须曾经进过服务器）  
@@ -74,7 +69,7 @@ A MCDR plugin for post/teleport items
     - 该插件传送和接收前均会检查并提示副手物品，不用担心会直接 replace 掉原本副手的物品
     - 当然为什么不传送当前主手所持栏位进行传送呢？ ~~因为懒2333~~
 
-## Usage
+## 使用
 
 |                命令                |             缩写              | 说明            |
 |:--------------------------------:|:---------------------------:|:--------------|
@@ -96,7 +91,7 @@ A MCDR plugin for post/teleport items
 
 *Added in version 3.1.0:* `list` 子命令新增 `post` `receive`，效果等同于 `!!po pl` 和 `!!po rl`
 
-## Configurations
+## 配置
 
 MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 中
 但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`
@@ -177,7 +172,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 [配置文件 demo](https://gist.github.com/xieyuen/36f3c272d05b59ac6d0fe9e8a690b312)
 
-## ATTENTIONS!!
+## 注意信息
 
 - 可能会有部分带有特殊复杂NBT标签的物品无法传送，会提示检测不到可传送的物品，所以尝试一下即可
 - 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
@@ -190,7 +185,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > 如果您的 Minecraft 服务器要从 1.20.5 以下升级到 1.20.5 版本或以上，请让玩家们清空中转站，
 > 因为订单数据的 nbt 不能自动地转化成新版本的 components，升级之后订单的物品会因为标签结构改变而不能取走
 
-## pics
+## 一些图片
 
 ![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)<br>
 ![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)<br>
@@ -199,6 +194,9 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 ## API
 
 > [!NOTE]
-> 这里是高级用户的自定义内容，如果你在使用插件的时候没有问题，可以忽略这段内容
+> 如果你在使用插件的时候没有遇到什么问题，可以忽略这段内容
 
-点击 [此处](./custom_handler.md) 跳转至 MCDRpost 自定义 Handler 文档
+点击 [此处](custom_handler.md) 跳转至 MCDRpost 的自定义 Handler 文档
+
+[^1]: Minecraft 1.20.5 用 components 代替了 tag，导致命令不能执行，Minecraft 报错见 Flyky/MCDRpost#10
+[^2]: 理论上使用自定义 Handler 就可以适配任何版本，但是插件**本身没有兼容**低于 1.13 的版本，原因见 [Custom Handler](custom_handler.md)

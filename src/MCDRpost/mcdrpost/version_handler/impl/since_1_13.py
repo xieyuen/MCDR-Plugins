@@ -5,7 +5,7 @@ from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.version_handler.abstract_version_handler import BuiltinVersionHandler
 
 
-class Since9Handler(BuiltinVersionHandler):
+class Since13Handler(BuiltinVersionHandler):
     @override
     def replace(self, player: str, item: str) -> None:
         self.server.execute(f"replaceitem entity {player} weapon.offhand {item}")
@@ -25,4 +25,4 @@ class Since9Handler(BuiltinVersionHandler):
         return f'{item.id}{item.components} {item.count}'
 
 
-VersionManager.register_handler(Since9Handler, lambda env: env.server_version < "1.17")
+VersionManager.register_handler(Since13Handler, lambda env: '1.13' <= env.server_version < "1.17")  # type: ignore
