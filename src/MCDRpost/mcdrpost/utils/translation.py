@@ -1,22 +1,22 @@
-from mcdreforged import PluginServerInterface
+from mcdreforged import PluginServerInterface, RTextBase, RTextMCDRTranslation
 
 
 class TranslationKeyItem:
     """MCDRpost 翻译键"""
 
-    __FULL_KEY: str = 'mcdrpost.{key}'
+    __FULL_KEY_TEMPLATE: str = 'mcdrpost.{key}'
     __tr = PluginServerInterface.si().tr
     __rtr = PluginServerInterface.si().rtr
 
     def __init__(self, value: str):
-        self.key = self.__FULL_KEY.format(key=value)
+        self.key = self.__FULL_KEY_TEMPLATE.format(key=value)
         self.value = value
 
-    def tr(self, *args):
+    def tr(self, *args) -> str | RTextBase:
         """获取普通翻译，等同于 ``ServerInterface.si().tr(key_item.key, *args)``"""
         return self.__tr(self.key, *args)
 
-    def rtr(self, *args):
+    def rtr(self, *args) -> RTextMCDRTranslation:
         """获取 RText 翻译，等同于 ``ServerInterface.si().rtr(key_item.key, *args)``"""
         return self.__rtr(self.key, *args)
 

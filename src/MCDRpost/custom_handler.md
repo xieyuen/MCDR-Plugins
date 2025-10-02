@@ -1,4 +1,4 @@
-# MCDRpost API--Custom Handler
+# MCDRpost API--自定义 Handler
 
 一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况（比如1.9版本）[^1]，MCDRpost可能无法满足需求，
 考虑到插件对 Minecraft 的兼容性，插件暴露了一定的 API 用于 Minecraft 一些特殊服务端的适配
@@ -7,7 +7,10 @@
 
 - classes
     - [AbstractVersionHandler](#class-abstractversionhandlerabc)
+    - [AbstractSoundPlayer](#class-abstractsoundplayerabc)
     - [DefaultVersionHandler](#class-defaultversionhandlerabstractversionhandler)
+    - [NewSoundPlayer](#class-newsoundplayerabstractsoundplayer)
+    - [OldSoundPlayer](#class-oldsoundplayerabstractsoundplayer)
 - functions
     - [register_handler](#function-register_handler)
 - types
@@ -56,6 +59,14 @@ from mcdrpost import api as mp
 
 API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 
+#### property play_sound
+
+|        返回值类型        |       描述        |
+|:-------------------:|:---------------:|
+| AbstractSoundPlayer | 为 MCDRpost 提供音效 |
+
+MCDRpost 通过它播放音效
+
 ### class DefaultVersionHandler(AbstractVersionHandler)
 
 这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单 Handler,
@@ -70,6 +81,43 @@ API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 当你实现了自定义的 Handler，你需要向 MCDRpost 注册你的 Handler，否则插件不会使用你的 Handler
 
 注意，checker参数是决定 你的 Handler 是否生效的函数，参数是 [Environment](#class-environment) 对象，返回一个布尔值
+
+### class AbstractSoundPlayer(ABC)
+
+这是 MCDRpost 在 3.3.3 版本中添加的 API, 用于播放音效
+
+#### method successfully_receive
+
+|   参数   |  类型   | 描述    |
+|:------:|:-----:|:------|
+| player | `str` | 玩家 ID |
+
+当玩家成功接收到订单时调用
+
+#### method successfully_post
+
+|    参数    |  类型   | 描述  |
+|:--------:|:-----:|:----|
+|  sender  | `str` | 寄件人 |
+| receiver | `str` | 收件人 |
+
+当玩家成功寄送订单时调用，要给寄件人和收件人两者都播放音效
+
+#### method has_something_to_receive
+
+|   参数   |  类型   | 描述    |
+|:------:|:-----:|:------|
+| player | `str` | 玩家 ID |
+
+当玩家刚进入服务器且有物品待收时调用
+
+### class NewSoundPlayer(AbstractSoundPlayer)
+
+这是 MCDRpost 为 Minecraft 1.13 及以上版本提供的有效实现
+
+### class OldSoundPlayer(AbstractSoundPlayer)
+
+这是 MCDRpost 为 Minecraft 1.13 以下版本提供的有效实现
 
 ### Types
 

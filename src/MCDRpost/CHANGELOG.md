@@ -7,12 +7,33 @@
 
 ## [Unreleased]
 
+## [3.3.3-beta.2]
+
+### Added
+
+- 提供自定义音效的 API
+    - 删除了原本的 play_sound 模块
+    - 添加抽象类: AbstractSoundPlayer
+    - 添加实现类: NewSoundPlayer 并暴露至 API
+    - 添加实现类: OldSoundPlayer 并暴露至 API
+    - 添加 property: AbstractVersionHandler.play_sound
+- 添加了一些注释和类型注解
+
+### Changed
+
+- 修改了部分变量/属性的名称
+
+|              原名称              |                  新名称                   |
+|:-----------------------------:|:--------------------------------------:|
+| TranslationKeyItem.__FULL_KEY | TranslationKeyItem.__FULL_KEY_TEMPLATE |
+|         utils.__Node          |            utils.__NodeType            |
+
 ## [3.3.3-beta.1]
 
 ### Changed
 
 - 新的翻译使用方式
-  - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便，换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
+    - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便，换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
 
 ## [3.3.3-alpha.3]
 

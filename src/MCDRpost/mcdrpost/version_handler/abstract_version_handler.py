@@ -8,6 +8,8 @@ from mcdrpost import constants
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
+from mcdrpost.version_handler.sound_player.abstract_sound_player import AbstractSoundPlayer
+from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer
 
 
 class AbstractVersionHandler(ABC):
@@ -15,11 +17,13 @@ class AbstractVersionHandler(ABC):
 
     Attributes:
         server (PluginServerInterface): psi 实例
+        sound_player (AbstractSoundPlayer): 音效播放器
     """
 
     @final
     def __init__(self) -> None:
         self.server: PluginServerInterface = PluginServerInterface.psi()
+        self.sound_player: AbstractSoundPlayer | None = None
 
     @classmethod
     @final
@@ -46,6 +50,17 @@ class AbstractVersionHandler(ABC):
             player (str): 玩家 id
         """
         raise NotImplementedError
+
+    @property
+    def play_sound(self) -> AbstractSoundPlayer:
+        """播放提示音
+
+        你可以重写这个 property 来更换音效，但请注意刚实例化的 Handler 的 sound_player 属性
+        是 None，要判断一下并赋值
+        """
+        if self.sound_player is None:
+            self.sound_player = NewSoundPlayer(self.server)
+        return self.sound_player
 
 
 class BuiltinVersionHandler(AbstractVersionHandler, ABC):

@@ -11,7 +11,7 @@ from mcdrpost.manager.command_manager import CommandManager
 from mcdrpost.manager.config_manager import ConfigurationManager
 from mcdrpost.manager.data_manager import DataManager
 from mcdrpost.manager.version_manager import VersionManager
-from mcdrpost.utils import get_formatted_time, play_sound
+from mcdrpost.utils import get_formatted_time
 from mcdrpost.utils.translation import TranslationKeys
 
 
@@ -81,7 +81,7 @@ class PostManager:
             def send_receive_tip():
                 time.sleep(self.configuration.receive_tip_delay)
                 server.tell(player, TranslationKeys.wait_for_receive.tr())
-                play_sound.has_something_to_receive(server, player)
+                self.version_manager.play_sound.has_something_to_receive(player)
 
             send_receive_tip()
 
@@ -167,7 +167,7 @@ class PostManager:
         self.replace(sender, constants.AIR)
         src.reply(TranslationKeys.reply_success_post.tr())
         self.server.tell(receiver, TranslationKeys.hint_receive.tr(order_id))
-        play_sound.successfully_post(self.server, sender, receiver)
+        self.version_manager.play_sound.successfully_post(sender, receiver)
         self.data_manager.save()
 
     def receive(self, src: InfoCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
@@ -204,7 +204,7 @@ class PostManager:
 
         order = self.data_manager.pop_order(order_id)
         self.replace(player, order.item)
-        play_sound.receive(self.server, player)
+        self.version_manager.play_sound.successfully_receive(player)
         return True
 
     def reload(self) -> None:
