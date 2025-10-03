@@ -1,0 +1,96 @@
+mcdreforged_plugin_manager:
+  help_message: |
+    ========== {name} v{version} ==========
+    §6{prefix}§r: 显示 MPM 帮助信息
+    §6{prefix} list §a[labels]§r: 列出所有插件
+    如果 §alabels§r 被指定，只有包含指定标签的插件才会被列出
+    §alabels§r 可以是一个标签或多个被 §6,§r 分割的标签。接受的标签：§6information§r, §6tool§r, §6management§r, §6api§r
+    §6{prefix} search §b<query>§r: 根据关键词搜索插件
+    §6{prefix} info §b<plugin_id>§r: 显示一个插件的详细信息
+    §6{prefix} install §b<plugin_ids>§r: 安装插件，其依赖的插件和 Python 包将会一并安装
+    §6{prefix} uninstall §b<plugin_ids>§r: 卸载插件
+    §6{prefix} upgrade §b<plugin_ids>§r: 将插件更新至最新版本
+    §6{prefix} confirm§r: 确认操作
+    §6{prefix} checkupdate§r: 手动对所有插件检查更新
+  help_summary: 轻松管理你的 MCDReforged 插件
+  permission_denied: §c权限不足
+  cache:
+    cache: 正在更新插件库索引
+    cached: 插件库索引更新完成; 新增 {0} 个插件
+    exception: '插件库索引更新失败: {0}'
+    clock:
+      started: 插件库索引定时更新计时器启动，间隔 {0} 秒
+  plugin:
+    status:
+      installed: §a已安装 {0}
+      uninstalled: §c未安装
+    no_description: §o无简介
+    author: '§l作者: §r{0}'
+    label: '§l标签: §r{0}'
+    not_found: §c未找到插件 {0}
+    not_installed: §c插件 {0} 未安装
+    operation:
+      install: 安装
+      uninstall: 卸载
+      upgrade: 更新至 {0}
+      show_info: 显示信息
+    detail:
+      dependency: '插件依赖:'
+      requirement: 'Python包依赖:'
+      release: '版本:'
+    release:
+      failed_to_get_release: '§c无法获取发布信息: {0}'
+  dependency:
+    dependency_not_found: 未找到依赖项 {0}
+    dependency_not_met: 依赖项 {0} 不满足版本约束 {1}，找到版本 {2}
+    invalid_dependency: '无效的依赖项 {0}: {1}'
+    satisfied: 依赖项满足
+    operation:
+      install: §3安装§r
+      upgrade: §b更新§r
+
+  install:
+    cannot_install_self: §c无法安装或更新 MPM 自身
+    already_installed: 插件 {0} 已安装
+    already_up_to_date: 插件 {0} 已为最新版
+    newer_version_available: '插件 {0} 有新版本可用: {1}'
+    confirm:
+      title: '{0}操作确认:'
+      plugin_list: '§l将§3安装§r§l或§b更新§r§l以下插件:'
+      package_list: '§l将§3安装§r§l或§b更新§r§l以下包:'
+      footer: 请使用 {0} 确认操作
+      command_hover: 确认
+    operating: 正在 {0} {1}
+    operation:
+      plugin:
+        downloading: 正在下载 §6{0}
+        removing: 正在删除 §6{0}
+        exception: '§c发生异常: {0}'
+      package:
+        operating_with_pip: 正在通过 pip {0} §6{1}
+        exception: '§c发生异常: {0}'
+      reload_mcdr: 正在重载 MCDR
+    result:
+      success: §a操作成功
+      failed: §c操作失败
+
+  uninstall:
+    cannot_uninstall_self: §c无法卸载 MPM 自身
+    title: '§l§c卸载§r操作确认: 将卸载 §6{0}'
+    dependency_warning: '§l§c警告！以下插件依赖于 {0}: '
+    confirm: 请使用 {0} 确认操作
+    step:
+      unload_plugin: 正在从 MCDR 卸载插件 {0}
+      remove_file: 正在删除 §6{0}
+      reload_mcdr: 正在重载 MCDR
+    result:
+      success: §a操作成功
+      failed: §c操作失败
+
+  task_manager:
+    nothing_to_confirm: §c没有什么需要确认的
+
+  update_helper:
+    title: '§l以下插件需要更新:'
+    all_up_to_date: §a所有插件均为最新版
+    click_to_upgrade: 更新至 {0}

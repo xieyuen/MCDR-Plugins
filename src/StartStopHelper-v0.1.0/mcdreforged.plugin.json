@@ -1,0 +1,18 @@
+{
+    "id": "start_stop_helper_r_changed",
+    "version": "0.1.0",
+    "name": "StartStopHelperRChanged",
+    "description": {
+        "en_us": "Start and stop server helper",
+        "zh_cn": "开关服助手"
+    },
+    "author": [
+        "Fallen_Breath",
+        "Andy Zhang",
+        "xieyuen"
+    ],
+    "link": "https://github.com/AnzhiZhang/MCDReforgedPlugins/tree/master/start_stop_helper_r",
+    "resources": [
+        "lang"
+    ]
+}
