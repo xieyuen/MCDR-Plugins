@@ -5,12 +5,17 @@
 """
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.manager.post_manager import PostManager
+# 延迟导入以避免循环导入
 from mcdrpost.version_handler import register_all_handlers
 
-manager: PostManager = PostManager(PluginServerInterface.psi())
-
+# 在模块加载时注册所有版本处理器
 register_all_handlers()
+
+# 延迟导入PostManager以避免循环导入
+from mcdrpost.manager.post_manager import PostManager
+
+# 创建全局管理器实例
+manager: PostManager = PostManager()
 
 
 def on_load(server: PluginServerInterface, prev_module):

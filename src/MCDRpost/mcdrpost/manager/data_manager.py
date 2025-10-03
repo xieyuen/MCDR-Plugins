@@ -22,6 +22,7 @@ class DataManager:
         # initialize
         self._post_manager: "PostManager" = post_manager
         self._logger = post_manager.server.logger
+        self._logger.info(TranslationKeys.data.load.tr())
 
         # index
         self._sender_index: DefaultDict[str, list[int]] = defaultdict(list)

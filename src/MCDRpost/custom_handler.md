@@ -69,7 +69,7 @@ MCDRpost 通过它播放音效
 
 ### class DefaultVersionHandler(AbstractVersionHandler)
 
-这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单 Handler,
+这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单 Handler
 
 ### function register_handler
 

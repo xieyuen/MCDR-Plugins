@@ -16,6 +16,7 @@ class ConfigurationManager:
     def __init__(self, post_manager: "PostManager") -> None:
         self._post_manager: "PostManager" = post_manager
         self._server: PluginServerInterface = post_manager.server
+        self._server.logger.info(TranslationKeys.config.load.tr())
         self._configuration: Configuration = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
