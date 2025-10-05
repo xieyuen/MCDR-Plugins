@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from mcdreforged import CommandContext, CommandSource, GreedyText, InfoCommandSource, Integer, Literal, \
+from mcdreforged import CommandSource, GreedyText, Integer, Literal, \
     PluginServerInterface, RequirementNotMet, Text
 
 from mcdrpost.configuration import CommandPermission, Configuration
@@ -8,6 +8,7 @@ from mcdrpost.constants import SIMPLE_HELP_MESSAGE
 from mcdrpost.manager.post_manager import PostManager
 from mcdrpost.utils import add_requirements
 from mcdrpost.utils.command.command_helper import CommandHelper
+from mcdrpost.utils.command.pre_handler import CommandPreHandler
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
@@ -25,6 +26,7 @@ class CommandManager:
 
         self._data_manager = coo.data_manager
         self._helper = CommandHelper(self._prefixes, self._data_manager)
+        self.pre_handler = CommandPreHandler(coo)
 
         self._prefixes = ["!!po"]
 
@@ -50,32 +52,6 @@ class CommandManager:
                 self.generate_command_node(prefix)
             )
 
-    def receive(self, src: InfoCommandSource, order_id):
-        if self._post_manager.receive(src, order_id, 'receive'):
-            src.reply(TranslationKeys.receive_success.tr(order_id))
-
-    def cancel(self, src: InfoCommandSource, order_id):
-        if self._post_manager.receive(src, order_id, 'cancel'):
-            src.reply(TranslationKeys.cancel_success.tr(order_id))
-
-    def add_player(self, src: CommandSource, ctx: CommandContext):
-        player = ctx['player_id']
-        if not self._data_manager.add_player(player):
-            src.reply(TranslationKeys.has_player.tr(player))
-            return
-
-        src.reply(TranslationKeys.login_success.tr(player))
-        self.logger.info(TranslationKeys.login_log.tr(player))
-
-    def remove_player(self, src: CommandSource, ctx: CommandContext):
-        player = ctx['player_id']
-        if not self._data_manager.remove_player(player):
-            src.reply(TranslationKeys.cannot_del_player.tr(player))
-            return
-
-        src.reply(TranslationKeys.del_player_success.tr(player))
-        self.logger.info(TranslationKeys.del_player_log.tr(player))
-
     # nodes
     def gen_post_node(self, node_name: str) -> Literal:
         return add_requirements(
@@ -84,10 +60,10 @@ class CommandManager:
             then(
                 Text('receiver').
                 suggests(self._data_manager.get_players).
-                runs(lambda src, ctx: self._post_manager.post(src, ctx['receiver'])).
+                runs(self.pre_handler.post).
                 then(
                     GreedyText('comment').
-                    runs(lambda src, ctx: self._post_manager.post(src, ctx['receiver'], ctx['comment']))
+                    runs(self.pre_handler.post)
                 )
             ),
             permission=self._perm.post,
@@ -113,7 +89,7 @@ class CommandManager:
                         self._data_manager.get_orderid_by_receiver(src.get_info().player)
                     ]
                 ).
-                runs(lambda src, ctx: self.receive(src, ctx['orderid']))
+                runs(self.pre_handler.receive)
             ),
             permission=self._perm.receive,
             require_player=True
@@ -138,7 +114,7 @@ class CommandManager:
                         self._data_manager.get_orderid_by_sender(src.get_info().player)
                     ]
                 ).
-                runs(lambda src, ctx: self.cancel(src, ctx['orderid']))
+                runs(self.pre_handler.cancel)
             ),
             permission=self._perm.cancel,
             require_player=True
@@ -185,7 +161,7 @@ class CommandManager:
             then(
                 Literal('add').
                 runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
-                then(Text('player_id').runs(self.add_player))
+                then(Text('player_id').runs(self.pre_handler.add_player))
             ).
             then(
                 Literal('remove').
@@ -193,7 +169,7 @@ class CommandManager:
                 then(
                     Text('player_id').
                     suggests(self._data_manager.get_players).
-                    runs(self.remove_player)
+                    runs(self.pre_handler.remove_player)
                 )
             )
         )

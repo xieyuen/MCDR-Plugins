@@ -1,6 +1,6 @@
 from typing import Literal, TYPE_CHECKING
 
-from mcdreforged import InfoCommandSource, PluginServerInterface
+from mcdreforged import InfoCommandSource, PlayerCommandSource, PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.configuration import Configuration
@@ -69,15 +69,15 @@ class PostManager:
             return False
         return len(self.data_manager.get_orderid_by_sender(player)) >= self.config.max_storage
 
-    def post(self, src: InfoCommandSource, receiver: str, comment: str | None = None) -> None:
+    def post(self, src: PlayerCommandSource, receiver: str, comment: str | None = None) -> None:
         """发送订单
 
         Args:
-            src (InfoCommandSource): 寄件人的相关信息
+            src (PlayerCommandSource): 寄件人的相关信息
             receiver (str): 收件人 ID
             comment (str): 备注信息
         """
-        sender = src.get_info().player
+        sender = src.player
 
         if self.is_storage_full(sender):
             src.reply(TranslationKeys.at_max_storage.tr(self.config.max_storage))
@@ -118,7 +118,7 @@ class PostManager:
         self.version_manager.play_sound.successfully_post(sender, receiver)
         self.data_manager.save()
 
-    def receive(self, src: InfoCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
+    def receive(self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
         """接收订单的物品
 
         Args:
@@ -129,7 +129,7 @@ class PostManager:
         Returns:
             bool: 是否成功接收到物品
         """
-        player = src.get_info().player
+        player = src.player
 
         # 副手有东西 拒绝接收
         if not self.check_offhand_empty(player):
@@ -148,5 +148,3 @@ class PostManager:
         self.replace(player, order.item)
         self.version_manager.play_sound.successfully_receive(player)
         return True
-
-
