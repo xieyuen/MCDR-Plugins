@@ -7,6 +7,20 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.1]
+
+### Added
+
+- `env.server_version` 支持元组比较
+    - e.g. `env.server_version >= (1, 20, 5)`
+- 补充了 TranslationKeyItem 的 docstring
+
+### Changed
+
+- 重构了 CommandManager, 分离 UI 和命令解析
+- 重构了 PostManager, 保持邮寄核心功能的单一职责
+- 添加了 MCDRpostCoordinator 类作为协调器
+
 ## [3.3.3]
 
 ### Fixed

@@ -1,4 +1,4 @@
-from mcdreforged import PluginServerInterface, RTextBase, RTextMCDRTranslation
+from mcdreforged import ServerInterface, RTextBase, RTextMCDRTranslation
 
 
 class TranslationKeyItem:
@@ -12,8 +12,8 @@ class TranslationKeyItem:
     """
 
     __FULL_KEY_TEMPLATE: str = 'mcdrpost.{key}'
-    __tr = PluginServerInterface.si().tr
-    __rtr = PluginServerInterface.si().rtr
+    __tr = ServerInterface.si().tr
+    __rtr = ServerInterface.si().rtr
 
     def __init__(self, value: str):
         self.key = self.__FULL_KEY_TEMPLATE.format(key=value)
