@@ -7,7 +7,7 @@ import minecraft_data_api as api
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class EventManager:

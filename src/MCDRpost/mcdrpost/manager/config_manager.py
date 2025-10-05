@@ -7,7 +7,7 @@ from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class ConfigurationManager:

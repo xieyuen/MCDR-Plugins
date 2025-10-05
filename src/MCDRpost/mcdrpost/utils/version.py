@@ -1,17 +1,17 @@
+import re
 from functools import total_ordering
-from typing import NamedTuple, TypeAlias, TypeVar
-
-from packaging import version
+from types import NotImplementedType
+from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
 SemanticVersionType = TypeVar('SemanticVersionType', bound='SemanticVersion')
 SimpleVersionTupleType = TypeVar('SimpleVersionTupleType', bound='SimpleVersionTuple')
 VersionTupleType: TypeAlias = (
-        tuple[int, int]
-        | tuple[int, int, int]
-        | tuple[int, int, int, str]
-        | tuple[int, int, int, str, str]
+        tuple[int, int]  # major and minor
+        | tuple[int, int, int]  # major, minor, patch
+        | tuple[int, int, int, str]  # major, minor, patch, pre_release
+        | tuple[int, int, int, str, str]  # major, minor, patch, pre_release, build_metadata
 )
-SupportOperateType: TypeAlias = str | SemanticVersionType | VersionTupleType | SemanticVersionType
+SupportOperateType: TypeAlias = str | SimpleVersionTupleType | VersionTupleType | SemanticVersionType
 
 
 class SimpleVersionTuple(NamedTuple):
@@ -19,15 +19,15 @@ class SimpleVersionTuple(NamedTuple):
     minor: int
     patch: int = 0
     pre_release: str = ''
-    build_info: str = ''
+    build_metadata: str = ''
 
     @property
     def __version_string(self):
         s = f'{self.major}.{self.minor}.{self.patch}'
         if self.pre_release:
             s += f'-{self.pre_release}'
-        if self.build_info:
-            s += f'+{self.build_info}'
+        if self.build_metadata:
+            s += f'+{self.build_metadata}'
 
         return s
 
@@ -40,29 +40,46 @@ class SemanticVersion:
     """语义化版本号
 
     Attributes:
-        version (packaging.version.Version): 直接被 packaging 解析得到的 Version 对象
         major (int): 主版本号
         minor (int): 次版本号
         patch (int): 补丁版本号
         pre_release (tuple[str, int] | None): 预发布版本号
         build_metadata (tuple[str, int] | None): 构建元数据
     """
+    PATTERN = re.compile(
+        r'^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$'
+    )
 
-    def __init__(self, version_string: str) -> None:
-        self.version = version.parse(version_string)
-        self.major = self.version.major
-        self.minor = self.version.minor
-        self.patch = self.version.micro
-        self.pre_release = self.version.pre
-        self.build_metadata = self.version.local
+    def __init__(self, version_str: str) -> None:
+        self._original_string = version_str
+
+        match = re.match(self.PATTERN, version_str)
+        self.major, self.minor, self.patch, self.pre_release, self.build_metadata = match.groups()
+
+        if any(i is None for i in [self.major, self.minor, self.patch]):
+            raise ValueError(f'Invalid semantic version string: {version_str}')
+
+        self.major = int(self.major)
+        self.minor = int(self.minor)
+        self.patch = int(self.patch)
 
     @property
     def is_pre_release(self) -> bool:
         """是否是预发布版本"""
         return self.pre_release is not None
 
+    @overload
     @staticmethod
     def __param_normalize(param: SupportOperateType) -> SemanticVersionType:
+        ...
+
+    @overload
+    @staticmethod
+    def __param_normalize(param: Any) -> NotImplementedType:
+        ...
+
+    @staticmethod
+    def __param_normalize(param):
         if isinstance(param, str):
             return SemanticVersion(param)
         elif isinstance(param, tuple):
@@ -77,17 +94,47 @@ class SemanticVersion:
         if other is NotImplemented:
             return False
 
-        return self.version == other.version
+        return (
+                (self.major, self.minor, self.patch, self.pre_release)
+                == (other.major, other.minor, other.patch, other.pre_release)
+        )
 
-    def __lt__(self, other) -> bool:
+    @staticmethod
+    def __compare_pre_release(pre1: str, pre2: str) -> bool:
+        """比较预发布版本号"""
+        parts1 = pre1.split('.')
+        parts2 = pre2.split('.')
+
+        for p1, p2 in zip(parts1, parts2):
+            # 尝试转换为数字比较，否则按字符串比较
+            try:
+                num1, num2 = int(p1), int(p2)
+                if num1 != num2:
+                    return num1 < num2
+            except ValueError:
+                if p1 != p2:
+                    return p1 < p2
+
+        # 如果共同部分都相同，长度短的更小
+        return len(parts1) < len(parts2)
+
+    def __lt__(self, other: SupportOperateType | Any) -> bool:
         other = self.__param_normalize(other)
         if other is NotImplemented:
             return NotImplemented
 
-        return self.version < other.version
+        if (self.major, self.minor, self.patch) < (other.major, other.minor, other.patch):
+            return True
+        elif (self.major, self.minor, self.patch) > (other.major, other.minor, other.patch):
+            return False
+        elif self.pre_release is None:
+            return False
+        elif other.pre_release is None:
+            return True
+        return self.__compare_pre_release(self.pre_release, other.pre_release)
 
     def __str__(self) -> str:
-        return str(self.version)
+        return self._original_string
 
     def __repr__(self) -> str:
-        return f'SemanticVersion({str(self.version)!r})'
+        return f'SemanticVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})'

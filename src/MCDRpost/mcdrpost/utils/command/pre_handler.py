@@ -7,7 +7,7 @@ from mcdrpost.utils.translation import TranslationKeys
 if TYPE_CHECKING:
     from mcdrpost.manager.post_manager import PostManager
     from mcdrpost.manager.data_manager import DataManager
-    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class CommandPreHandler:

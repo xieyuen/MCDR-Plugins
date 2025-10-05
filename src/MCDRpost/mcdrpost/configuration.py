@@ -1,7 +1,7 @@
 from mcdreforged import Serializable
 
 
-class CommandPermission(Serializable):
+class CommandPermissions(Serializable):
     """命令权限配置
 
     MCDR 的权限只有 0, 1, 2, 3, 4 五个等级，
@@ -26,25 +26,30 @@ class CommandPermission(Serializable):
     reload: int = 3
 
 
+class PrefixConfig(Serializable):
+    enable_addition: bool = True
+    more_prefix: list[str] = ["!!post"]
+
+
 class Configuration(Serializable):
     """插件配置
 
     Attributes:
         max_storage (int): 每个人发送的订单的最大存储量，-1不限制
-        allow_alias (bool): 是否允许命令别名，如果为 False,则只会注册 !!po
-        command_prefixes (list[str]): MCDR 命令前缀，可以注册多个作为别名，只需要放在一个列表内即可, !!po 一定会生效
+        prefix (list[str]): MCDR 命令前缀，可以注册多个作为别名，只需要放在一个列表内即可, !!po 一定会生效
         auto_fix (bool): 是否自动修复无效订单
         auto_register (bool):是否自动为新玩家注册
-        receive_tip_delay (float): 登录之后收件箱提示的延迟时间，单位为秒
-        command_permission (CommandPermission): 命令权限配置
+        receiving_tip_delay (float): 登录之后收件箱提示的延迟时间，单位为秒
+        permissions (CommandPermissions): 命令权限配置
     """
     max_storage: int = 5
-    allow_alias: bool = True
-    command_prefixes: list[str] = ['!!po', "!!post"]
+    prefix: PrefixConfig = PrefixConfig.get_default()
     auto_fix: bool = False
     auto_register: bool = True
-    receive_tip_delay: float = 3
-    command_permission: CommandPermission = CommandPermission()
+    receiving_tip_delay: float = 3
+    permissions: CommandPermissions = CommandPermissions.get_default()
 
-
-__all__ = ['Configuration', 'CommandPermission']
+    # Deprecated but for compatibility
+    command_permission: CommandPermissions = CommandPermissions.get_default()
+    allow_alias: bool = True
+    command_prefixes: list[str] = ['!!po', "!!post"]

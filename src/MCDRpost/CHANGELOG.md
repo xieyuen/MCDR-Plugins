@@ -7,6 +7,26 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.2]
+
+### Added
+
+- 补充了一些类型注解
+- 添加弃用提示
+
+### Changed
+
+- 简化协调器模块的命名
+
+### Deprecated
+
+|       弃用的配置        |          新配置           |
+|:------------------:|:----------------------:|
+|  command_prefixed  |   prefix.more_prefix   |
+|    allow_alias     | prefix.enable_addition |
+| command_permission |      permissions       |
+
+
 ## [3.4.0-alpha.1]
 
 ### Added

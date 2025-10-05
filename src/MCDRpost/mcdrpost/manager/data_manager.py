@@ -3,12 +3,12 @@ from typing import DefaultDict, TYPE_CHECKING
 
 from mcdrpost import constants
 from mcdrpost.data_structure import Order, OrderData, OrderInfo
-from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+from mcdrpost.coordinator import MCDRpostCoordinator
 from mcdrpost.utils.exception import InvalidOrder
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class DataManager:

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from mcdreforged import CommandSource, GreedyText, Integer, Literal, \
     PluginServerInterface, RequirementNotMet, Text
 
-from mcdrpost.configuration import CommandPermission, Configuration
+from mcdrpost.configuration import CommandPermissions, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
 from mcdrpost.manager.post_manager import PostManager
 from mcdrpost.utils import add_requirements
@@ -12,7 +12,7 @@ from mcdrpost.utils.command.pre_handler import CommandPreHandler
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class CommandManager:
@@ -35,8 +35,8 @@ class CommandManager:
         return self.coo.config
 
     @property
-    def _perm(self) -> CommandPermission:
-        return self._config.command_permission
+    def _perm(self) -> CommandPermissions:
+        return self._config.permission
 
     def register(self) -> None:
         """注册命令树

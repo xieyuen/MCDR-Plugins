@@ -5,7 +5,8 @@
 """
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+from mcdrpost.deprecations import DEPRECATIONS
+from mcdrpost.coordinator import MCDRpostCoordinator
 from mcdrpost.version_handler import register_builtin_handlers
 
 coordinator: MCDRpostCoordinator
@@ -17,6 +18,7 @@ def on_load(server: PluginServerInterface, prev_module):
     global coordinator
     coordinator = MCDRpostCoordinator(server)
     coordinator.event_emitter.on_load(server, prev_module)
+    DEPRECATIONS.log(server)
 
 
 def on_unload(server: PluginServerInterface):
