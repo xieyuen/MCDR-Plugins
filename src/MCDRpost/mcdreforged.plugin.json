@@ -1,6 +1,6 @@
 {
     "id": "mcdrpost",
-    "version": "3.3.4-ai",
+    "version": "3.4.0-rc.1+build.ai.lingma",
     "name": "MCDRpost",
     "description": {
         "en_us": "A MCDR plugin for post/teleport items",
