@@ -17,7 +17,10 @@ from mcdrpost.version_handler.sound_player.abstract_sound_player import Abstract
 from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer, OldSoundPlayer
 
 
-def register_handler(handler: type[AbstractVersionHandler], checker: Callable[[Environment], bool]):
+def register_handler(
+        handler: type[AbstractVersionHandler],
+        checker: Callable[[Environment], bool]
+) -> None:
     """向 MCDRpost 注册 Handler
 
     Args:

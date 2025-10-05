@@ -54,7 +54,7 @@ class DataManager:
         for order_id, order in self._order_data.orders.items():
             if str(order.id) == order_id:
                 continue
-            if not self._post_manager.configuration.auto_fix:
+            if not self._post_manager.config.auto_fix:
                 raise InvalidOrder(TranslationKeys.error.invalid_order.tr(order_id, order.id))
             self._logger.error(TranslationKeys.error.invalid_order.tr(order_id, order.id))
             self._logger.error(TranslationKeys.auto_fix.invalid_order.tr(order_id))

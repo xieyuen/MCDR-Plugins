@@ -5,7 +5,7 @@ from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHan
 
 
 class DefaultVersionHandler(AbstractVersionHandler):
-    """默认处理器"""
+    """这是对 Minecraft 1.17~1.20.5 的简易 Handler"""
 
     def get_offhand_item(self, player: str) -> Item:
         item = api.convert_minecraft_json(

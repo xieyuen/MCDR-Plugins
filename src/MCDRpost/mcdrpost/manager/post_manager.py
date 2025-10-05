@@ -34,8 +34,8 @@ class PostManager:
         self.version_manager: VersionManager = VersionManager(self.server)
 
     @property
-    def configuration(self) -> Configuration:
-        return self.config_manager.get_configuration()
+    def config(self) -> Configuration:
+        return self.config_manager.get_config()
 
     # Events Handle
     def on_load(self, server: PluginServerInterface, _prev_module) -> None:
@@ -61,7 +61,7 @@ class PostManager:
     def on_player_joined(self, server: PluginServerInterface, player: str, _info: Info) -> None:
         """事件: 玩家加入服务器"""
         if not self.data_manager.is_player_registered(player):
-            if self.configuration.auto_register:
+            if self.config.auto_register:
                 # 还未注册的玩家
                 self.data_manager.add_player(player)
                 server.logger.info(TranslationKeys.login_log.tr(player))
@@ -80,7 +80,7 @@ class PostManager:
         if self.data_manager.has_unreceived_order(player):
             @new_thread('MCDRpost | send receive tip')
             def send_receive_tip():
-                time.sleep(self.configuration.receive_tip_delay)
+                time.sleep(self.config.receive_tip_delay)
                 server.tell(player, TranslationKeys.wait_for_receive.tr())
                 self.version_manager.play_sound.has_something_to_receive(player)
 
@@ -133,9 +133,9 @@ class PostManager:
         Args:
             player (str): 玩家 ID
         """
-        if self.configuration.max_storage == -1:
+        if self.config.max_storage == -1:
             return False
-        return len(self.data_manager.get_orderid_by_sender(player)) >= self.configuration.max_storage
+        return len(self.data_manager.get_orderid_by_sender(player)) >= self.config.max_storage
 
     def post(self, src: InfoCommandSource, receiver: str, comment: str | None = None) -> None:
         """发送订单
@@ -148,7 +148,7 @@ class PostManager:
         sender = src.get_info().player
 
         if self.is_storage_full(sender):
-            src.reply(TranslationKeys.at_max_storage.tr(self.configuration.max_storage))
+            src.reply(TranslationKeys.at_max_storage.tr(self.config.max_storage))
             return
 
         if sender == receiver:

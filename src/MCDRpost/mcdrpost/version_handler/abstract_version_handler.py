@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import final, override
+from typing import Any, final, override
 
 from mcdreforged import PluginServerInterface, new_thread
 
@@ -68,7 +68,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
 
     @staticmethod
     @abstractmethod
-    def dict2item(item: dict) -> Item:
+    def dict2item(item: dict[str, Any]) -> Item:
         """将物品字典转换为物品对象
 
         Args:
