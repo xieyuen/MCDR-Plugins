@@ -7,19 +7,21 @@ import minecraft_data_api as api
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager
+    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
 
 
 class EventManager:
-    def __init__(self, pm: 'PostManager'):
-        self.config_manager = pm.config_manager
-        self.data_manager = pm.data_manager
-        self.version_manager = pm.version_manager
-        self.command_manager = pm.command_manager
+    def __init__(self, coo: "MCDRpostCoordinator"):
+        self.coo = coo
+
+        self.config_manager = coo.config_manager
+        self.data_manager = coo.data_manager
+        self.version_manager = coo.version_manager
+        self.command_manager = coo.command_manager
 
     @property
     def config(self):
-        return self.config_manager.get_config()
+        return self.coo.config
 
     # Events Handle
     def on_load(self, server: PluginServerInterface, _prev_module) -> None:
@@ -62,7 +64,7 @@ class EventManager:
 
         # 已注册的玩家，向他推送订单消息（如果有）
         if self.data_manager.has_unreceived_order(player):
-            @new_thread('MCDRpost | send receive tip')
+            @new_thread('MCDRpost|send receiving tip')
             def send_receive_tip():
                 time.sleep(self.config.receive_tip_delay)
                 server.tell(player, TranslationKeys.wait_for_receive.tr())

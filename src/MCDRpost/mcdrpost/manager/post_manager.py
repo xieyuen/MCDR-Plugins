@@ -1,41 +1,30 @@
-from typing import Literal
+from typing import Literal, TYPE_CHECKING
 
 from mcdreforged import InfoCommandSource, PluginServerInterface
 
 from mcdrpost import constants
 from mcdrpost.configuration import Configuration
 from mcdrpost.data_structure import Item, OrderInfo
-from mcdrpost.manager.command_manager import CommandManager
-from mcdrpost.manager.config_manager import ConfigurationManager
-from mcdrpost.manager.data_manager import DataManager
-from mcdrpost.manager.event_manager import EventManager
-from mcdrpost.manager.version_manager import VersionManager
 from mcdrpost.utils import get_formatted_time
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
 
+if TYPE_CHECKING:
+    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
+
 
 class PostManager:
-    """插件核心功能处理，兼协同各模块
+    """插件核心功能处理"""
 
-    Attributes:
-        server (PluginServerInterface): MCDR插件接口
-        config_manager (ConfigurationManager): 配置管理
-        data_manager (DataManager): 订单管理
-        command_manager (CommandManager): 命令注册
-    """
-
-    def __init__(self, server: PluginServerInterface) -> None:
-        self.server: PluginServerInterface = server
-        self.config_manager: ConfigurationManager = ConfigurationManager(self)
-        self.data_manager: DataManager = DataManager(self)
-        self.command_manager: CommandManager = CommandManager(self)
-        self.version_manager: VersionManager = VersionManager(self.server)
-        self.event_manager: EventManager = EventManager(self)
+    def __init__(self, coo: "MCDRpostCoordinator") -> None:
+        self.coordinator = coo
+        self.server: PluginServerInterface = coo.server
+        self.version_manager = coo.version_manager
+        self.data_manager = coo.data_manager
 
     @property
     def config(self) -> Configuration:
-        return self.config_manager.get_config()
+        return self.coordinator.config
 
     # Helper methods
     def replace(self, player: str, item: Item) -> None:
@@ -160,6 +149,4 @@ class PostManager:
         self.version_manager.play_sound.successfully_receive(player)
         return True
 
-    def reload(self) -> None:
-        self.config_manager.reload()
-        self.data_manager.reload()
+

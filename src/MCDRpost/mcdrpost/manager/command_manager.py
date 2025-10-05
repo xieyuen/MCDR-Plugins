@@ -5,30 +5,32 @@ from mcdreforged import CommandContext, CommandSource, GreedyText, InfoCommandSo
 
 from mcdrpost.configuration import CommandPermission, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
+from mcdrpost.manager.post_manager import PostManager
 from mcdrpost.utils import add_requirements
 from mcdrpost.utils.command.command_helper import CommandHelper
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager
+    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
 
 
 class CommandManager:
     """命令管理器"""
 
-    def __init__(self, post_manager: "PostManager") -> None:
-        self._post_manager: "PostManager" = post_manager
-        self._server: PluginServerInterface = post_manager.server
-        self.logger = self._server.logger
+    def __init__(self, coo: "MCDRpostCoordinator") -> None:
+        self.coo: "MCDRpostCoordinator" = coo
+        self._post_manager: PostManager = coo.post_manager
+        self._server: PluginServerInterface = coo.server
+        self.logger = self.coo.logger
 
-        self._data_manager = post_manager.data_manager
+        self._data_manager = coo.data_manager
         self._helper = CommandHelper(self._prefixes, self._data_manager)
 
         self._prefixes = ["!!po"]
 
     @property
     def _config(self) -> Configuration:
-        return self._post_manager.config
+        return self.coo.config
 
     @property
     def _perm(self) -> CommandPermission:
@@ -198,7 +200,8 @@ class CommandManager:
 
     def gen_reload_node(self, prefix) -> Literal:
         def reload(src: CommandSource):
-            self._post_manager.reload()
+            self.coo.config_manager.reload()
+            self.coo.data_manager.reload()
             src.reply(TranslationKeys.reload_success.tr())
 
         return (

@@ -7,15 +7,15 @@ from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager
+    from mcdrpost.mcdrpost_coordinator import MCDRpostCoordinator
 
 
 class ConfigurationManager:
     """配置管理器"""
 
-    def __init__(self, post_manager: "PostManager") -> None:
-        self._post_manager: "PostManager" = post_manager
-        self._server: PluginServerInterface = post_manager.server
+    def __init__(self, coo: "MCDRpostCoordinator") -> None:
+        self.coo: "MCDRpostCoordinator" = coo
+        self._server: PluginServerInterface = coo.server
         self._config: Configuration = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
