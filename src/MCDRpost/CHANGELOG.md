@@ -18,8 +18,9 @@
 ### Changed
 
 - 重构了 CommandManager, 分离 UI 和命令解析
+  - 新增 CommandPreHandler 处理解析的类型与功能类的交互
 - 重构了 PostManager, 保持邮寄核心功能的单一职责
-- 添加了 MCDRpostCoordinator 类作为协调器
+  - 添加了 MCDRpostCoordinator 类作为协调器
 
 ## [3.3.3]
 
