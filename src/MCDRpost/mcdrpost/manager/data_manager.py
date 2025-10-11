@@ -3,7 +3,6 @@ from typing import DefaultDict, TYPE_CHECKING
 
 from mcdrpost import constants
 from mcdrpost.data_structure import Order, OrderData, OrderInfo
-from mcdrpost.coordinator import MCDRpostCoordinator
 from mcdrpost.utils.exception import InvalidOrder
 from mcdrpost.utils.translation import TranslationKeys
 
@@ -33,7 +32,8 @@ class DataManager:
         self._order_data: OrderData = self._server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
-            file_format=constants.ORDERS_DATA_FILE_TYPE
+            file_format=constants.ORDERS_DATA_FILE_TYPE,
+            echo_in_console=False
         )
 
     def build_index(self) -> None:
@@ -71,7 +71,8 @@ class DataManager:
         self._order_data = self._server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
-            file_format=constants.ORDERS_DATA_FILE_TYPE
+            file_format=constants.ORDERS_DATA_FILE_TYPE,
+            echo_in_console=False
         )
         self.check_orders()
         self.build_index()

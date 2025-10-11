@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from mcdreforged import Info, PluginServerInterface, new_thread
 
 import minecraft_data_api as api
+from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class EventManager:
         self.command_manager = coo.command_manager
 
     @property
-    def config(self):
+    def config(self)->Configuration:
         return self.coo.config
 
     # Events Handle
@@ -66,7 +67,7 @@ class EventManager:
         if self.data_manager.has_unreceived_order(player):
             @new_thread('MCDRpost|send receiving tip')
             def send_receive_tip():
-                time.sleep(self.config.receive_tip_delay)
+                time.sleep(self.config.receiving_tip_delay)
                 server.tell(player, TranslationKeys.wait_for_receive.tr())
                 self.version_manager.play_sound.has_something_to_receive(player)
 

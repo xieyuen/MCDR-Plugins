@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
-from mcdreforged import CommandSource, GreedyText, Integer, Literal, \
-    PluginServerInterface, RequirementNotMet, Text
+from mcdreforged import CommandSource, GreedyText, Integer, Literal, PluginServerInterface, RequirementNotMet, Text
 
 from mcdrpost.configuration import CommandPermissions, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
@@ -24,11 +23,9 @@ class CommandManager:
         self._server: PluginServerInterface = coo.server
         self.logger = self.coo.logger
 
-        self._data_manager = coo.data_manager
-        self._helper = CommandHelper(self._prefixes, self._data_manager)
+        self.data_manager = coo.data_manager
+        self._helper = CommandHelper(self)
         self.pre_handler = CommandPreHandler(coo)
-
-        self._prefixes = ["!!po"]
 
     @property
     def _config(self) -> Configuration:
@@ -36,17 +33,22 @@ class CommandManager:
 
     @property
     def _perm(self) -> CommandPermissions:
-        return self._config.permission
+        return self._config.permissions
+
+    @property
+    def prefixes(self) -> list[str]:
+        if self._config.prefix.enable_addition:
+            return ["!!po"] + self._config.prefix.more_prefix
+        elif self._config.allow_alias:  # TODO: remove in v3.6
+            return self._config.command_prefixes
+        return ["!!po"]
 
     def register(self) -> None:
         """注册命令树
 
         在 on_load 中调用
         """
-        if self._config.allow_alias:
-            self._prefixes = self._config.command_prefixes
-
-        for prefix in self._prefixes:
+        for prefix in self.prefixes:
             self._server.register_help_message(prefix, SIMPLE_HELP_MESSAGE)
             self._server.register_command(
                 self.generate_command_node(prefix)
@@ -59,7 +61,7 @@ class CommandManager:
             runs(lambda src: src.reply(TranslationKeys.no_input_receiver.tr())).
             then(
                 Text('receiver').
-                suggests(self._data_manager.get_players).
+                suggests(self.data_manager.get_players).
                 runs(self.pre_handler.post).
                 then(
                     GreedyText('comment').
@@ -86,7 +88,7 @@ class CommandManager:
                 suggests(
                     lambda src: [
                         str(i) for i in
-                        self._data_manager.get_orderid_by_receiver(src.get_info().player)
+                        self.data_manager.get_orderid_by_receiver(src.get_info().player)
                     ]
                 ).
                 runs(self.pre_handler.receive)
@@ -111,7 +113,7 @@ class CommandManager:
                 suggests(
                     lambda src: [
                         str(i) for i in
-                        self._data_manager.get_orderid_by_sender(src.get_info().player)
+                        self.data_manager.get_orderid_by_sender(src.get_info().player)
                     ]
                 ).
                 runs(self.pre_handler.cancel)
@@ -128,7 +130,7 @@ class CommandManager:
                 Literal('players').
                 requires(lambda src: src.has_permission(self._perm.list_player)).
                 runs(lambda src: src.reply(
-                    TranslationKeys.list_player_title.tr() + str(self._data_manager.get_players())
+                    TranslationKeys.list_player_title.tr() + str(self.data_manager.get_players())
                 ))
             ).
             then(
@@ -168,7 +170,7 @@ class CommandManager:
                 runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
                 then(
                     Text('player_id').
-                    suggests(self._data_manager.get_players).
+                    suggests(self.data_manager.get_players).
                     runs(self.pre_handler.remove_player)
                 )
             )

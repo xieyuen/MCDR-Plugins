@@ -137,19 +137,20 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 #### 配置表
 
-|         属性         |  Python类型   |         默认值          | 描述                 |
-|:------------------:|:-----------:|:--------------------:|:-------------------|
-|    allow_alias     |   `bool`    |        `true`        | 是否允许别名             |
-|      auto_fix      |   `bool`    |       `false`        | 是否自动修复订单           |
-|   auto_register    |   `bool`    |        `true`        | 是否自动为新玩家注册         |
-|    max_storage     |    `int`    |         `5`          | 订单最大存储量，设置为 -1 不限制 |
-| receive_tip_delay  |   `float`   |        `3.0`         | 提示延迟               |
-|  command_prefixes  | `list[str]` | `['!!po', '!!post']` | 命令根节点              |
-| command_permission |   `dict`    |          ~           | 见[权限表](#权限表)       |
+|           属性           |  Python类型   |         默认值          | 描述                 | 备注             |
+|:----------------------:|:-----------:|:--------------------:|:-------------------|:---------------|
+|      allow_alias       |   `bool`    |        `true`        | 是否允许别名             | 已弃用[^3]        |
+|        auto_fix        |   `bool`    |       `false`        | 是否自动修复订单           |                |
+|     auto_register      |   `bool`    |        `true`        | 是否自动为新玩家注册         |                |
+|      max_storage       |    `int`    |         `5`          | 订单最大存储量，设置为 -1 不限制 |                |
+|   receive_tip_delay    |   `float`   |        `3.0`         | 提示延迟               |                |
+|    command_prefixes    | `list[str]` | `['!!po', '!!post']` | 命令根节点              | 已弃用[^3]        |
+|   command_permission   |   `dict`    |          ~           | 见[权限表](#权限表)       | 已弃用[^3]        |
+| prefix.enable_addition |   `bool`    |        `true`        | 是否注册多个根命令          | 代替 allow_alias |
+|   prefix.more_prefix   |   `bool`    |        `true`        | 是否注册多个根命令          | 代替 allow_alias |
 
 > [!NOTE]
-> 将 `allow_alias` 设定为 `false` 之后，`command_prefixes` 配置将会作废，锁定为 `!!po`<br>
-> 但是子命令的缩写(如 `!!po ls`)仍然有效
+> `allow_alias` `command_prefixed` 已经弃用并被合并到 `prefix` 内
 
 #### 权限表
 
@@ -200,3 +201,4 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 [^1]: Minecraft 1.20.5 用 components 代替了 tag，导致命令不能执行，Minecraft 报错见 Flyky/MCDRpost#10
 [^2]: 理论上使用自定义 Handler 就可以适配任何版本，但是插件**本身没有兼容**低于 1.13 的版本，原因见 [Custom Handler](custom_handler.md)
+[^3]: 该属性在 v3.4.0 中被弃用，将在 v3.6 中被删除

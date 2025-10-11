@@ -6,13 +6,18 @@ from mcdrpost.constants import END_LINE
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
+    from mcdrpost.manager.command_manager import CommandManager
     from mcdrpost.manager.data_manager import DataManager
 
 
 class CommandHelper:
-    def __init__(self, prefixes: list[str], data_manager: 'DataManager'):
-        self._prefixes = prefixes
-        self._data_manager = data_manager
+    def __init__(self, cmd_manager: "CommandManager"):
+        self._cmd_manager: "CommandManager" = cmd_manager
+        self._data_manager: "DataManager" = cmd_manager.data_manager
+
+    @property
+    def _prefixes(self) -> list[str]:
+        return self._cmd_manager.prefixes
 
     # helper methods
     def output_help_message(self, source: InfoCommandSource, prefix: str) -> None:
