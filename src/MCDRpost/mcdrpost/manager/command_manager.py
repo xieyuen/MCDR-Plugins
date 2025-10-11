@@ -5,7 +5,7 @@ from mcdreforged import CommandSource, GreedyText, Integer, Literal, PluginServe
 from mcdrpost.configuration import CommandPermissions, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
 from mcdrpost.manager.post_manager import PostManager
-from mcdrpost.utils import add_requirements
+from mcdrpost.utils.node_addition import add_requirements
 from mcdrpost.utils.command.command_helper import CommandHelper
 from mcdrpost.utils.command.pre_handler import CommandPreHandler
 from mcdrpost.utils.translation import TranslationKeys
