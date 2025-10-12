@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from mcdreforged import CommandSource, GreedyText, Integer, Literal, PluginServerInterface, RequirementNotMet, Text
+from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, \
+    RequirementNotMet, Text
 
 from mcdrpost.configuration import CommandPermissions, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
 from mcdrpost.manager.post_manager import PostManager
-from mcdrpost.utils.node_addition import add_requirements
 from mcdrpost.utils.command.command_helper import CommandHelper
 from mcdrpost.utils.command.pre_handler import CommandPreHandler
+from mcdrpost.utils.node_addition import add_requirements
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
@@ -99,7 +100,7 @@ class CommandManager:
 
     def gen_receive_list_node(self, node_name: str) -> Literal:
         return add_requirements(
-            Literal(node_name).runs(lambda src: self._helper.output_receive_list(src)),
+            Literal(node_name).runs(lambda src: self._helper.output_receive_list(cast(InfoCommandSource,src))),
             permission=self._perm.receive,
             require_player=True
         )
@@ -137,17 +138,21 @@ class CommandManager:
                 Literal('orders').
                 requires(lambda src: src.has_permission(self._perm.list_orders)).
                 on_error(RequirementNotMet, lambda src: src.reply(TranslationKeys.no_permission.tr()), handled=True).
-                runs(lambda src: self._helper.output_all_orders(src))
+                runs(lambda src: self._helper.output_all_orders(cast(InfoCommandSource, src)))
             ).
             then(
                 add_requirements(
-                    Literal('receive').runs(lambda src: self._helper.output_receive_list(src)),
+                    Literal('receive').runs(
+                        lambda src: self._helper.output_receive_list(
+                            cast(InfoCommandSource,src)
+                        )
+                    ),
                     permission=self._perm.receive,
                     require_player=True
                 )
             ).then(
                 add_requirements(
-                    Literal('post').runs(lambda src: self._helper.output_post_list(src)),
+                    Literal('post').runs(lambda src: self._helper.output_post_list(cast(InfoCommandSource, src))),
                     permission=self._perm.post,
                     require_player=True
                 )

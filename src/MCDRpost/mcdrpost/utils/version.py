@@ -1,17 +1,14 @@
 import re
 from functools import total_ordering
 from types import NotImplementedType
-from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
+from typing import Any, NamedTuple, TypeAlias, overload
 
-SemanticVersionType = TypeVar('SemanticVersionType', bound='SemanticVersion')
-SimpleVersionTupleType = TypeVar('SimpleVersionTupleType', bound='SimpleVersionTuple')
 VersionTupleType: TypeAlias = (
         tuple[int, int]  # major and minor
         | tuple[int, int, int]  # major, minor, patch
         | tuple[int, int, int, str]  # major, minor, patch, pre_release
         | tuple[int, int, int, str, str]  # major, minor, patch, pre_release, build_metadata
 )
-SupportOperateType: TypeAlias = str | SimpleVersionTupleType | VersionTupleType | SemanticVersionType
 
 
 class SimpleVersionTuple(NamedTuple):
@@ -31,7 +28,7 @@ class SimpleVersionTuple(NamedTuple):
 
         return s
 
-    def to_semantic_version(self) -> SemanticVersionType:
+    def to_semantic_version(self) -> "SemanticVersion":
         return SemanticVersion(self.__version_string)
 
 
@@ -50,18 +47,27 @@ class SemanticVersion:
         r'^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$'
     )
 
+    major: int
+    minor: int
+    patch: int
+    pre_release: str | None = None
+    build_metadata: str | None = None
+
     def __init__(self, version_str: str) -> None:
         self._original_string = version_str
 
         match = re.match(self.PATTERN, version_str)
-        self.major, self.minor, self.patch, self.pre_release, self.build_metadata = match.groups()
+        if not match:
+            raise ValueError(f'Invalid version string: {version_str}')
+
+        major, minor, patch, pre_release, build_metadata = match.groups()
 
         if any(i is None for i in [self.major, self.minor, self.patch]):
             raise ValueError(f'Invalid semantic version string: {version_str}')
 
-        self.major = int(self.major)
-        self.minor = int(self.minor)
-        self.patch = int(self.patch)
+        self.major = int(major)
+        self.minor = int(minor)
+        self.patch = int(patch)
 
     @property
     def is_pre_release(self) -> bool:
@@ -70,7 +76,22 @@ class SemanticVersion:
 
     @overload
     @staticmethod
-    def __param_normalize(param: SupportOperateType) -> SemanticVersionType:
+    def __param_normalize(param: "SemanticVersion") -> "SemanticVersion":
+        ...
+
+    @overload
+    @staticmethod
+    def __param_normalize(param: str) -> "SemanticVersion":
+        ...
+
+    @overload
+    @staticmethod
+    def __param_normalize(param: SimpleVersionTuple) -> "SemanticVersion":
+        ...
+
+    @overload
+    @staticmethod
+    def __param_normalize(param: VersionTupleType) -> "SemanticVersion":
         ...
 
     @overload
@@ -118,7 +139,7 @@ class SemanticVersion:
         # 如果共同部分都相同，长度短的更小
         return len(parts1) < len(parts2)
 
-    def __lt__(self, other: SupportOperateType | Any) -> bool:
+    def __lt__(self, other) -> bool:
         other = self.__param_normalize(other)
         if other is NotImplemented:
             return NotImplemented
