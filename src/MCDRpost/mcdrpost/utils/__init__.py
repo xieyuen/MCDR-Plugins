@@ -1,7 +1,6 @@
 import time
-from typing import TypeVar
-
-from mcdreforged import AbstractNode, CommandSource, RequirementNotMet
+from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
 from mcdrpost.utils.translation import TranslationKeys
 
@@ -11,7 +10,26 @@ def get_formatted_time() -> str:
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
+T = TypeVar("T")
 
 
+class TotalOrdering(Generic[T], ABC):
+    @abstractmethod
+    def __eq__(self, other) -> bool:  # self == other
+        raise NotImplementedError
 
-__all__ = ['get_formatted_time']
+    @abstractmethod
+    def __lt__(self, other: T) -> bool:  # self < other
+        raise NotImplementedError
+
+    def __le__(self, other: T) -> bool:  # self <= other
+        return self < other or self == other
+
+    def __gt__(self, other: T) -> bool:  # self > other
+        return not (self <= other)
+
+    def __ge__(self, other: T) -> bool:  # self >= other
+        return not (self < other)
+
+
+__all__ = ['get_formatted_time', "TotalOrdering"]

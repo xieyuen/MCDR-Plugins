@@ -1,14 +1,20 @@
 import re
-from functools import total_ordering
 from types import NotImplementedType
-from typing import Any, NamedTuple, TypeAlias, overload
+from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
-VersionTupleType: TypeAlias = (
-        tuple[int, int]  # major and minor
-        | tuple[int, int, int]  # major, minor, patch
-        | tuple[int, int, int, str]  # major, minor, patch, pre_release
-        | tuple[int, int, int, str, str]  # major, minor, patch, pre_release, build_metadata
+from mcdrpost.utils import TotalOrdering
+
+ValidVersionTupleType: TypeAlias = (  # TODO: 替换成 3.12 的语法
+        tuple[int, int]  # major and minor, its patch version will be set to 0
+        # major, minor, patch
+        | tuple[int, int, int]
+        # major, minor, patch, pre_release
+        | tuple[int, int, int, str]
+        # major, minor, patch, pre_release, build_metadata
+        # pre_release cannot be None, but can be an empty str for a non-pre-release version
+        | tuple[int, int, int, str, str]
 )
+SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
 
 
 class SimpleVersionTuple(NamedTuple):
@@ -32,8 +38,9 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-@total_ordering
-class SemanticVersion:
+class SemanticVersion(
+    TotalOrdering[SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str]
+):
     """语义化版本号
 
     Attributes:
@@ -60,9 +67,9 @@ class SemanticVersion:
         if not match:
             raise ValueError(f'Invalid version string: {version_str}')
 
-        major, minor, patch, pre_release, build_metadata = match.groups()
+        major, minor, patch, self.pre_release, self.build_metadata = match.groups()
 
-        if any(i is None for i in [self.major, self.minor, self.patch]):
+        if any(i is None for i in [major, minor, patch]):
             raise ValueError(f'Invalid semantic version string: {version_str}')
 
         self.major = int(major)
@@ -76,22 +83,22 @@ class SemanticVersion:
 
     @overload
     @staticmethod
-    def __param_normalize(param: "SemanticVersion") -> "SemanticVersion":
+    def __param_normalize(param: SemanticVersionType) -> SemanticVersionType:
         ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: str) -> "SemanticVersion":
+    def __param_normalize(param: str) -> SemanticVersionType:
         ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: SimpleVersionTuple) -> "SemanticVersion":
+    def __param_normalize(param: SimpleVersionTuple) -> SemanticVersionType:
         ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: VersionTupleType) -> "SemanticVersion":
+    def __param_normalize(param: ValidVersionTupleType) -> SemanticVersionType:
         ...
 
     @overload
@@ -140,19 +147,19 @@ class SemanticVersion:
         return len(parts1) < len(parts2)
 
     def __lt__(self, other) -> bool:
-        other = self.__param_normalize(other)
-        if other is NotImplemented:
+        n_other = self.__param_normalize(other)
+        if n_other is NotImplemented:
             return NotImplemented
 
-        if (self.major, self.minor, self.patch) < (other.major, other.minor, other.patch):
+        if (self.major, self.minor, self.patch) < (n_other.major, n_other.minor, n_other.patch):
             return True
-        elif (self.major, self.minor, self.patch) > (other.major, other.minor, other.patch):
+        elif (self.major, self.minor, self.patch) > (n_other.major, n_other.minor, n_other.patch):
             return False
         elif self.pre_release is None:
             return False
-        elif other.pre_release is None:
+        elif n_other.pre_release is None:
             return True
-        return self.__compare_pre_release(self.pre_release, other.pre_release)
+        return self.__compare_pre_release(self.pre_release, n_other.pre_release)
 
     def __str__(self) -> str:
         return self._original_string
