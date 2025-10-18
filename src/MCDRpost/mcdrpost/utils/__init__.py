@@ -10,6 +10,7 @@ def get_formatted_time() -> str:
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
+# TODO: to 3.12 generic grammar
 T = TypeVar("T")
 
 
