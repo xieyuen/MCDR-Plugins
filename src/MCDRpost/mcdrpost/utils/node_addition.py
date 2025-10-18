@@ -1,16 +1,13 @@
-from typing import TypeVar
-
 from mcdreforged import AbstractNode, CommandSource, RequirementNotMet
 
 from mcdrpost.utils.translation import TranslationKeys
 
-# 其实想用 3.12 的泛型语法的
-# 但是还是要保证兼容性
-# TODO: 此注解应该在 MCDR 产生放弃 3.10 版本的更新时替换成 3.12 的新泛型语法
-__NodeType = TypeVar("__NodeType", bound=AbstractNode)
 
-
-def add_requirements(node: __NodeType, permission: int, require_player: bool = False) -> __NodeType:
+def add_requirements[NodeType: AbstractNode](
+        node: NodeType,
+        permission: int,
+        require_player: bool = False
+) -> NodeType:
     def require_callback(src: CommandSource) -> bool:
         if require_player and not src.is_player:
             return False

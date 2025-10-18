@@ -1,10 +1,10 @@
 import re
 from types import NotImplementedType
-from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
+from typing import Any, NamedTuple, overload
 
-from mcdrpost.utils import TotalOrdering
+from mcdrpost.utils.total_ordering import TotalOrdering
 
-ValidVersionTupleType: TypeAlias = (  # TODO: 替换成 3.12 的语法
+type ValidVersionTupleType = (
         tuple[int, int]  # major and minor, its patch version will be set to 0
         # major, minor, patch
         | tuple[int, int, int]
@@ -14,7 +14,7 @@ ValidVersionTupleType: TypeAlias = (  # TODO: 替换成 3.12 的语法
         # pre_release cannot be None, but can be an empty str for a non-pre-release version
         | tuple[int, int, int, str, str]
 )
-SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
+type SemanticVersionType = SemanticVersion
 
 
 class SimpleVersionTuple(NamedTuple):
@@ -34,7 +34,7 @@ class SimpleVersionTuple(NamedTuple):
 
         return s
 
-    def to_semantic_version(self) -> "SemanticVersion":
+    def to_semantic_version(self) -> SemanticVersionType:
         return SemanticVersion(self.__version_string)
 
 
@@ -83,7 +83,7 @@ class SemanticVersion(
 
     @overload
     @staticmethod
-    def __param_normalize(param: SemanticVersionType) -> SemanticVersionType:
+    def __param_normalize[T: SemanticVersionType](param: T) -> T:
         ...
 
     @overload

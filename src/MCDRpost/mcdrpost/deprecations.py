@@ -37,11 +37,11 @@ class _Deprecations:
         self.features = (_Deprecation(*feature) for feature in features)
 
     def log(self, server: PluginServerInterface):
-        plg_version = SemanticVersion(str(server.get_plugin_metadata(PLUGIN_ID).version))
+        plugin_version: SemanticVersion = SemanticVersion(str(server.get_plugin_metadata(PLUGIN_ID).version))
         has_warned: bool = False
 
         for feature in self.features:
-            if feature.version_deprecated <= plg_version < feature.version_removal:
+            if feature.version_deprecated <= plugin_version < feature.version_removal:
                 feature.log(server)
                 has_warned = True
 
