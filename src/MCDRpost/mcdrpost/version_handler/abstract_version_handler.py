@@ -115,6 +115,9 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
             offhand_item = get().get_return_value(block=True)
 
         if not isinstance(offhand_item, dict):
-            raise InvalidItem(offhand_item)
+            raise InvalidItem(offhand_item)  # TODO: 更换方式
 
         return self.dict2item(offhand_item)
+
+    def __repr__(self):
+        return f"<MCDRpostBuiltinVersionHandler {self.__class__.__name__} handler at {id(self)}>"
