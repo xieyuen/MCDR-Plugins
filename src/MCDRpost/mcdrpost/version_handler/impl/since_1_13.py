@@ -27,5 +27,5 @@ class Since13Handler(BuiltinVersionHandler):
 
 VersionManager.register_handler(
     Since13Handler,
-    lambda env: '1.13' <= env.server_version < "1.17"
+    lambda env: (1, 13) <= env.server_version < (1, 17)
 )

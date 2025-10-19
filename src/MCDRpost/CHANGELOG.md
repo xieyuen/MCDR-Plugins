@@ -7,6 +7,16 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.3]
+
+### Added
+
+- 新开分支专门准备放弃 Python 3.10 的版本
+
+### Changed
+
+- 内置处理器的条件函数替换成元组比较
+
 ## [3.4.0-alpha.2]
 
 ### Added

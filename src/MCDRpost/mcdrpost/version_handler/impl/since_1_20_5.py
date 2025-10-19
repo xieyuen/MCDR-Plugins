@@ -29,5 +29,5 @@ class Since20Handler(BuiltinVersionHandler):
 
 VersionManager.register_handler(
     Since20Handler,
-    lambda env: env.server_version >= "1.20.5"
+    lambda env: env.server_version >= (1, 20, 5)
 )
