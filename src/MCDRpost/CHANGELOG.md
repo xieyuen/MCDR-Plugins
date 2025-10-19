@@ -7,6 +7,18 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.3+python3.12]
+
+> [!NOTE]
+> 正式开发 Python 3.12 版本，打包插件的元数据将会存在 `+python3.12` 的构建信息，表示 Python 3.12+ 的版本要求
+> 
+> 此版本暂时不上 release assets，也就是不在 MCDR 插件仓库中，且不能通过 `!!MCDR plg install` 安装
+
+### Changed
+
+- 应用 Python 3.12 的泛型语法优化内容
+- 更改了内置处理器的条件判定函数，改用元组和 `SemanticVersion` 比较
+
 ## [3.4.0-alpha.2]
 
 ### Added
