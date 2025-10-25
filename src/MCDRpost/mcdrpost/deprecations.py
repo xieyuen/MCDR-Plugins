@@ -3,11 +3,8 @@ import warnings
 from mcdreforged import PluginServerInterface
 from typing_extensions import NamedTuple
 
-from mcdrpost.constants import PLUGIN_ID
+from mcdrpost.constants import DEP_INSTEAD_INFO_TEMPLATE, DEP_TEMPLATE, PLUGIN_ID
 from mcdrpost.utils.version import SemanticVersion
-
-_TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
-_INSTEAD_INFO_TEMPLATE = "Please use {} instead"
 
 
 class _Deprecation(NamedTuple):
@@ -17,15 +14,13 @@ class _Deprecation(NamedTuple):
     instead_info: str | None = None
 
     def log(self, server: PluginServerInterface):
-        server.logger.warning(_TEMPLATE.format(self.feature, self.version_deprecated, self.version_removal))
-        if self.instead_info:
-            server.logger.warning(_INSTEAD_INFO_TEMPLATE.format(self.instead_info))
+        server.logger.warning(self.__msg)
 
     @property
     def __msg(self) -> str:
-        msg = _TEMPLATE.format(self.feature, self.version_deprecated, self.version_removal)
+        msg = DEP_TEMPLATE.format(self.feature, self.version_deprecated, self.version_removal)
         if self.instead_info:
-            msg += " " + _INSTEAD_INFO_TEMPLATE.format(self.instead_info)
+            msg += " " + DEP_INSTEAD_INFO_TEMPLATE.format(self.instead_info)
         return msg
 
     def warn(self):
@@ -37,7 +32,7 @@ class _Deprecations:
         self.features = (_Deprecation(*feature) for feature in features)
 
     def log(self, server: PluginServerInterface):
-        plg_version = SemanticVersion(str(server.get_plugin_metadata(PLUGIN_ID).version))
+        plg_version: SemanticVersion = SemanticVersion(str(server.get_plugin_metadata(PLUGIN_ID).version))
         has_warned: bool = False
 
         for feature in self.features:
@@ -51,9 +46,9 @@ class _Deprecations:
 
 # TODO: Deprecations
 DEPRECATIONS: _Deprecations = _Deprecations(
-    ("configuration `command_permission`", "3.4.0", "3.6", "`permissions`"),
-    ("configuration `command_prefixes`", "3.4.0", "3.6", "`prefix`"),
-    ("configuration `allow_alias`", "3.4.0", "3.6", "`prefix`"),
+    ("configuration `command_permission`", "3.4.0", "3.6.0", "`permissions`"),
+    ("configuration `command_prefixes`", "3.4.0", "3.6.0", "`prefix`"),
+    ("configuration `allow_alias`", "3.4.0", "3.6.0", "`prefix`"),
 )
 
 __all__ = ['DEPRECATIONS']

@@ -6,7 +6,7 @@ from mcdrpost.utils.translation import TranslationKeys
 
 # 其实想用 3.12 的泛型语法的
 # 但是还是要保证兼容性
-# TODO: 此注解应该在 MCDR 产生放弃 3.10 版本的更新时替换成 3.12 的新泛型语法
+# TODO: 此注解应该在 MCDR 产生放弃 3.10 版本的更新时替换成 3.12 的新泛型语法 (see dev/MCDRpost-3.12)
 __NodeType = TypeVar("__NodeType", bound=AbstractNode)
 
 

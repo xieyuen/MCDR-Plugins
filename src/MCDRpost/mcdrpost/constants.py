@@ -18,3 +18,6 @@ OFFHAND_CODE = 'Inventory[{Slot:-106b}]'
 AIR = Item(id='minecraft:air', count=1, components={})
 
 END_LINE = '\n'
+
+DEP_TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
+DEP_INSTEAD_INFO_TEMPLATE = "Please use {} instead."

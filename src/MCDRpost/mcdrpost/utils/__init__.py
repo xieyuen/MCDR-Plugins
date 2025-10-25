@@ -10,26 +10,26 @@ def get_formatted_time() -> str:
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
-# TODO: to 3.12 generic grammar
-T = TypeVar("T")
+# TODO: to 3.12 generic grammar (see dev/MCDRpost-3.12)
+ComparableType = TypeVar("ComparableType")
 
 
-class TotalOrdering(Generic[T], ABC):
+class TotalOrdering(Generic[ComparableType], ABC):
     @abstractmethod
     def __eq__(self, other) -> bool:  # self == other
         raise NotImplementedError
 
     @abstractmethod
-    def __lt__(self, other: T) -> bool:  # self < other
+    def __lt__(self, other: ComparableType) -> bool:  # self < other
         raise NotImplementedError
 
-    def __le__(self, other: T) -> bool:  # self <= other
+    def __le__(self, other: ComparableType) -> bool:  # self <= other
         return self < other or self == other
 
-    def __gt__(self, other: T) -> bool:  # self > other
+    def __gt__(self, other: ComparableType) -> bool:  # self > other
         return not (self <= other)
 
-    def __ge__(self, other: T) -> bool:  # self >= other
+    def __ge__(self, other: ComparableType) -> bool:  # self >= other
         return not (self < other)
 
 
