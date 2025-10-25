@@ -15,6 +15,7 @@ type ValidVersionTupleType = (
         | tuple[int, int, int, str, str]
 )
 type SemanticVersionType = SemanticVersion
+type ComparableType = SemanticVersion | SimpleVersionTuple | ValidVersionTupleType | str
 
 
 class SimpleVersionTuple(NamedTuple):
@@ -38,9 +39,7 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-class SemanticVersion(
-    TotalOrdering[SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str]
-):
+class SemanticVersion(TotalOrdering[ComparableType]):
     """语义化版本号
 
     Attributes:
