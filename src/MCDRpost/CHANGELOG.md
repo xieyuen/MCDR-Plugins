@@ -36,7 +36,6 @@
 |    allow_alias     | prefix.enable_addition |
 | command_permission |      permissions       |
 
-
 ## [3.4.0-alpha.1]
 
 ### Added
@@ -48,9 +47,9 @@
 ### Changed
 
 - 重构了 CommandManager, 分离 UI 和命令解析
-  - 新增 CommandPreHandler 处理解析的类型与功能类的交互
+    - 新增 CommandPreHandler 处理解析的类型与功能类的交互
 - 重构了 PostManager, 保持邮寄核心功能的单一职责
-  - 添加了 MCDRpostCoordinator 类作为协调器
+    - 添加了 MCDRpostCoordinator 类作为协调器
 
 ## [3.3.3]
 
@@ -97,6 +96,10 @@
 ### Changed
 
 - 放弃对 1.9~1.13 的支持，当服务器使用此区间的版本时只使用外界注册的 Handler
+
+## [3.3.2] - [YANKED]
+
+Due to a critical bug, this version is yanked.
 
 ## [3.3.2-rc.2] - 2025-09-21
 
