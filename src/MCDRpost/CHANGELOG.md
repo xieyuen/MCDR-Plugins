@@ -99,7 +99,7 @@
 
 ## [3.3.2] - [YANKED]
 
-> [!CRITICAL]
+> [!CAUTION]
 > Due to a critical bug, this version is yanked.
 
 ## [3.3.2-rc.2] - 2025-09-21
