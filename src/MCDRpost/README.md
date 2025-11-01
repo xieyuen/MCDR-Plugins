@@ -103,7 +103,7 @@ MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 
 
 ### 2.1.1 及以下
 
-对于 2.1.1 及以下的版本，**Flyky 并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
+对于 2.1.1 及以下的版本(应该说，2.1.0 和 2.1.1)，**Flyky 并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
 
 在 `mcdrpost/__init__.py` 文件中 Line 13 ~ 17，有以下五行代码
 
@@ -155,11 +155,11 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 #### 权限表
 
 > [!NOTE]
-> MCDReforged的权限系统支持5种权限: `owner`, `admin`, `helper`, `user`, `guest`,
-> 在设定权限的时候，用 0~4 五个数字代替权限等级，
-> 其中 `0` 表示 `owner`， `1` 表示 `admin`， `2` 表示 `helper`， `3` 表示 `user`， `4` 表示 `guest`
+> MCDReforged 的权限系统支持 5 种权限: 
+> `owner`, `admin`, `helper`, `user`, `guest`,
+> 在设定权限的时候，用 0~4 五个数字代替权限等级
 >
->> 此部分的官方文档见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
+>> 更多权限信息见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
 
 |      属性      | 默认权限 | 描述                     |
 |:------------:|:----:|:-----------------------|
@@ -179,8 +179,11 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 - 不开启 RCON 的话，插件可能会有一定的延迟导致发送/接收失败
 
 > [!WARNING]
-> ***切勿传送原版非法堆叠数的物品!!!***<br>
+> ***切勿传送原版非法堆叠数的物品!!!***
+> 
 > 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
+> 
+> ~~[自定义 Handler](#api) 也许可以解决这个问题~~
 
 > [!IMPORTANT]
 > 如果您的 Minecraft 服务器要从 1.20.5 以下升级到 1.20.5 版本或以上，请让玩家们清空中转站，
@@ -188,9 +191,11 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 ## 一些图片
 
-![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)<br>
-![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)<br>
-![po p](https://s1.ax1x.com/2020/04/16/Jk02X4.png)<br>
+![po rl](https://s1.ax1x.com/2020/04/16/Jk0WnJ.png)
+
+![po r](https://s1.ax1x.com/2020/04/16/Jk0fB9.png)
+
+![po p](https://s1.ax1x.com/2020/04/16/Jk02X4.png)
 
 ## API
 
@@ -199,6 +204,15 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 点击 [此处](custom_handler.md) 跳转至 MCDRpost 的自定义 Handler 文档
 
+## Future
+
+在将来某一个时间（也许是 MCDR 不再支持 Python 3.10 的时候），
+MCDRpost 将会从 Python 3.10 迁移到 3.12 或者更高版本，届时 MCDRpost 将会进入 4.x 版本
+
+<!--
+[这里](https://github.com/xieyuen/MCDR-Plugins/tree/dev/MCDRpost-3.12/src/MCDRpost) 是 Python 3.12+ 的特别版本
+-->
+
 [^1]: Minecraft 1.20.5 用 components 代替了 tag，导致命令不能执行，Minecraft 报错见 Flyky/MCDRpost#10
 [^2]: 理论上使用自定义 Handler 就可以适配任何版本，但是插件**本身没有兼容**低于 1.13 的版本，原因见 [Custom Handler](custom_handler.md)
-[^3]: 该属性在 v3.4.0 中被弃用，将在 v3.6 中被删除
+[^3]: 该属性/配置项已经在 v3.4.0 中被弃用，将在 v3.6 中被删除
