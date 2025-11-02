@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Check branch source
         run: |
-          if [[ "${{ github.head_ref }}" == dev/* ]] || [[ "${{ github.head_ref }}" == hotfix/* ]]; then
+          if [[ "${{ github.head_ref }}" == dev/* ]] || [[ "${{ github.head_ref }}" == dev ]] || [[ "${{ github.head_ref }}" == hotfix/* ]]; then
             echo "✓ Pull request is from an allowed branch: ${{ github.head_ref }}"
             echo "BRANCH_CHECK_RESULT=true" >> $GITHUB_ENV
             echo "ALLOWED_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
@@ -26,7 +26,7 @@ jobs:
             echo "ALLOWED_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
             exit 1
           fi
-          
+
       - name: Create Job Summary
         run: |
           echo "## Master Branch Protection Check" >> $GITHUB_STEP_SUMMARY
