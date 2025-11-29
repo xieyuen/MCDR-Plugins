@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 
 class EventManager:
+    """MCDR Event Handling"""
     def __init__(self, coo: "MCDRpostCoordinator"):
         self.coo = coo
 
@@ -21,7 +22,7 @@ class EventManager:
         self.command_manager = coo.command_manager
 
     @property
-    def config(self)->Configuration:
+    def config(self) -> Configuration:
         return self.coo.config
 
     # Events Handle

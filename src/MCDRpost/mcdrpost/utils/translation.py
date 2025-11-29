@@ -26,7 +26,7 @@ class TranslationKeyItem:
             *args: 传递给翻译字符串的参数
 
         Returns:
-            str | RTextBase: 翻译后的文本或RText对象
+            str | RTextBase: 翻译后的文本或 RText 对象
         """
         return self.__tr(self.key, *args)
 
@@ -43,6 +43,7 @@ class TranslationKeyItem:
 
 
 class TranslationKeys:
+    """MCDRpost 翻译"""
     desc = TranslationKeyItem('desc')
     info_msg = TranslationKeyItem('info_msg')
     hover = TranslationKeyItem('hover')
