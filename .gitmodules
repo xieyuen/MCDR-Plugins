@@ -1,0 +1,3 @@
+[submodule "dependencies/MCDataAPI"]
+	path = dependencies/MCDataAPI
+	url = https://github.com/Fallen-Breath/MinecraftDataAPI.git
