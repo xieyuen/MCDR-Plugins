@@ -6,9 +6,5 @@ class InvalidOrder(InvalidData):
     pass
 
 
-class InvalidRegisteredPlayerList(InvalidData):
-    pass
-
-
 class InvalidItem(InvalidData):
     pass
