@@ -1,0 +1,18 @@
+name: Notify Downstream on Tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  notify-downstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Repository Dispatch
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.DOWNSTREAM_PAT }}  # 需要在 secrets 中配置个人访问令牌
+          repository: xieyuen-org/MCDR-Plugins  # 下游仓库的 owner/repo
+          event-type: upstream-tag-created
+          client-payload: '{"tag": "${{ github.ref_name }}"}'
