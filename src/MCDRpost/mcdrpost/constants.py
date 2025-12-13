@@ -19,5 +19,13 @@ AIR = Item(id='minecraft:air', count=1, components={})
 
 END_LINE = '\n'
 
-DEP_TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
-DEP_INSTEAD_INFO_TEMPLATE = "Please use {} instead."
+
+class Deprecations:
+    TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
+    INSTEAD_INFO_TEMPLATE = "Please use {} instead."
+
+
+class Commands:
+    REPLACE_OLD = "replaceitem entity {0} weapon.offhand {1}"
+    REPLACE_NEW = "item replace entity {0} weapon.offhand with {1}"
+    GET = "data get entity {0} Inventory[{Slot:-106b}]"

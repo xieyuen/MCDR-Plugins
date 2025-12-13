@@ -3,7 +3,7 @@ from typing import Any, final, override
 
 from mcdreforged import PluginServerInterface, new_thread
 
-import minecraft_data_api as api
+import minecraft_data_api as mc_data_api
 from mcdrpost import constants
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
@@ -101,7 +101,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
     def get_offhand_item(self, player: str) -> Item:
         """获取副手物品--通用实现"""
         if self.server.is_rcon_running():
-            offhand_item = api.convert_minecraft_json(
+            offhand_item = mc_data_api.convert_minecraft_json(
                 self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
             )
         else:
@@ -109,7 +109,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
 
             @new_thread('MCDRpost | get offhand item')
             def get():
-                return api.get_player_info(player, constants.OFFHAND_CODE)
+                return mc_data_api.get_player_info(player, constants.OFFHAND_CODE)
 
             # 等待异步执行完成并获取返回值
             offhand_item = get().get_return_value(block=True)
