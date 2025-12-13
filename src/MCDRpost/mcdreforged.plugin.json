@@ -1,6 +1,6 @@
 {
     "id": "mcdrpost",
-    "version": "3.4.0-alpha.2",
+    "version": "3.4.0-alpha.3",
     "name": "MCDRpost",
     "description": {
         "en_us": "A MCDR plugin for post/teleport items",
