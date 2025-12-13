@@ -7,6 +7,25 @@
 
 ## [Unreleased]
 
+## [3.4.0-alpha.4]
+
+### Added
+
+- 在 dependencies 引入 submodule (MinecraftDataAPI)
+
+### Changed
+
+- 迁移脚本和部分模块有些许变化，但无大影响
+
+> [!NOTE]
+> 迁移脚本没有发布在 release 中
+
+### Removed
+
+- 删除了无用的 Exception
+- 放弃单独的 3.12 支持开发分支
+- 放弃 AI 修改版本 (Tag: mcdrpost-v3.4.0-rc.1+build.ai.lingma) 的支持
+
 ## [3.4.0-alpha.3]
 
 ### Added
