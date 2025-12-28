@@ -4,7 +4,7 @@ from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
 from mcdrpost.utils import TotalOrdering
 
-ValidVersionTupleType: TypeAlias = (  # TODO: 替换成 3.12 的语法 (see dev/MCDRpost-3.12)
+ValidVersionTupleType: TypeAlias = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
         tuple[int, int]  # major and minor, its patch version will be set to 0
         # major, minor, patch
         | tuple[int, int, int]
@@ -38,9 +38,10 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-class SemanticVersion(
-    TotalOrdering[SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str]
-):
+ComparableType = SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
+
+
+class SemanticVersion(TotalOrdering[ComparableType]):
     """语义化版本号
 
     Attributes:
@@ -83,22 +84,7 @@ class SemanticVersion(
 
     @overload
     @staticmethod
-    def __param_normalize(param: SemanticVersionType) -> SemanticVersionType:
-        ...
-
-    @overload
-    @staticmethod
-    def __param_normalize(param: str) -> SemanticVersionType:
-        ...
-
-    @overload
-    @staticmethod
-    def __param_normalize(param: SimpleVersionTuple) -> SemanticVersionType:
-        ...
-
-    @overload
-    @staticmethod
-    def __param_normalize(param: ValidVersionTupleType) -> SemanticVersionType:
+    def __param_normalize(param: ComparableType) -> SemanticVersionType:
         ...
 
     @overload
@@ -166,3 +152,74 @@ class SemanticVersion(
 
     def __repr__(self) -> str:
         return f'SemanticVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})'
+
+
+MinecraftVersionType = TypeVar("MinecraftVersionType", bound="MinecraftVersion")
+
+
+class MinecraftVersion(
+    TotalOrdering[ComparableType | MinecraftVersionType]
+):
+    """Minecraft 版本, 主要目的是兼容新版本号系统"""
+
+    major: int
+    minor: int
+    patch: int
+    pre_release: str | None = None
+    build_metadata: str | None = None
+    version: SemanticVersion
+
+    def __init__(self, original_version_str: str):
+        try:
+            self.version = SemanticVersion(original_version_str)
+            self.major, self.minor, self.patch, self.pre_release, self.build_metadata = (
+                self.version.major, self.version.minor, self.version.patch,
+                self.version.pre_release, self.version.build_metadata
+            )
+        except ValueError:
+            ver = original_version_str.split('.')
+            self.major = int(ver[0])
+            self.patch = 0
+            minor_pre = ver[1].split('-')
+            self.minor = int(minor_pre[0])
+            self.pre_release = "-".join(minor_pre[1:])
+            self.build_metadata = None
+            self.version = SimpleVersionTuple(
+                self.major, self.minor, self.patch, self.pre_release, self.build_metadata
+            ).to_semantic_version()
+
+    @overload
+    @staticmethod
+    def __param_normalize(other: ComparableType | MinecraftVersionType) -> MinecraftVersionType:
+        pass
+
+    @overload
+    @staticmethod
+    def __param_normalize(other: Any) -> NotImplementedType:
+        pass
+
+    @staticmethod
+    def __param_normalize(other):
+        if isinstance(other, MinecraftVersion):
+            return other
+        if isinstance(other, SimpleVersionTuple):
+            other = other.to_semantic_version()
+        elif isinstance(other, tuple):
+            other = SimpleVersionTuple(*other).to_semantic_version()
+        if isinstance(other, SemanticVersion):
+            other = str(other)
+        if isinstance(other, str):
+            return MinecraftVersion(other)
+        return NotImplemented
+
+    def __eq__(self, other) -> bool:
+        other = self.__param_normalize(other)
+        if other is NotImplemented:
+            return False
+        return self.version == other.version
+
+    def __lt__(self, other) -> bool:
+        other = self.__param_normalize(other)
+        if other is NotImplemented:
+            return NotImplemented
+        return self.version < other.version

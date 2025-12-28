@@ -12,10 +12,10 @@
 > [!WARNING]
 > 1. 插件的 `2.x` 版本已经停止更新，并且不支持 Minecraft 1.20.5 或者更高版本[^1]
 > 2. 插件的 `3.x` 版本与旧版（`2.x`）不兼容，升级新版本建议清空中转站或者手动改变数据结构
+> 3. 在 `3.4.0` 版本之前, 本插件不支持使用[新版本号命名规则](<https://www.minecraft.net/en-us/article/minecraft-new-version-numbering-system>)的 Minecraft
 
 *Added on 2025 6th Sept.*: 已经实现了旧版本数据文件的自动升级转换，
-见 [README](<../MCDRpost-migration/README.md>)
-或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
+见 [README](<../MCDRpost-migration/README.md>) 或者 [release](https://github.com/xieyuen/MCDR-Plugins/releases/tag/mcdrpost-migration)
 
 - 如果直接加载新版本，旧版的订单数据不能被加载，但是原来的数据仍然存在，并且会创建一个新的空文件 `orders.json` 来存储订单数据
 
@@ -71,19 +71,19 @@
 
 ## 使用
 
-|                命令                |             缩写              | 说明            |
-|:--------------------------------:|:---------------------------:|:--------------|
-|             `!!post`             |           `!!po`            | 显示帮助信息        |
-| `!!post post <player> [comment]` | `!!po p <player> [comment]` | 发送副手物品，可以没有备注 |
-|    `!!post receive <orderid>`    |     `!!po r <orderid>`      | 接收输入单号的物品到副手  |
-|    `!!post cancel <orderid>`     |     `!!po c <orderid>`      | 取消订单，仅限对方未收取时 |
-|        `!!post post_list`        |          `!!po pl`          | 列出发件列表        |
-|        `!!post list post`        |       `!!po ls post`        | 列出发件列表        |
-|      `!!post receive_list`       |          `!!po rl`          | 列出收件列表        |
-|      `!!post list receive`       |      `!!po ls receive`      | 列出收件列表        |
-|      `!!post list players`       |      `!!po ls players`      | 列出已注册玩家名单     |
-|   `!!post player add <player>`   |                             | 注册一个新玩家       |
-| `!!post player remove <player>`  |                             | 删除已经注册的玩家     |
+|              命令(全写)              |             缩写              | 说明                                |
+|:--------------------------------:|:---------------------------:|:----------------------------------|
+|             `!!post`             |           `!!po`            | 显示帮助信息, 所有的 `!!post` 都可以换成 `!!po` |
+| `!!post post <player> [comment]` | `!!po p <player> [comment]` | 发送副手物品，可以没有备注                     |
+|    `!!post receive <orderid>`    |     `!!po r <orderid>`      | 接收输入单号的物品到副手                      |
+|    `!!post cancel <orderid>`     |     `!!po c <orderid>`      | 取消订单，仅限对方未收取时                     |
+|        `!!post post_list`        |          `!!po pl`          | 列出发件列表                            |
+|        `!!post list post`        |       `!!po ls post`        | 列出发件列表                            |
+|      `!!post receive_list`       |          `!!po rl`          | 列出收件列表                            |
+|      `!!post list receive`       |      `!!po ls receive`      | 列出收件列表                            |
+|      `!!post list players`       |      `!!po ls players`      | 列出已注册玩家名单                         |
+|   `!!post player add <player>`   |                             | 注册一个新玩家                           |
+| `!!post player remove <player>`  |                             | 删除已经注册的玩家                         |
 
 *上面命令中的`r`表示`receive`，`p`表示`post`，`l`表示`list`，`c`表示`cancel`*
 
@@ -93,7 +93,7 @@
 
 ## 配置
 
-MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 中
+MCDRpost的配置文件（3.0.0或以上）在 `config/MCDRpost/config.yml` 中  
 但是旧版本（2.1.1或以下）没有配置文件，请自行修改插件中的 `mcdrpost/__init__.py`
 
 **点击快速跳转**
@@ -102,6 +102,9 @@ MCDRpost的配置文件（限v3.0.0或以上）在 `config/MCDRpost/config.yml` 
 - [3.x](#300-版本或以上)
 
 ### 2.1.1 及以下
+
+> [!NOTE]
+> 该版本已归档, 不再维护, 推荐使用新版本
 
 对于 2.1.1 及以下的版本(应该说，2.1.0 和 2.1.1)，**Flyky 并没有提供配置文件**，想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
 
@@ -159,7 +162,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > `owner`, `admin`, `helper`, `user`, `guest`,
 > 在设定权限的时候，用 0~4 五个数字代替权限等级
 >
->> 更多权限信息见 https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview
+>> 更多权限信息见 [MCDR 官方文档](https://docs.mcdreforged.com/zh-cn/latest/permission.html#overview)
 
 |      属性      | 默认权限 | 描述                     |
 |:------------:|:----:|:-----------------------|
@@ -183,7 +186,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 > 
 > 例如使用carpet地毯堆叠的空潜影盒，会导致该物品无法接收
 > 
-> ~~[自定义 Handler](#api) 也许可以解决这个问题~~
+> ~~[自定义 Handler](#api) + 特定模组兼容 也许可以解决这个问题~~
 
 > [!IMPORTANT]
 > 如果您的 Minecraft 服务器要从 1.20.5 以下升级到 1.20.5 版本或以上，请让玩家们清空中转站，
