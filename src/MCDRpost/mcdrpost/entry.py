@@ -5,8 +5,8 @@
 """
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.deprecations import DEPRECATIONS
 from mcdrpost.coordinator import MCDRpostCoordinator
+from mcdrpost.deprecations import DEPRECATIONS
 from mcdrpost.version_handler import register_builtin_handlers
 
 coordinator: MCDRpostCoordinator

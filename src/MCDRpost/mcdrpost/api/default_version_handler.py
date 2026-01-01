@@ -9,18 +9,16 @@ class DefaultVersionHandler(AbstractVersionHandler):
 
     def get_offhand_item(self, player: str) -> Item:
         item = api.convert_minecraft_json(
-            self.server.rcon_query(f'data get entity {player} {OFFHAND_CODE}')
+            self.server.rcon_query(f"data get entity {player} {OFFHAND_CODE}")
         )
 
-        return Item(
-            id=item['id'],
-            count=item['Count'],
-            components=item.get('tag', {})
-        )
+        return Item(id=item["id"], count=item["Count"], components=item.get("tag", {}))
 
     def replace(self, player: str, item: Item) -> None:
-        self.server.execute(f'item replace entity {player} {OFFHAND_CODE} with {self.item2str(item)}')
+        self.server.execute(
+            f"item replace entity {player} {OFFHAND_CODE} with {self.item2str(item)}"
+        )
 
     @staticmethod
     def item2str(item: Item) -> str:
-        return f'{item.id}{item.components} {item.count}'
+        return f"{item.id}{item.components} {item.count}"

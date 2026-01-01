@@ -1,4 +1,4 @@
-from mcdreforged import ServerInterface, RTextBase, RTextMCDRTranslation
+from mcdreforged import RTextBase, RTextMCDRTranslation, ServerInterface
 
 
 class TranslationKeyItem:

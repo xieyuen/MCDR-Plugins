@@ -14,6 +14,7 @@ class Item(Serializable):
         count (int): 物品数量
         components (dict): 物品的组件数据（1.20.5+版本特性，对于低版本这里储存物品的 tag）
     """
+
     id: str
     count: int
     components: dict
@@ -29,6 +30,7 @@ class OrderInfo(Serializable):
         sender (str): 发件人
         time (str): 订单创建时间
     """
+
     time: str
     sender: str
     receiver: str
@@ -47,6 +49,7 @@ class Order(Serializable):
         sender (str): 发件人
         time (str): 订单创建时间
     """
+
     id: int
     time: str
     sender: str
@@ -64,5 +67,6 @@ class OrderData(Serializable):
         players (list[str]): 已注册玩家列表
         orders (dict[str, Order]): 所有订单的字典，以订单 ID 为键，订单对象为值
     """
+
     players: list[str] = []
     orders: dict[str, Order] = {}

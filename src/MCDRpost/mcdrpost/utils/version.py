@@ -2,17 +2,17 @@ import re
 from types import NotImplementedType
 from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
-from mcdrpost.utils import TotalOrdering
+from mcdrpost.utils.general import TotalOrdering
 
 ValidVersionTupleType: TypeAlias = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
-        tuple[int, int]  # major and minor, its patch version will be set to 0
-        # major, minor, patch
-        | tuple[int, int, int]
-        # major, minor, patch, pre_release
-        | tuple[int, int, int, str]
-        # major, minor, patch, pre_release, build_metadata
-        # pre_release cannot be None, but can be an empty str for a non-pre-release version
-        | tuple[int, int, int, str, str]
+    tuple[int, int]  # major and minor, its patch version will be set to 0
+    # major, minor, patch
+    | tuple[int, int, int]
+    # major, minor, patch, pre_release
+    | tuple[int, int, int, str]
+    # major, minor, patch, pre_release, build_metadata
+    # pre_release cannot be None, but can be an empty str for a non-pre-release version
+    | tuple[int, int, int, str, str]
 )
 SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
 
@@ -21,16 +21,16 @@ class SimpleVersionTuple(NamedTuple):
     major: int
     minor: int
     patch: int = 0
-    pre_release: str = ''
-    build_metadata: str = ''
+    pre_release: str = ""
+    build_metadata: str = ""
 
     @property
     def __version_string(self):
-        s = f'{self.major}.{self.minor}.{self.patch}'
+        s = f"{self.major}.{self.minor}.{self.patch}"
         if self.pre_release:
-            s += f'-{self.pre_release}'
+            s += f"-{self.pre_release}"
         if self.build_metadata:
-            s += f'+{self.build_metadata}'
+            s += f"+{self.build_metadata}"
 
         return s
 
@@ -51,8 +51,9 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         pre_release (tuple[str, int] | None): 预发布版本号
         build_metadata (tuple[str, int] | None): 构建元数据
     """
+
     PATTERN = re.compile(
-        r'^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$'
+        r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     )
 
     major: int
@@ -66,12 +67,12 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 
         match = re.match(self.PATTERN, version_str)
         if not match:
-            raise ValueError(f'Invalid version string: {version_str}')
+            raise ValueError(f"Invalid version string: {version_str}")
 
         major, minor, patch, self.pre_release, self.build_metadata = match.groups()
 
         if any(i is None for i in [major, minor, patch]):
-            raise ValueError(f'Invalid semantic version string: {version_str}')
+            raise ValueError(f"Invalid semantic version string: {version_str}")
 
         self.major = int(major)
         self.minor = int(minor)
@@ -84,13 +85,11 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 
     @overload
     @staticmethod
-    def __param_normalize(param: ComparableType) -> SemanticVersionType:
-        ...
+    def __param_normalize(param: ComparableType) -> SemanticVersionType: ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: Any) -> NotImplementedType:
-        ...
+    def __param_normalize(param: Any) -> NotImplementedType: ...
 
     @staticmethod
     def __param_normalize(param):
@@ -108,16 +107,18 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         if other is NotImplemented:
             return False
 
-        return (
-                (self.major, self.minor, self.patch, self.pre_release)
-                == (other.major, other.minor, other.patch, other.pre_release)
+        return (self.major, self.minor, self.patch, self.pre_release) == (
+            other.major,
+            other.minor,
+            other.patch,
+            other.pre_release,
         )
 
     @staticmethod
     def __compare_pre_release(pre1: str, pre2: str) -> bool:
         """比较预发布版本号"""
-        parts1 = pre1.split('.')
-        parts2 = pre2.split('.')
+        parts1 = pre1.split(".")
+        parts2 = pre2.split(".")
 
         for p1, p2 in zip(parts1, parts2):
             # 尝试转换为数字比较，否则按字符串比较
@@ -137,9 +138,17 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         if n_other is NotImplemented:
             return NotImplemented
 
-        if (self.major, self.minor, self.patch) < (n_other.major, n_other.minor, n_other.patch):
+        if (self.major, self.minor, self.patch) < (
+            n_other.major,
+            n_other.minor,
+            n_other.patch,
+        ):
             return True
-        elif (self.major, self.minor, self.patch) > (n_other.major, n_other.minor, n_other.patch):
+        elif (self.major, self.minor, self.patch) > (
+            n_other.major,
+            n_other.minor,
+            n_other.patch,
+        ):
             return False
         elif self.pre_release is None:
             return False
@@ -151,7 +160,7 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         return self._original_string
 
     def __repr__(self) -> str:
-        return f'SemanticVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})'
+        return f"SemanticVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})"
 
 
 MinecraftVersionType = TypeVar("MinecraftVersionType", bound="MinecraftVersion")
@@ -176,25 +185,40 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
     def __init__(self, original_version_str: str):
         try:
             self.version = SemanticVersion(original_version_str)
-            self.major, self.minor, self.patch, self.pre_release, self.build_metadata = (
-                self.version.major, self.version.minor, self.version.patch,
-                self.version.pre_release, self.version.build_metadata
+            (
+                self.major,
+                self.minor,
+                self.patch,
+                self.pre_release,
+                self.build_metadata,
+            ) = (
+                self.version.major,
+                self.version.minor,
+                self.version.patch,
+                self.version.pre_release,
+                self.version.build_metadata,
             )
         except ValueError:
-            ver = original_version_str.split('.')
+            ver = original_version_str.split(".")
             self.major = int(ver[0])
-            minor_pre = ver[1].split('-')
+            minor_pre = ver[1].split("-")
             self.minor = int(minor_pre[0])
             self.patch = int(minor_pre[-1])
             self.pre_release = "-".join(minor_pre[1:])
             self.build_metadata = None
             self.version = SimpleVersionTuple(
-                self.major, self.minor, self.patch, self.pre_release, self.build_metadata
+                self.major,
+                self.minor,
+                self.patch,
+                self.pre_release,
+                self.build_metadata,
             ).to_semantic_version()
 
     @overload
     @staticmethod
-    def __param_normalize(other: ComparableType | MinecraftVersionType) -> MinecraftVersionType:
+    def __param_normalize(
+        other: ComparableType | MinecraftVersionType,
+    ) -> MinecraftVersionType:
         pass
 
     @overload
@@ -232,4 +256,4 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
         return not self.pre_release
 
     def __repr__(self):
-        return f'MinecraftVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})'
+        return f"MinecraftVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})"

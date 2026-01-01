@@ -8,7 +8,7 @@ def register_builtin_handlers():
     通过动态导入所有版本处理器模块，触发它们的自动注册机制
     """
     # 获取当前模块所在目录
-    builtin_handlers = Path(__file__).parent / 'impl'
+    builtin_handlers = Path(__file__).parent / "impl"
 
     # 遍历目录中的所有.py文件
     for file_path in builtin_handlers.glob("*.py"):

@@ -1,7 +1,15 @@
 from typing import TYPE_CHECKING, cast
 
-from mcdreforged import CommandSource, GreedyText, InfoCommandSource, Integer, Literal, PluginServerInterface, \
-    RequirementNotMet, Text
+from mcdreforged import (
+    CommandSource,
+    GreedyText,
+    InfoCommandSource,
+    Integer,
+    Literal,
+    PluginServerInterface,
+    RequirementNotMet,
+    Text,
+)
 
 from mcdrpost.configuration import CommandPermissions, Configuration
 from mcdrpost.constants import SIMPLE_HELP_MESSAGE
@@ -51,132 +59,155 @@ class CommandManager:
         """
         for prefix in self.prefixes:
             self._server.register_help_message(prefix, SIMPLE_HELP_MESSAGE)
-            self._server.register_command(
-                self.generate_command_node(prefix)
-            )
+            self._server.register_command(self.generate_command_node(prefix))
 
     # nodes
     def gen_post_node(self, node_name: str) -> Literal:
         return add_requirements(
-            Literal(node_name).
-            runs(lambda src: src.reply(TranslationKeys.no_input_receiver.tr())).
-            then(
-                Text('receiver').
-                suggests(self.data_manager.get_players).
-                runs(self.pre_handler.post).
-                then(
-                    GreedyText('comment').
-                    runs(self.pre_handler.post)
-                )
+            Literal(node_name)
+            .runs(lambda src: src.reply(TranslationKeys.no_input_receiver.tr()))
+            .then(
+                Text("receiver")
+                .suggests(self.data_manager.get_players)
+                .runs(self.pre_handler.post)
+                .then(GreedyText("comment").runs(self.pre_handler.post))
             ),
             permission=self._perm.post,
-            require_player=True
+            require_player=True,
         )
 
     def gen_post_list_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name).runs(lambda src: self._helper.output_post_list(src)),
             permission=self._perm.post,
-            require_player=True
+            require_player=True,
         )
 
     def gen_receive_node(self, node_name: str) -> Literal:
         return add_requirements(
-            Literal(node_name).
-            runs(lambda src: src.reply(TranslationKeys.no_input_receive_orderid.tr())).
-            then(
-                Integer('orderid').
-                suggests(
+            Literal(node_name)
+            .runs(lambda src: src.reply(TranslationKeys.no_input_receive_orderid.tr()))
+            .then(
+                Integer("orderid")
+                .suggests(
                     lambda src: [
-                        str(i) for i in
-                        self.data_manager.get_orderid_by_receiver(src.get_info().player)
+                        str(i)
+                        for i in self.data_manager.get_orderid_by_receiver(
+                            src.get_info().player
+                        )
                     ]
-                ).
-                runs(self.pre_handler.receive)
+                )
+                .runs(self.pre_handler.receive)
             ),
             permission=self._perm.receive,
-            require_player=True
+            require_player=True,
         )
 
     def gen_receive_list_node(self, node_name: str) -> Literal:
         return add_requirements(
-            Literal(node_name).runs(lambda src: self._helper.output_receive_list(cast(InfoCommandSource,src))),
+            Literal(node_name).runs(
+                lambda src: self._helper.output_receive_list(
+                    cast(InfoCommandSource, src)
+                )
+            ),
             permission=self._perm.receive,
-            require_player=True
+            require_player=True,
         )
 
     def gen_cancel_node(self, node_name: str) -> Literal:
         return add_requirements(
-            Literal(node_name).
-            runs(lambda src: src.reply(TranslationKeys.no_input_cancel_orderid.tr())).
-            then(
-                Integer('orderid').
-                suggests(
+            Literal(node_name)
+            .runs(lambda src: src.reply(TranslationKeys.no_input_cancel_orderid.tr()))
+            .then(
+                Integer("orderid")
+                .suggests(
                     lambda src: [
-                        str(i) for i in
-                        self.data_manager.get_orderid_by_sender(src.get_info().player)
+                        str(i)
+                        for i in self.data_manager.get_orderid_by_sender(
+                            src.get_info().player
+                        )
                     ]
-                ).
-                runs(self.pre_handler.cancel)
+                )
+                .runs(self.pre_handler.cancel)
             ),
             permission=self._perm.cancel,
-            require_player=True
+            require_player=True,
         )
 
     def gen_list_node(self, node_name: str) -> Literal:
         return (
-            Literal(node_name).
-            runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
-            then(
-                Literal('players').
-                requires(lambda src: src.has_permission(self._perm.list_player)).
-                runs(lambda src: src.reply(
-                    TranslationKeys.list_player_title.tr() + str(self.data_manager.get_players())
-                ))
-            ).
-            then(
-                Literal('orders').
-                requires(lambda src: src.has_permission(self._perm.list_orders)).
-                on_error(RequirementNotMet, lambda src: src.reply(TranslationKeys.no_permission.tr()), handled=True).
-                runs(lambda src: self._helper.output_all_orders(cast(InfoCommandSource, src)))
-            ).
-            then(
+            Literal(node_name)
+            .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+            .then(
+                Literal("players")
+                .requires(lambda src: src.has_permission(self._perm.list_player))
+                .runs(
+                    lambda src: src.reply(
+                        TranslationKeys.list_player_title.tr()
+                        + str(self.data_manager.get_players())
+                    )
+                )
+            )
+            .then(
+                Literal("orders")
+                .requires(lambda src: src.has_permission(self._perm.list_orders))
+                .on_error(
+                    RequirementNotMet,
+                    lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                    handled=True,
+                )
+                .runs(
+                    lambda src: self._helper.output_all_orders(
+                        cast(InfoCommandSource, src)
+                    )
+                )
+            )
+            .then(
                 add_requirements(
-                    Literal('receive').runs(
+                    Literal("receive").runs(
                         lambda src: self._helper.output_receive_list(
-                            cast(InfoCommandSource,src)
+                            cast(InfoCommandSource, src)
                         )
                     ),
                     permission=self._perm.receive,
-                    require_player=True
+                    require_player=True,
                 )
-            ).then(
+            )
+            .then(
                 add_requirements(
-                    Literal('post').runs(lambda src: self._helper.output_post_list(cast(InfoCommandSource, src))),
+                    Literal("post").runs(
+                        lambda src: self._helper.output_post_list(
+                            cast(InfoCommandSource, src)
+                        )
+                    ),
                     permission=self._perm.post,
-                    require_player=True
+                    require_player=True,
                 )
             )
         )
 
     def gen_player_node(self, node_name: str) -> Literal:
         return (
-            Literal(node_name).
-            requires(lambda src: src.has_permission(self._perm.player)).
-            on_error(RequirementNotMet, lambda src: src.reply(TranslationKeys.no_permission.tr()), handled=True).
-            runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
-            then(
-                Literal('add').
-                runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
-                then(Text('player_id').runs(self.pre_handler.add_player))
-            ).
-            then(
-                Literal('remove').
-                runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr())).
-                then(
-                    Text('player_id').
-                    suggests(self.data_manager.get_players).
-                    runs(self.pre_handler.remove_player)
+            Literal(node_name)
+            .requires(lambda src: src.has_permission(self._perm.player))
+            .on_error(
+                RequirementNotMet,
+                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                handled=True,
+            )
+            .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+            .then(
+                Literal("add")
+                .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+                .then(Text("player_id").runs(self.pre_handler.add_player))
+            )
+            .then(
+                Literal("remove")
+                .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+                .then(
+                    Text("player_id")
+                    .suggests(self.data_manager.get_players)
+                    .runs(self.pre_handler.remove_player)
                 )
             )
         )
@@ -190,24 +221,39 @@ class CommandManager:
         return (
             Literal(prefix)
             .requires(lambda src: src.has_permission(self._perm.reload))
-            .on_error(RequirementNotMet, lambda src: src.reply(TranslationKeys.no_permission.tr()), handled=True)
+            .on_error(
+                RequirementNotMet,
+                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                handled=True,
+            )
             .runs(reload)
         )
 
     def generate_command_node(self, prefix: str) -> Literal:
         """生成指令树"""
         return (
-            Literal(prefix).
-            requires(lambda src: src.has_permission(self._perm.root)).
-            on_error(RequirementNotMet, lambda src: src.reply(TranslationKeys.no_permission.tr()), handled=True).
-            runs(lambda src: self._helper.output_help_message(src, prefix)).
+            Literal(prefix)
+            .requires(lambda src: src.has_permission(self._perm.root))
+            .on_error(
+                RequirementNotMet,
+                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                handled=True,
+            )
+            .runs(lambda src: self._helper.output_help_message(src, prefix))
+            .
             # 下面的一行就是一条命令，多个 then 意味着别名/缩写
-            then(self.gen_post_node('p')).then(self.gen_post_node('post')).
-            then(self.gen_post_list_node('pl')).then(self.gen_post_list_node('post_list')).
-            then(self.gen_receive_node('r')).then(self.gen_receive_node('receive')).
-            then(self.gen_receive_list_node('rl')).then(self.gen_receive_list_node('receive_list')).
-            then(self.gen_cancel_node('c')).then(self.gen_cancel_node('cancel')).
-            then(self.gen_list_node('ls')).then(self.gen_list_node('list')).
-            then(self.gen_player_node('player')).
-            then(self.gen_reload_node('reload'))
+            then(self.gen_post_node("p"))
+            .then(self.gen_post_node("post"))
+            .then(self.gen_post_list_node("pl"))
+            .then(self.gen_post_list_node("post_list"))
+            .then(self.gen_receive_node("r"))
+            .then(self.gen_receive_node("receive"))
+            .then(self.gen_receive_list_node("rl"))
+            .then(self.gen_receive_list_node("receive_list"))
+            .then(self.gen_cancel_node("c"))
+            .then(self.gen_cancel_node("cancel"))
+            .then(self.gen_list_node("ls"))
+            .then(self.gen_list_node("list"))
+            .then(self.gen_player_node("player"))
+            .then(self.gen_reload_node("reload"))
         )

@@ -18,7 +18,9 @@ class _Deprecation(NamedTuple):
 
     @property
     def __msg(self) -> str:
-        msg = const.TEMPLATE.format(self.feature, self.version_deprecated, self.version_removal)
+        msg = const.TEMPLATE.format(
+            self.feature, self.version_deprecated, self.version_removal
+        )
         if self.instead_info:
             msg += " " + const.INSTEAD_INFO_TEMPLATE.format(self.instead_info)
         return msg
@@ -32,7 +34,9 @@ class _Deprecations:
         self.features = (_Deprecation(*feature) for feature in features)
 
     def log(self, server: PluginServerInterface):
-        plg_version: SemanticVersion = SemanticVersion(str(server.get_plugin_metadata(PLUGIN_ID).version))
+        plg_version: SemanticVersion = SemanticVersion(
+            str(server.get_plugin_metadata(PLUGIN_ID).version)
+        )
         has_warned: bool = False
 
         for feature in self.features:
@@ -41,7 +45,9 @@ class _Deprecations:
                 has_warned = True
 
         if has_warned:
-            server.logger.warning("Please discontinue these features as soon as possible.")
+            server.logger.warning(
+                "Please discontinue these features as soon as possible."
+            )
 
 
 # TODO: Deprecations
@@ -51,4 +57,4 @@ DEPRECATIONS: _Deprecations = _Deprecations(
     ("configuration `allow_alias`", "3.4.0", "3.6.0", "`prefix`"),
 )
 
-__all__ = ['DEPRECATIONS']
+__all__ = ["DEPRECATIONS"]

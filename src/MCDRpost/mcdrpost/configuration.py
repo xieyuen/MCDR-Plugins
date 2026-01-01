@@ -16,6 +16,7 @@ class CommandPermissions(Serializable):
         list_orders (int): 列出订单命令权限等级
         player (int): 玩家命令权限等级
     """
+
     root: int = 0
     post: int = 0
     receive: int = 0
@@ -42,6 +43,7 @@ class Configuration(Serializable):
         receiving_tip_delay (float): 登录之后收件箱提示的延迟时间，单位为秒
         permissions (CommandPermissions): 命令权限配置
     """
+
     max_storage: int = 5
     prefix: PrefixConfig = PrefixConfig.get_default()
     auto_fix: bool = False
@@ -52,4 +54,4 @@ class Configuration(Serializable):
     # Deprecated but for compatibility
     command_permission: CommandPermissions = CommandPermissions.get_default()
     allow_alias: bool = True
-    command_prefixes: list[str] = ['!!po', "!!post"]
+    command_prefixes: list[str] = ["!!po", "!!post"]
