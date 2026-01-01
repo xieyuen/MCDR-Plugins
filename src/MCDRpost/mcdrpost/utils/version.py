@@ -157,10 +157,14 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 MinecraftVersionType = TypeVar("MinecraftVersionType", bound="MinecraftVersion")
 
 
-class MinecraftVersion(
-    TotalOrdering[ComparableType | MinecraftVersionType]
-):
-    """Minecraft 版本, 主要目的是兼容新版本号系统"""
+class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
+    """Minecraft 版本, 主要目的是兼容新版本号系统
+
+    如果是普通的 1.x 版本, 那么它相当于语义化版本号
+
+    如果是新的版本命名系统, 那么 major 会储存年份, minor 会储存版本号, 快照版本会在 patch 和 pre_release 中储存,
+    其中的 pre_release 是 str 类型并且会保留 ``snapshot``
+    """
 
     major: int
     minor: int
@@ -179,9 +183,9 @@ class MinecraftVersion(
         except ValueError:
             ver = original_version_str.split('.')
             self.major = int(ver[0])
-            self.patch = 0
             minor_pre = ver[1].split('-')
             self.minor = int(minor_pre[0])
+            self.patch = int(minor_pre[-1])
             self.pre_release = "-".join(minor_pre[1:])
             self.build_metadata = None
             self.version = SimpleVersionTuple(
@@ -223,3 +227,9 @@ class MinecraftVersion(
         if other is NotImplemented:
             return NotImplemented
         return self.version < other.version
+
+    def is_pre_release(self) -> bool:
+        return not self.pre_release
+
+    def __repr__(self):
+        return f'MinecraftVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})'
