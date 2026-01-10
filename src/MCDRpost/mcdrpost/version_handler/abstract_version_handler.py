@@ -5,6 +5,7 @@ from mcdreforged import PluginServerInterface, new_thread
 
 import minecraft_data_api as mc_data_api
 from mcdrpost import constants
+from mcdrpost.constants import Commands
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
@@ -95,14 +96,14 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
     @override
     def replace(self, player: str, item: Item) -> None:
         """for mc 1.17+"""
-        self.server.execute(f'item replace entity {player} weapon.offhand with {self.item2str(item)}')
+        self.server.execute(Commands.REPLACE_NEW.format(player, self.item2str(item)))
 
     @override
     def get_offhand_item(self, player: str) -> Item:
         """获取副手物品--通用实现"""
         if self.server.is_rcon_running():
             offhand_item = mc_data_api.convert_minecraft_json(
-                self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
+                self.server.rcon_query(Commands.GET_ITEM.format(player))
             )
         else:
             self.server.logger.warning(TranslationKeys.rcon.not_running.tr())

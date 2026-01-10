@@ -10,6 +10,9 @@
 ### Changed
 
 - update mcdr version requirements to 2.16.5 for adaptation to new Minecraft version system
+- 正式启用 MinecraftVersion 类
+- 格式化了部分代码
+- 命令等字面量提取重构
 
 ## [3.4.0-alpha.4]
 

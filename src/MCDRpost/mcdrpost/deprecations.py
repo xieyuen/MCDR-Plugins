@@ -3,7 +3,7 @@ import warnings
 from mcdreforged import PluginServerInterface
 from typing_extensions import NamedTuple
 
-from mcdrpost.constants import Deprecations as const, PLUGIN_ID
+from mcdrpost.constants import Deprecations as Const, PLUGIN_ID
 from mcdrpost.utils.version import SemanticVersion
 
 
@@ -18,11 +18,11 @@ class _Deprecation(NamedTuple):
 
     @property
     def __msg(self) -> str:
-        msg = const.TEMPLATE.format(
+        msg = Const.TEMPLATE.format(
             self.feature, self.version_deprecated, self.version_removal
         )
         if self.instead_info:
-            msg += " " + const.INSTEAD_INFO_TEMPLATE.format(self.instead_info)
+            msg += " " + Const.INSTEAD_INFO_TEMPLATE.format(self.instead_info)
         return msg
 
     def warn(self):

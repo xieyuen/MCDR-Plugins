@@ -10,9 +10,7 @@ class Since20Handler(BuiltinVersionHandler):
     @override
     def dict2item(item: dict) -> Item:
         return Item(
-            id=item['id'],
-            count=item['count'],
-            components=item.get('components', {})
+            id=item["id"], count=item["count"], components=item.get("components", {})
         )
 
     @staticmethod
@@ -20,14 +18,13 @@ class Since20Handler(BuiltinVersionHandler):
     def item2str(item: Item) -> str:
         if not item.components:
             return f"{item.id} {item.count}"
-        components_str = '['
+        components_str = "["
         for k, v in item.components.items():
-            components_str += f' {k}={v},'
-        components_str += ']'
-        return f'{item.id}{components_str} {item.count}'
+            components_str += f" {k}={v},"
+        components_str += "]"
+        return f"{item.id}{components_str} {item.count}"
 
 
 VersionManager.register_handler(
-    Since20Handler,
-    lambda env: env.server_version >= (1, 20, 5)
+    Since20Handler, lambda env: env.server_version >= (1, 20, 5)
 )

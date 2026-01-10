@@ -1,6 +1,6 @@
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.utils.version import SemanticVersion
+from mcdrpost.utils.version import MinecraftVersion
 
 
 class Environment:
@@ -12,9 +12,9 @@ class Environment:
         return self._server.get_server_information()
 
     @property
-    def server_version(self) -> SemanticVersion:
+    def server_version(self) -> MinecraftVersion:
         """Minecraft 服务器版本"""
-        return SemanticVersion(self._info.version)
+        return MinecraftVersion(self._info.version)
 
     @property
     def mcdr_handler(self) -> str:

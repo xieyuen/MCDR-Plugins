@@ -9,19 +9,14 @@ class Since17Handler(BuiltinVersionHandler):
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:
-        return Item(
-            id=item['id'],
-            count=item['Count'],
-            components=item.get('tag', {})
-        )
+        return Item(id=item["id"], count=item["Count"], components=item.get("tag", {}))
 
     @staticmethod
     @override
     def item2str(item: Item) -> str:
-        return f'{item.id}{item.components} {item.count}'
+        return f"{item.id}{item.components} {item.count}"
 
 
 VersionManager.register_handler(
-    Since17Handler,
-    lambda env: (1, 17) <= env.server_version < (1, 20, 5)
+    Since17Handler, lambda env: (1, 17) <= env.server_version < (1, 20, 5)
 )
