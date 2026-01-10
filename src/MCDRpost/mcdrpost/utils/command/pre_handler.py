@@ -19,7 +19,7 @@ class CommandPreHandler:
     def post(self, src: CommandSource, ctx: CommandContext):
         self._post_manager.post(
             cast(PlayerCommandSource, src),
-            ctx['player_id'],
+            ctx['receiver'],
             ctx.get("comment")
         )
 

@@ -5,7 +5,7 @@ from mcdreforged import InfoCommandSource, PlayerCommandSource, PluginServerInte
 from mcdrpost import constants
 from mcdrpost.configuration import Configuration
 from mcdrpost.data_structure import Item, OrderInfo
-from mcdrpost.utils import get_formatted_time
+from mcdrpost.utils.general import get_formatted_time
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
 
