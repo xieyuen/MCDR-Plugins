@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [3.4.0-beta.1]
+
 ### Changed
 
 - update mcdr version requirements to 2.16.5 for adaptation to new Minecraft version system
