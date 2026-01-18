@@ -5,6 +5,7 @@ description = "My MCDR Plugins"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "matplotlib>=3.10.8",
     "mcdreforged>=2.15.0",
 ]
 license = { file = "LICENSE" }

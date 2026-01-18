@@ -1,0 +1,16 @@
+﻿{
+      "id": "model",
+      "version": "0.1.0",
+      "name": "model",
+      "description": {
+            "en_us": "model plotter",
+            "zh_cn": "建模图像生成器"
+      },
+      "author": [
+            "xieyuen"
+      ],
+      "dependencies": {
+            "python": ">=3.12",
+            "mcdreforged": ">=2.15"
+      }
+}
