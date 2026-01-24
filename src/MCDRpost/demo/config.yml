@@ -1,7 +1,7 @@
 auto_fix: false
 auto_register: true
 max_storage: 5
-receive_tip_delay: 3
+receiving_tip_delay: 3
 permissions: # instead of command_permission
   cancel: 0
   list_orders: 2
