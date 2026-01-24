@@ -1,6 +1,21 @@
-allow_alias: true
 auto_fix: false
 auto_register: true
+max_storage: 5
+receive_tip_delay: 3
+permissions: # instead of command_permission
+  cancel: 0
+  list_orders: 2
+  list_player: 2
+  player: 3
+  post: 0
+  receive: 0
+  root: 0
+prefix:
+  enable_addition: true # instead of allow_alias
+  more_prefix: # instead of command_prefixed
+    - '!!po'
+
+# Deprecated
 command_permission:
   cancel: 0
   list_orders: 2
@@ -10,7 +25,6 @@ command_permission:
   receive: 0
   root: 0
 command_prefixes:
-- '!!po'
-- '!!post'
-max_storage: 5
-receive_tip_delay: 3
+  - '!!po'
+  - '!!post'
+allow_alias: true

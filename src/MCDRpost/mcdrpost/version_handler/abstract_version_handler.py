@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import final, override
+from typing import Any, final, override
 
 from mcdreforged import PluginServerInterface, new_thread
 
-import minecraft_data_api as api
+import minecraft_data_api as mc_data_api
 from mcdrpost import constants
+from mcdrpost.constants import Commands
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
@@ -68,7 +69,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
 
     @staticmethod
     @abstractmethod
-    def dict2item(item: dict) -> Item:
+    def dict2item(item: dict[str, Any]) -> Item:
         """将物品字典转换为物品对象
 
         Args:
@@ -95,26 +96,29 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
     @override
     def replace(self, player: str, item: Item) -> None:
         """for mc 1.17+"""
-        self.server.execute(f'item replace entity {player} weapon.offhand with {self.item2str(item)}')
+        self.server.execute(Commands.REPLACE_NEW.format(player, self.item2str(item)))
 
     @override
     def get_offhand_item(self, player: str) -> Item:
         """获取副手物品--通用实现"""
         if self.server.is_rcon_running():
-            offhand_item = api.convert_minecraft_json(
-                self.server.rcon_query(f'data get entity {player} {constants.OFFHAND_CODE}')
+            offhand_item = mc_data_api.convert_minecraft_json(
+                self.server.rcon_query(Commands.GET_ITEM.format(player))
             )
         else:
             self.server.logger.warning(TranslationKeys.rcon.not_running.tr())
 
             @new_thread('MCDRpost | get offhand item')
             def get():
-                return api.get_player_info(player, constants.OFFHAND_CODE)
+                return mc_data_api.get_player_info(player, constants.OFFHAND_CODE)
 
             # 等待异步执行完成并获取返回值
             offhand_item = get().get_return_value(block=True)
 
         if not isinstance(offhand_item, dict):
-            raise InvalidItem(offhand_item)
+            raise InvalidItem(offhand_item)  # TODO: 更换方式
 
         return self.dict2item(offhand_item)
+
+    def __repr__(self):
+        return f"<MCDRpostBuiltinVersionHandler {self.__class__.__name__} handler at {id(self)}>"

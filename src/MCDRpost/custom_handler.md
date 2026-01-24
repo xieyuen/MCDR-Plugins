@@ -80,7 +80,7 @@ MCDRpost 通过它播放音效
 
 当你实现了自定义的 Handler，你需要向 MCDRpost 注册你的 Handler，否则插件不会使用你的 Handler
 
-注意，checker参数是决定 你的 Handler 是否生效的函数，参数是 [Environment](#class-environment) 对象，返回一个布尔值
+注意，checker参数是决定你的 Handler **是否生效**的函数，参数是一个 [Environment](#class-environment) 对象，返回一个布尔值
 
 ### class AbstractSoundPlayer(ABC)
 

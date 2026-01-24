@@ -1,6 +1,6 @@
 # MCDR-Plugins
 
-这是我的MCDR插件开发仓库
+这是我的 MCDR 插件开发仓库
 
 ## 现有插件
 
