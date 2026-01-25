@@ -10,7 +10,9 @@ from mcdrpost.utils.translation import TranslationKeys
 __NodeType = TypeVar("__NodeType", bound=AbstractNode)
 
 
-def add_requirements(node: __NodeType, permission: int, require_player: bool = False) -> __NodeType:
+def add_requirements(
+    node: __NodeType, permission: int, require_player: bool = False
+) -> __NodeType:
     def require_callback(src: CommandSource) -> bool:
         if require_player and not src.is_player:
             return False

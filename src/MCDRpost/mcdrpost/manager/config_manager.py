@@ -20,7 +20,7 @@ class ConfigurationManager:
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
             file_format=constants.CONFIG_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
 
     def reload(self) -> None:
@@ -30,7 +30,7 @@ class ConfigurationManager:
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
             file_format=constants.CONFIG_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
 
     def get_config(self) -> Configuration:

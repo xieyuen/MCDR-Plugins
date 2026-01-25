@@ -4,7 +4,9 @@ from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
 from mcdrpost.utils.general import TotalOrdering
 
-ValidVersionTupleType: TypeAlias = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
+ValidVersionTupleType: (
+    TypeAlias
+) = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
     tuple[int, int]  # major and minor, its patch version will be set to 0
     # major, minor, patch
     | tuple[int, int, int]
