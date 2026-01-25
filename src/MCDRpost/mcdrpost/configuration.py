@@ -1,4 +1,8 @@
+from typing import Any, cast
+
 from mcdreforged import Serializable
+
+from mcdrpost.utils.exception import InvalidConfig, InvalidPermission, InvalidPrefix
 
 
 class CommandPermissions(Serializable):
@@ -26,10 +30,34 @@ class CommandPermissions(Serializable):
     player: int = 3
     reload: int = 3
 
+    def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
+        if not isinstance(attr_value, int):
+            raise InvalidPermission(
+                f"Permission level must be an integer, found: {attr_name} with type {type(attr_value)}"
+            )
+        if not (0 <= attr_value <= 4):
+            raise InvalidPermission(
+                f"Permission level must be between 0 and 4, found: {attr_name} = {attr_value}"
+            )
+
 
 class PrefixConfig(Serializable):
     enable_addition: bool = True
     more_prefix: list[str] = ["!!post"]
+
+    def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
+        annotations = self.get_field_annotations()
+        expected_type = annotations[attr_name]
+        if not isinstance(attr_value, expected_type):
+            raise InvalidConfig(
+                f"{attr_name} must be {expected_type}, found: {type(attr_value)}"
+            )
+        if attr_name == "more_prefix":
+            attr_value = cast(list, cast(object, attr_value))
+            # more_prefix can be empty
+            # or a list of str
+            if attr_value and any(not isinstance(p, str) for p in attr_value):
+                raise InvalidPrefix("more_prefix must be a list of str or empty list")
 
 
 class Configuration(Serializable):
@@ -55,3 +83,11 @@ class Configuration(Serializable):
     command_permission: CommandPermissions = CommandPermissions.get_default()
     allow_alias: bool = True
     command_prefixes: list[str] = ["!!po", "!!post"]
+
+    def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
+        annotations = self.get_field_annotations()
+        expected_type = annotations[attr_name]
+        if not isinstance(attr_value, expected_type):
+            raise InvalidConfig(
+                f"Config {attr_name} is invalid, expected {expected_type} but found {type(attr_value)}"
+            )
