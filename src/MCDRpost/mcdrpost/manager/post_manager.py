@@ -67,9 +67,14 @@ class PostManager:
         """
         if self.config.max_storage == -1:
             return False
-        return len(self.data_manager.get_orderid_by_sender(player)) >= self.config.max_storage
+        return (
+            len(self.data_manager.get_orderid_by_sender(player))
+            >= self.config.max_storage
+        )
 
-    def post(self, src: PlayerCommandSource, receiver: str, comment: str | None = None) -> None:
+    def post(
+        self, src: PlayerCommandSource, receiver: str, comment: str | None = None
+    ) -> None:
         """发送订单
 
         Args:
@@ -104,13 +109,15 @@ class PostManager:
             return
 
         # create order
-        order_id = self.data_manager.add_order(OrderInfo(
-            sender=sender,
-            receiver=receiver,
-            item=item,
-            comment=comment,
-            time=get_formatted_time(),
-        ))
+        order_id = self.data_manager.add_order(
+            OrderInfo(
+                sender=sender,
+                receiver=receiver,
+                item=item,
+                comment=comment,
+                time=get_formatted_time(),
+            )
+        )
 
         self.replace(sender, constants.AIR)
         src.reply(TranslationKeys.reply_success_post.tr())
@@ -118,7 +125,9 @@ class PostManager:
         self.version_manager.play_sound.successfully_post(sender, receiver)
         self.data_manager.save()
 
-    def receive(self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
+    def receive(
+        self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]
+    ) -> bool:
         """接收订单的物品
 
         Args:
@@ -137,10 +146,16 @@ class PostManager:
             return False
 
         # 不是 TA
-        if typ == 'receive' and order_id not in self.data_manager.get_orderid_by_receiver(player):
+        if (
+            typ == "receive"
+            and order_id not in self.data_manager.get_orderid_by_receiver(player)
+        ):
             src.reply(TranslationKeys.unchecked_orderid.tr())
             return False
-        elif typ == 'cancel' and order_id not in self.data_manager.get_orderid_by_sender(player):
+        elif (
+            typ == "cancel"
+            and order_id not in self.data_manager.get_orderid_by_sender(player)
+        ):
             src.reply(TranslationKeys.unchecked_orderid.tr())
             return False
 

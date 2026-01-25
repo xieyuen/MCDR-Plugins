@@ -15,7 +15,7 @@ SIMPLE_HELP_MESSAGE = {
 
 OFFHAND_CODE: Literal["Inventory[{Slot:-106b}]"] = "Inventory[{Slot:-106b}]"
 
-AIR:Item = Item(id="minecraft:air", count=1, components={})
+AIR: Item = Item(id="minecraft:air", count=1, components={})
 
 END_LINE: Literal["\n"] = "\n"
 
@@ -31,6 +31,7 @@ class Commands:
     GET_ITEM = "data get entity {0} Inventory[{Slot:-106b}]"
     PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
     PLAY_SOUND_OLD = "execute {0} ~ ~ ~ playsound {1} player {0}"
+
 
 class Sounds:
     SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"

@@ -1,4 +1,5 @@
 """版本管理器，根据 Minecraft 版本提供相应的功能实现"""
+
 from typing import Callable, final
 
 from mcdreforged import PluginServerInterface
@@ -6,7 +7,9 @@ from mcdreforged import PluginServerInterface
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
-from mcdrpost.version_handler.sound_player.abstract_sound_player import AbstractSoundPlayer
+from mcdrpost.version_handler.sound_player.abstract_sound_player import (
+    AbstractSoundPlayer,
+)
 
 Checker = Callable[[Environment], bool]
 
@@ -26,7 +29,9 @@ class VersionManager:
 
     @classmethod
     @final
-    def register_handler(cls, handler: type[AbstractVersionHandler], checker: Checker) -> None:
+    def register_handler(
+        cls, handler: type[AbstractVersionHandler], checker: Checker
+    ) -> None:
         """注册 Handler
 
         Args:
@@ -46,7 +51,9 @@ class VersionManager:
         """
         self._server = server
         self.environment: Environment = Environment(server)
-        self._handler: AbstractVersionHandler | None = None  # 服务器运行时必然存在 Handler
+        self._handler: AbstractVersionHandler | None = (
+            None  # 服务器运行时必然存在 Handler
+        )
 
     def refresh(self) -> None:
         """刷新版本相关函数引用
@@ -69,7 +76,9 @@ class VersionManager:
                 self._handler = handler
                 return
 
-        raise RuntimeError(f"No correct handler found for version {self.environment.server_version}")
+        raise RuntimeError(
+            f"No correct handler found for version {self.environment.server_version}"
+        )
 
     # 下面是是依赖版本的函数
     def replace(self, player: str, item: Item) -> None:
