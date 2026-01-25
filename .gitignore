@@ -183,8 +183,5 @@ cython_debug/
 # Opened files
 ~$*
 
-# dependencies
-dependencies/
-
 # test server
 test/

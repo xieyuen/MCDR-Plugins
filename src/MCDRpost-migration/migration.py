@@ -2,7 +2,7 @@ import json
 import os.path
 import re
 from datetime import datetime
-from typing import Any, Callable, Literal, TypeAlias
+from typing import Any, Callable, Literal
 
 from mcdreforged import Serializable
 
@@ -29,10 +29,9 @@ class NewOrderData(Serializable):
 
 AIR = Item(id='minecraft:air', count=1, components={})
 
-LEVELS: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
-
 
 class SimpleLogger:
+    LEVELS = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
 
     def __init__(self):
         self.format_str = '[{time}] [{level}] {msg}'
@@ -235,7 +234,6 @@ def parse_item(item_string: str) -> tuple[int, str, str, dict[str, Any]] | None:
     return None
 
 
-@logger.catch
 def main() -> None:
     if not is_in_mcdr_dir():
         raise RuntimeError("当前目录不是 MCDR 服务器的根目录，请把脚本放在 MCDR 的根目录运行")

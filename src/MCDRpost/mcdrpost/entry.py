@@ -5,29 +5,33 @@
 """
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.manager.post_manager import PostManager
-from mcdrpost.version_handler import register_all_handlers
+from mcdrpost.coordinator import MCDRpostCoordinator
+from mcdrpost.deprecations import DEPRECATIONS
+from mcdrpost.version_handler import register_builtin_handlers
 
-manager: PostManager = PostManager(PluginServerInterface.psi())
+coordinator: MCDRpostCoordinator
 
-register_all_handlers()
+register_builtin_handlers()
 
 
 def on_load(server: PluginServerInterface, prev_module):
-    manager.on_load(server, prev_module)
+    global coordinator
+    coordinator = MCDRpostCoordinator(server)
+    coordinator.event_emitter.on_load(server, prev_module)
+    DEPRECATIONS.log(server)
 
 
 def on_unload(server: PluginServerInterface):
-    manager.on_unload(server)
+    coordinator.event_emitter.on_unload(server)
 
 
 def on_server_startup(server: PluginServerInterface):
-    manager.on_server_startup(server)
+    coordinator.event_emitter.on_server_startup(server)
 
 
 def on_server_stop(server: PluginServerInterface, server_return_code: int):
-    manager.on_server_stop(server, server_return_code)
+    coordinator.event_emitter.on_server_stop(server, server_return_code)
 
 
 def on_player_joined(server, player, info):
-    manager.on_player_joined(server, player, info)
+    coordinator.event_emitter.on_player_joined(server, player, info)

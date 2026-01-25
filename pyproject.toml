@@ -5,7 +5,7 @@ description = "My MCDR Plugins"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "mcdreforged>=2.15.0",
+    "mcdreforged>=2.15.6",
 ]
 license = { file = "LICENSE" }
 
@@ -28,6 +28,11 @@ module = [
     "mcdreforged.*",
     "mcdreforged",
     "mcdreforged.api.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
     "packaging",
     "minecraft_data_api",
 ]

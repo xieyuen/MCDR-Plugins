@@ -7,31 +7,33 @@ from mcdrpost.utils.exception import InvalidOrder
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.post_manager import PostManager
+    from mcdrpost.coordinator import MCDRpostCoordinator
 
 
 class DataManager:
     """订单管理器"""
 
-    def __init__(self, post_manager: "PostManager") -> None:
+    def __init__(self, coo: "MCDRpostCoordinator") -> None:
         """初始化
 
         Args:
-            post_manager (PostManager): 主管理器
+            coo (MCDRpostCoordinator): 协调器
         """
         # initialize
-        self._post_manager: "PostManager" = post_manager
-        self._logger = post_manager.server.logger
+        self.coo: "MCDRpostCoordinator" = coo
+        self._server = coo.server
+        self._logger = coo.logger
 
         # index
         self._sender_index: DefaultDict[str, list[int]] = defaultdict(list)
         self._receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
 
         # load data
-        self._order_data: OrderData = self._post_manager.server.load_config_simple(
+        self._order_data: OrderData = self._server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
-            file_format=constants.ORDERS_DATA_FILE_TYPE
+            file_format=constants.ORDERS_DATA_FILE_TYPE,
+            echo_in_console=False
         )
 
     def build_index(self) -> None:
@@ -54,7 +56,7 @@ class DataManager:
         for order_id, order in self._order_data.orders.items():
             if str(order.id) == order_id:
                 continue
-            if not self._post_manager.configuration.auto_fix:
+            if not self.coo.config.auto_fix:
                 raise InvalidOrder(TranslationKeys.error.invalid_order.tr(order_id, order.id))
             self._logger.error(TranslationKeys.error.invalid_order.tr(order_id, order.id))
             self._logger.error(TranslationKeys.auto_fix.invalid_order.tr(order_id))
@@ -65,20 +67,21 @@ class DataManager:
             self.save()
 
     def reload(self) -> None:
-        self._post_manager.server.logger.info(TranslationKeys.data.load.tr())
-        self._order_data = self._post_manager.server.load_config_simple(
+        self._logger.info(TranslationKeys.data.load.tr())
+        self._order_data = self._server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
-            file_format=constants.ORDERS_DATA_FILE_TYPE
+            file_format=constants.ORDERS_DATA_FILE_TYPE,
+            echo_in_console=False
         )
         self.check_orders()
         self.build_index()
 
     def save(self) -> None:
-        self._post_manager.server.logger.info(TranslationKeys.data.save.tr())
+        self._logger.info(TranslationKeys.data.save.tr())
         # 直接对订单进行排序
         self._order_data.orders = dict(sorted(self._order_data.orders.items(), key=lambda item: int(item[0])))
-        self._post_manager.server.save_config_simple(
+        self._server.save_config_simple(
             self._order_data,
             constants.ORDER_DATA_FILE_NAME,
             file_format=constants.ORDERS_DATA_FILE_TYPE,

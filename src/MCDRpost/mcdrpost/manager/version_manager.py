@@ -46,7 +46,7 @@ class VersionManager:
         """
         self._server = server
         self.environment: Environment = Environment(server)
-        self._handler: AbstractVersionHandler | None = None
+        self._handler: AbstractVersionHandler | None = None  # 服务器运行时必然存在 Handler
 
     def refresh(self) -> None:
         """刷新版本相关函数引用
