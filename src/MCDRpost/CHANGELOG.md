@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- 新增配置检查
+
 ## [3.4.0-beta.1]
 
 ### Changed
