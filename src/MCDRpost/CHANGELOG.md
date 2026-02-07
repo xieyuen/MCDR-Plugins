@@ -1,9 +1,9 @@
 # 更新日志
 
-所有重要的变更都会记录在这个文件中。
+所有重要的变更都会记录在这个文件中.
 
-格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
-版本遵循 [语义化版本控制](https://semver.org/lang/zh-CN/)。
+格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/), 
+版本遵循 [语义化版本控制](https://semver.org/lang/zh-CN/).
 
 ## [Unreleased]
 
@@ -28,7 +28,7 @@
 
 ### Changed
 
-- 迁移脚本和部分模块有些许变化，但无大影响
+- 迁移脚本和部分模块有些许变化, 但无大影响
 
 > [!NOTE]
 > 迁移脚本没有发布在 release 中
@@ -115,7 +115,7 @@
 ### Changed
 
 - 新的翻译使用方式
-    - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便，换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
+    - 原来的 `tr(Tags.xxx)` 使用方法还是不够方便, 换成 `TranslationKeys.xxx.tr()` 就不用再在外面套一层 `tr()` 了
 
 ## [3.3.3-alpha.3]
 
@@ -127,7 +127,7 @@
 
 ### Changed
 
-- 放弃对 1.9~1.13 的支持，当服务器使用此区间的版本时只使用外界注册的 Handler
+- 放弃对 1.9~1.13 的支持, 当服务器使用此区间的版本时只使用外界注册的 Handler
 
 ## [3.3.2] - [YANKED]
 
@@ -138,7 +138,7 @@
 
 ### Added
 
-- 新增错误提示，保证用户体验
+- 新增错误提示, 保证用户体验
 
 ### Removed
 
@@ -188,7 +188,7 @@
 ### Changed
 
 - 重命名 `before17` 为 `since9`
-- 新增 `reload` 子命令，用于重新加载配置文件和订单数据
+- 新增 `reload` 子命令, 用于重新加载配置文件和订单数据
 
 ### Fixed
 
@@ -216,24 +216,24 @@
 
 ### Changed
 
-- 获得了 Flyky 的授权，更新 MCDRpost 在插件仓库的信息
+- 获得了 Flyky 的授权, 更新 MCDRpost 在插件仓库的信息
 
 ## [3.3.0]
 
 > [!WARNING]
-> 此版本和旧版本不兼容，需要更新数据文件
+> 此版本和旧版本不兼容, 需要更新数据文件
 
 ### Added
 
 实现对 Minecraft 1.20.5 版本及以上的支持
 
-- 改变了原来订单中物品的储存方式，拆分得更加细致
+- 改变了原来订单中物品的储存方式, 拆分得更加细致
 
 ## [3.2.1]
 
 ### Changed
 
-- 使用 MCDR 2.15.0 的新特性，MCDRpost 不再支持低于 2.15.0 以下的版本
+- 使用 MCDR 2.15.0 的新特性, MCDRpost 不再支持低于 2.15.0 以下的版本
 
 ## [3.2.0]
 
@@ -251,13 +251,13 @@
 
 ### Changed
 
-重构了旧代码，具体包括：
+重构了旧代码, 具体包括：
 
 - 模块化重构
 - 利用面向对象实现 MCDRpost 主要功能
 - 增加了配置文件
-- 修改了原来的订单管理系统，并且使用 `server.load_config_simple` 和 `server.save_config_simple` 实现订单数据的加载和保存
-- 拆分了冗长的 `__init__.py`，用几个 Manager 代替
+- 修改了原来的订单管理系统, 并且使用 `server.load_config_simple` 和 `server.save_config_simple` 实现订单数据的加载和保存
+- 拆分了冗长的 `__init__.py`, 用几个 Manager 代替
 
 ## [2.1.1]
 
