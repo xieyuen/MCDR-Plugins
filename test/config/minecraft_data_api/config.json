@@ -1,0 +1,11 @@
+{
+    "server_data_getter": {
+        "list_command": "list",
+        "list_output_regex": "^There are (?P<amount>\\d+) of a max( of)? (?P<limit>\\d+) players online:(?P<players>.*)$"
+    },
+    "player_data_getter": {
+        "data_get_all_command": "data get entity {player}",
+        "data_get_path_command": "data get entity {player} {path}",
+        "data_get_output_regex": "^(?P<player>^\\w+) has the following entity data: .*$"
+    }
+}

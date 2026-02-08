@@ -12,7 +12,7 @@
 MCDRpost: 一个用于邮寄/传送物品的MCDR插件
 
 > [!NOTE]
-> 建议配置 RCON
+> 建议配置 rcon
 
 点此查看 [README](src/MCDRpost/README.md)
 

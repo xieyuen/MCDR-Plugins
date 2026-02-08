@@ -1,0 +1,30 @@
+allow_alias: true
+auto_fix: false
+auto_register: true
+command_permission:
+  cancel: 0
+  list_orders: 2
+  list_player: 2
+  player: 3
+  post: 0
+  receive: 0
+  reload: 3
+  root: 0
+command_prefixes:
+- '!!po'
+- '!!post'
+max_storage: 5
+permissions:
+  cancel: 0
+  list_orders: 2
+  list_player: 2
+  player: 3
+  post: 0
+  receive: 0
+  reload: 3
+  root: 0
+prefix:
+  enable_addition: true
+  more_prefix:
+  - '!!post'
+receiving_tip_delay: 3

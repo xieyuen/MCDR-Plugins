@@ -184,4 +184,5 @@ cython_debug/
 ~$*
 
 # test server
-test/
+# when in test branch, keep it.
+# test/
