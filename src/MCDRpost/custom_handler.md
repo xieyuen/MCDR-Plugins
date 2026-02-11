@@ -5,19 +5,22 @@
 
 核心 API 有:
 
-- classes
+1. classes
     - [AbstractVersionHandler](#class-abstractversionhandlerabc)
     - [AbstractSoundPlayer](#class-abstractsoundplayerabc)
     - [DefaultVersionHandler](#class-defaultversionhandlerabstractversionhandler)
     - [NewSoundPlayer](#class-newsoundplayerabstractsoundplayer)
     - [OldSoundPlayer](#class-oldsoundplayerabstractsoundplayer)
-- functions
+2. functions
     - [register_handler](#function-register_handler)
-- types
+3. types
     - [Item](#class-itemserializable)
     - [Environment](#class-environment)
-- constants
+4.  constants
     - OFFHAND_CODE
+    - AIR
+    - Commands
+    - Sounds
 
 你可以在导入的时候使用下面的方式：
 
@@ -65,11 +68,11 @@ API 提供了一个常量 `OFFHAND_CODE` 表示副手的位置
 |:-------------------:|:---------------:|
 | AbstractSoundPlayer | 为 MCDRpost 提供音效 |
 
-MCDRpost 通过它播放音效
+MCDRpost 通过它播放音效, 你可以修改这个 property 以更换音效, 注意要实现一个 AbstractSoundPlayer
 
 ### class DefaultVersionHandler(AbstractVersionHandler)
 
-这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单 Handler,
+这是 MCDRpost 提供的一个对于 `1.17 <= Minecraft 版本 < 1.20.5` 的简单示例 Handler
 
 ### function register_handler
 
@@ -163,6 +166,9 @@ def on_load(_server, _old):
     from mcdrpost.api import AbstractVersionHandler, Item, OFFHAND_CODE, register_handler
 
     class ExampleHandler(AbstractVersionHandler):
+        def get_name(self) -> str:
+            return "example_handler"
+        
         def replace(self, player: str, item: Item) -> None:
             self.server.execute(f'item replace entity {player} with {self.item2str(item)}')
 
@@ -210,6 +216,9 @@ from mcdrpost.api import AbstractVersionHandler, Item, OFFHAND_CODE, register_ha
 
 
 class ExampleHandler(AbstractVersionHandler):
+    def get_name(self) -> str:
+        return "example_handler"
+    
     def replace(self, player: str, item: Item) -> None:
         self.server.execute(f'item replace entity {player} with {self.item2str(item)}')
 
