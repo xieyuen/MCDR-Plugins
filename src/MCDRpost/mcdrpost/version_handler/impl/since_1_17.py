@@ -6,6 +6,11 @@ from mcdrpost.version_handler.abstract_version_handler import BuiltinVersionHand
 
 
 class Since17Handler(BuiltinVersionHandler):
+    """内置的 1.17 版本处理器, 供 Minecraft [1.17, 1.20.5) 的版本使用"""
+
+    def get_name(self) -> str:
+        return "1.17"
+
     @staticmethod
     @override
     def dict2item(item: dict) -> Item:

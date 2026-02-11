@@ -28,6 +28,16 @@ class AbstractVersionHandler(ABC):
         self.server: PluginServerInterface = PluginServerInterface.psi()
         self.sound_player: AbstractSoundPlayer | None = None
 
+    @abstractmethod
+    def get_name(self) -> str:
+        """
+        获取处理器名称, 该名称为此 handler 的唯一标识符
+
+        该唯一标识符不应与内部的 handler 重复, 即使重复时内外部 handler 依然能够使用,
+        但是这会引起调试问题.
+        """
+        raise NotImplementedError
+
     @classmethod
     @final
     def is_builtin(cls) -> bool:

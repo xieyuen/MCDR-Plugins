@@ -7,6 +7,11 @@ from mcdrpost.version_handler.abstract_version_handler import BuiltinVersionHand
 
 
 class Since13Handler(BuiltinVersionHandler):
+    """内置的 1.13 版本处理器, 供 Minecraft [1.13, 1.17) 的版本使用"""
+
+    def get_name(self) -> str:
+        return "1.13"
+
     @override
     def replace(self, player: str, item: Item) -> None:
         self.server.execute(Commands.REPLACE_OLD.format(player, self.item2str(item)))
