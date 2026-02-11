@@ -30,7 +30,7 @@ class VersionManager:
     @classmethod
     @final
     def register_handler(
-        cls, handler: type[AbstractVersionHandler], checker: Checker
+            cls, handler: type[AbstractVersionHandler], checker: Checker
     ) -> None:
         """注册 Handler
 

@@ -68,12 +68,12 @@ class PostManager:
         if self.config.max_storage == -1:
             return False
         return (
-            len(self.data_manager.get_orderid_by_sender(player))
-            >= self.config.max_storage
+                len(self.data_manager.get_orderid_by_sender(player))
+                >= self.config.max_storage
         )
 
     def post(
-        self, src: PlayerCommandSource, receiver: str, comment: str | None = None
+            self, src: PlayerCommandSource, receiver: str, comment: str | None = None
     ) -> None:
         """发送订单
 
@@ -126,7 +126,7 @@ class PostManager:
         self.data_manager.save()
 
     def receive(
-        self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]
+            self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]
     ) -> bool:
         """接收订单的物品
 
@@ -147,14 +147,14 @@ class PostManager:
 
         # 不是 TA
         if (
-            typ == "receive"
-            and order_id not in self.data_manager.get_orderid_by_receiver(player)
+                typ == "receive"
+                and order_id not in self.data_manager.get_orderid_by_receiver(player)
         ):
             src.reply(TranslationKeys.unchecked_orderid.tr())
             return False
         elif (
-            typ == "cancel"
-            and order_id not in self.data_manager.get_orderid_by_sender(player)
+                typ == "cancel"
+                and order_id not in self.data_manager.get_orderid_by_sender(player)
         ):
             src.reply(TranslationKeys.unchecked_orderid.tr())
             return False

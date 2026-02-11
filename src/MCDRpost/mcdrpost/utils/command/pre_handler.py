@@ -24,14 +24,14 @@ class CommandPreHandler:
     def receive(self, src: CommandSource, ctx: CommandContext):
         order_id = ctx["orderid"]
         if self._post_manager.receive(
-            cast(PlayerCommandSource, src), order_id, "receive"
+                cast(PlayerCommandSource, src), order_id, "receive"
         ):
             src.reply(TranslationKeys.receive_success.tr(order_id))
 
     def cancel(self, src: CommandSource, ctx: CommandContext):
         order_id = ctx["orderid"]
         if self._post_manager.receive(
-            cast(PlayerCommandSource, src), order_id, "cancel"
+                cast(PlayerCommandSource, src), order_id, "cancel"
         ):
             src.reply(TranslationKeys.cancel_success.tr(order_id))
 

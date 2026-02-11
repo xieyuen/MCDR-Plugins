@@ -7,14 +7,14 @@ from mcdrpost.utils.general import TotalOrdering
 ValidVersionTupleType: (
     TypeAlias
 ) = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
-    tuple[int, int]  # major and minor, its patch version will be set to 0
-    # major, minor, patch
-    | tuple[int, int, int]
-    # major, minor, patch, pre_release
-    | tuple[int, int, int, str]
-    # major, minor, patch, pre_release, build_metadata
-    # pre_release cannot be None, but can be an empty str for a non-pre-release version
-    | tuple[int, int, int, str, str]
+        tuple[int, int]  # major and minor, its patch version will be set to 0
+        # major, minor, patch
+        | tuple[int, int, int]
+        # major, minor, patch, pre_release
+        | tuple[int, int, int, str]
+        # major, minor, patch, pre_release, build_metadata
+        # pre_release cannot be None, but can be an empty str for a non-pre-release version
+        | tuple[int, int, int, str, str]
 )
 SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
 
@@ -87,11 +87,13 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 
     @overload
     @staticmethod
-    def __param_normalize(param: ComparableType) -> SemanticVersionType: ...
+    def __param_normalize(param: ComparableType) -> SemanticVersionType:
+        ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: Any) -> NotImplementedType: ...
+    def __param_normalize(param: Any) -> NotImplementedType:
+        ...
 
     @staticmethod
     def __param_normalize(param):
@@ -141,15 +143,15 @@ class SemanticVersion(TotalOrdering[ComparableType]):
             return NotImplemented
 
         if (self.major, self.minor, self.patch) < (
-            n_other.major,
-            n_other.minor,
-            n_other.patch,
+                n_other.major,
+                n_other.minor,
+                n_other.patch,
         ):
             return True
         elif (self.major, self.minor, self.patch) > (
-            n_other.major,
-            n_other.minor,
-            n_other.patch,
+                n_other.major,
+                n_other.minor,
+                n_other.patch,
         ):
             return False
         elif self.pre_release is None:
@@ -219,7 +221,7 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
     @overload
     @staticmethod
     def __param_normalize(
-        other: ComparableType | MinecraftVersionType,
+            other: ComparableType | MinecraftVersionType,
     ) -> MinecraftVersionType:
         pass
 

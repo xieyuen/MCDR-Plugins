@@ -48,7 +48,7 @@ class EventManager:
         self.data_manager.save()
 
     def on_player_joined(
-        self, server: PluginServerInterface, player: str, _info: Info
+            self, server: PluginServerInterface, player: str, _info: Info
     ) -> None:
         """事件: 玩家加入服务器"""
         if not self.data_manager.is_player_registered(player):
@@ -71,7 +71,6 @@ class EventManager:
 
         # 已注册的玩家，向他推送订单消息（如果有）
         if self.data_manager.has_unreceived_order(player):
-
             @new_thread("MCDRpost|send receiving tip")
             def send_receive_tip():
                 time.sleep(self.config.receiving_tip_delay)
