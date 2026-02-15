@@ -1,75 +1,107 @@
 mcdrpost:
-  desc: "一个用于邮寄/传送物品的MCDR插件"
-  info_msg: "传送/收寄副手物品"
-  hover: "点击写入聊天栏"
-  new_player_joined: "§6[MCDRpost] §e有新玩家 §b{0} §e加入服务器，但尚未注册，请使用 §7!!po player add §e为其注册"
-  help:
-    title: "§a『命令说明』§r"
-    hint_help: "显示帮助信息"
-    hint_p: " | 将副手物品发送给§e[收件人]§r。§b[备注]§r为可选项"
-    hint_rl: " | 列出收件列表"
-    hint_r: " | 确认收取该单号的物品到副手(收取前将副手清空)"
-    hint_pl: " | 列出发件列表"
-    hint_c: " | 取消传送物品(收件人未收件前)，该单号物品退回到副手(取消前请将副手清空)"
-    hint_ls_players: " | 查看可被寄送的注册玩家列表"
-    hint_ls_orders: " | 查看当前中转站内所有订单"
-    hint_player_add: " | 手动注册玩家到可寄送玩家列表"
-    hint_player_remove: " | 删除某注册的玩家"
-    p: " post §e[<收件人>] §b[<备注>]"
-    r: " receive §6[<单号>]"
-    c: " cancel §6[<单号>]"
-    player_add: " player add §e[<玩家id>]"
-    player_remove: " player remove §e[<玩家id>]"
-  no_datafile: "未找到数据文件，自动生成"
-  clear_offhand: "§e* 抱歉，请先将您的§6副手物品§e清空"
-  no_comment: "无备注信息"
-  at_max_storage: "§e* 您当前存放在中转站的订单数已达到了上限: {0}\n命令 §7!!po post_list §e查看您在中转站内的发件订单"
-  no_receiver: "§e* 收件人 §b{0} §e未曾进服，不在登记玩家内，不可被发送，请检查您的输入"
-  same_person: "§e* 寄件人和收件人不能为同一人~"
-  check_offhand: "§e* 副手检测不到可寄送的物品，请检查副手"
-  reply_success_post: "§6* 物品存放于中转站，等待对方接收\n* 使用 §7!!po post_list §6可以查看还未被查收的发件列表"
-  hint_receive: "§6[MCDRpost] §e您有一件新快件，命令 §7!!po receive_list §e查看收件箱\n* 命令 §7!!po receive {0} §e直接收取该快件"
-  no_post_orders: "§6* 您当前没有快件订单在中转站~"
-  list_post_orders_title: "单号    |   收件人  |   发件时间  |   备注信息"
-  hint_cancel: "§6使用命令 §7!!po cancel [单号] §6取消快件§r"
-  not_receiver: "§e* 您非该订单收件人，无权对其操作，请检查输入"
-  unchecked_orderid: "§e* 未查询到该单号，请检查输入"
-  receive_success: "§e* 已成功收取快件 {0}，物品接收至副手"
-  no_receive_orders: "§e* 您当前没有待收快件~"
-  list_receive_orders_title: "单号    |   发件人  |   发件时间  |   备注信息"
-  hint_order_receive: "§6使用命令 §7!!po receive [单号] §6来接收快件物品§r"
-  not_sender: "§e* 该订单非您寄送，您无权对其操作，请检查输入"
-  cancel_success: "§e* 已成功取消订单 {0}，物品回收至副手"
-  list_player_title: "§6[MCDRpost] §e可寄送的注册玩家列表：\n§r"
-  no_orders: "§6* 中转站内无任何快件~"
-  list_orders_title: "单号    |   发件人  |   收件人  |   发件时间  |   备注信息"
-  has_player: "§4* 该玩家已注册，请检查后再输入 \n§r使用 §7!!po list players §r可以查看所有注册玩家列表"
-  login_success: "§e[MCDRpost] §a成功注册玩家 §b{0} §a,使用 §7!!po list players §a可以查看所有注册玩家列表"
-  login_log: "已登记玩家 {0}"
-  cannot_del_player: "§4* 该玩家未注册，无法进行删除 \n§r使用 §7!!po list players §r可以查看所有注册玩家列表"
-  del_player_success: "§e[MCDRpost] §a成功删除玩家 §b{0} §a,使用 §7!!po list players §a可以查看所有注册玩家列表"
-  del_player_log: "已删除登记玩家 {0}"
-  only_for_player: "§c* 该命令仅供玩家使用"
-  no_permission: "§c* 抱歉，您没有权限使用该命令"
-  no_input_receiver: "§e* 未输入收件人，§7!!po §e可查看帮助信息"
-  no_input_receive_orderid: "§e* 未输入收件单号，§7!!po §e可查看帮助信息"
-  no_input_cancel_orderid: "§e* 未输入需要取消的单号，§7!!po §e可查看帮助信息"
-  command_incomplete: "§e* 输入命令不完整，§7!!po §e可查看帮助信息"
-  wait_for_receive: "§6[MCDRpost] §e您有待查收的快件~ 命令 §7!!po receive_list §e查看详情"
+  basic:
+    description: "一个用于邮寄/传送物品的MCDR插件"
+    info: "传送/收寄副手物品"
+
   config:
-    load: "已加载配置文件"
-    save: "已保存配置文件"
+    loaded: "配置文件已加载"
+    reloaded: "配置文件已重载"
+
   data:
-    load: "已加载订单数据"
-    save: "已保存订单数据"
-  error:
-    invalid_order: "有订单占用了两个 id: {0} 和 {1}"
-    running: "MCDRpost 运行时发生了错误，请检查后台日志"
-  auto_fix:
-    invalid_order: "将使用 {0} 作为订单 id"
-  rcon:
-    not_running: "Minecraft Server RCON 未开启，这有可能会影响获取速度甚至失败"
-  env:
-    server_no_start: "Minecraft 服务器未启动，无法获取版本信息"
-    version: "检测到 Minecraft 服务器版本: {0}"
-  reload_success: "已重新加载 MCDRpost 配置和数据文件"
+    loaded: "订单数据已加载"
+    saved: "订单数据已保存"
+
+    validation_failed: "发现无效订单占用了两个不同的 ID：{0} 和 {1}"
+    auto_fix: "已自动使用 {0} 作为订单 ID"
+
+  deprecation:
+    info: "{0} 已在 v{1} 版本中弃用，将在 v{2} 版本中移除"
+    replacement_info: "请改用 {0}"
+    final: "请尽快停止使用这些已弃用的内容"
+
+  event:
+    hover: "点击写入聊天栏"
+    on_new_player_joined: "§6[MCDRpost] §e新玩家 §b{0} §e加入服务器，但尚未注册，请使用 §7!!po player add §e为其注册"
+    on_old_player_joined: "§6[MCDRpost] §e您有待查收的快件~ 使用 §7!!po receive_list §e查看详情"
+
+  rcon_not_running: "Minecraft Server RCON 未开启，建议开启 RCON 以提高查询速度"
+
+  # main interactions
+  command:
+    post:
+      default_comment: "无备注"
+      success:
+        sender: "§6* 物品已存放于中转站，等待对方接收\n* 使用 §7!!po post_list §6查看您的发件订单"
+        receiver: "§6[MCDRpost] §e您有一件新快件，使用 §7!!po receive_list §e查看收件箱\n* 使用 §7!!po receive {0} §e直接收取该快件"
+      fail:
+        reached_max_storage: "§e* 您当前存放在中转站的订单数已达到上限：{0}\n使用命令 §7!!po post_list §e查看您在中转站内的发件订单"
+        send_to_self: "§e* 寄件人和收件人不能为同一人~"
+        invalid_item: "§e* 副手检测不到可寄送的物品，请检查副手"
+        receiver_unregistered: "§e* 收件人 §b{0}§e 尚未注册，请检查输入"
+    _fail: &common_failure
+      hands_not_cleared: "§e* 抱歉，请先将您的§6副手物品§e清空"
+      undefined_id: "§e* 未查询到该单号，请检查输入"
+    receive:
+      success: "§e* 已成功收取快件 {0}，物品已接收至副手"
+      fail:
+        <<: *common_failure
+        no_order: "§e* 您当前没有待收快件~"
+        no_right: "§e* 您不是该订单的收件人，无权对其操作，请检查输入"
+    cancel:
+      success: "§e* 已成功取消订单 {0}，物品已退回至副手"
+      fail:
+        <<: *common_failure
+        no_order: "§6* 您当前没有快件订单在中转站~"
+        no_right: "§e* 您不是该订单的寄件人，无权对其操作，请检查输入"
+    list:
+      all:
+        none: "§6* 中转站内暂无任何快件~"
+        title: "单号    |   发件人  |   收件人  |   发件时间  |   备注信息"
+      post:
+        none: "§6* 您当前没有发件订单在中转站~"
+        title: "单号    |   收件人  |   发件时间  |   备注信息"
+        cancel_tip: "§6使用命令 §7!!po cancel [单号] §6取消快件§r"
+      receive:
+        none: "§e* 您当前没有待收快件~"
+        title: "单号    |   发件人  |   发件时间  |   备注信息"
+        receive_tip: "§6使用命令 §7!!po receive [单号] §6来接收快件物品§r"
+      player:
+        none: "§e* 暂无已注册的玩家~"
+        title: "§6[MCDRpost] §e可寄送的注册玩家列表：\n§r"
+    player:
+      registered: "§e[MCDRpost] §a成功注册玩家 §b{0} §a，使用 §7!!po list players §a查看所有注册玩家列表"
+      removed: "§e[MCDRpost] §a成功删除玩家 §b{0} §a，使用 §7!!po list players §a查看所有注册玩家列表"
+      fail:
+        already_registered: "§4* 该玩家已注册，请检查后再输入 \n§r使用 §7!!po list players §r查看所有注册玩家列表"
+        unable_del: "§4* 该玩家未注册，无法删除 \n§r使用 §7!!po list players §r查看所有注册玩家列表"
+
+    error:
+      incomplete:
+        general: "§e* 命令不完整，使用 §7!!po §e查看帮助信息"
+        receiver: "§e* 未输入收件人，使用 §7!!po §e查看帮助信息"
+        order_id: "§e* 未输入单号，使用 §7!!po §e查看帮助信息"
+
+      player_only: "§c* 该命令仅限玩家使用"
+      no_perm: "§c* 抱歉，您没有权限使用此命令"
+
+    help:
+      title: "§a『命令说明』§r"
+      info:
+        help: "显示帮助信息"
+        post: " | 将副手物品发送给§e[收件人]§r。§b[备注]§r为可选项"
+        receive_list: " | 列出待收件列表"
+        receive: " | 确认收取指定单号的物品到副手（收取前请清空副手）"
+        post_list: " | 列出发件列表"
+        cancel: " | 取消传送中的物品（收件人未接收前），物品将退回副手（取消前请清空副手）"
+        list_players: " | 查看可寄送的注册玩家列表"
+        list_orders: " | 查看中转站内所有订单"
+        player:
+          add: " | 手动注册玩家到可寄送列表"
+          remove: " | 删除已注册的玩家"
+      usage:
+        post: " post §e[<收件人>] §b[<备注>]"
+        receive: " receive §6[<单号>]"
+        cancel: " cancel §6[<单号>]"
+        player:
+          add: " player add §e[<玩家ID>]"
+          remove: " player remove §e[<玩家ID>]"

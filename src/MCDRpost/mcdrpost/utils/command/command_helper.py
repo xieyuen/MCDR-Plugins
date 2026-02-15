@@ -12,15 +12,12 @@ if TYPE_CHECKING:
 
 class CommandHelper:
     def __init__(self, cmd_manager: "CommandManager"):
-        self._cmd_manager: "CommandManager" = cmd_manager
         self._data_manager: "DataManager" = cmd_manager.data_manager
 
-    @property
-    def _prefixes(self) -> list[str]:
-        return self._cmd_manager.prefixes
 
     # helper methods
-    def output_help_message(self, source: InfoCommandSource, prefix: str) -> None:
+    @staticmethod
+    def output_help_message(source: InfoCommandSource, prefix: str) -> None:
         """辅助函数：打印帮助信息"""
         msgs_on_helper = RText("")
         msgs_on_admin = RText("")
@@ -29,63 +26,71 @@ class CommandHelper:
             msgs_on_helper = RTextList(
                 RText(prefix + " list orders", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} list orders")
-                .h(TranslationKeys.hover.tr()),
-                RText(TranslationKeys.help.hint_ls_orders.tr() + END_LINE),
+                .h(TranslationKeys.hover.rtr()),
+                RText(TranslationKeys.help_info_list_orders.tr() + END_LINE),
             )
         if source.has_permission(3):
             # admin以上权限的添加信息
             msgs_on_admin = RTextList(
-                RText(prefix + TranslationKeys.help.player_add.tr(), RColor.gray)
+                RText(prefix + TranslationKeys.help_usage_player_add.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} player add ")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_player_add.tr()}\n"),
-                RText(prefix + TranslationKeys.help.player_remove.tr(), RColor.gray)
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_player_add.tr()}\n"),
+
+                RText(prefix + TranslationKeys.help_usage_player_remove.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} player remove ")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_player_remove.tr()}\n"),
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_player_remove.tr()}\n"),
             )
 
         source.reply(
             RTextList(
                 RText("--------- §3MCDRpost §r---------\n"),
-                RText(TranslationKeys.desc.tr() + END_LINE),
-                RText(TranslationKeys.help.title.tr() + END_LINE),
+                RText(TranslationKeys.description.tr() + END_LINE),
+                RText(TranslationKeys.help_title.tr() + END_LINE),
+
                 RText(prefix, RColor.gray)
                 .c(RAction.suggest_command, prefix)
-                .h(TranslationKeys.hover.tr()),
-                RText(f" | {TranslationKeys.help.hint_help.tr()}\n"),
-                RText(prefix + TranslationKeys.help.p.tr(), RColor.gray)
+                .h(TranslationKeys.hover.rtr()),
+                RText(f" | {TranslationKeys.help_info_help.tr()}\n"),
+
+                RText(prefix + TranslationKeys.help_usage_post.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} post")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_p.tr()}\n"),
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_post.tr()}\n"),
+
                 RText(prefix + " rl", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} receive_list")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_rl.tr()}\n"),
-                RText(prefix + TranslationKeys.help.r.tr(), RColor.gray)
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_receive_list.tr()}\n"),
+
+                RText(prefix + TranslationKeys.help_usage_receive.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} receive")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_r.tr()}\n"),
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_receive.tr()}\n"),
+
                 RText(prefix + " pl", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} post_list")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_pl.tr()}\n"),
-                RText(prefix + TranslationKeys.help.c.tr(), RColor.gray)
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_post_list.tr()}\n"),
+
+                RText(prefix + TranslationKeys.help_usage_cancel.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} cancel")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_c.tr()}\n"),
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_cancel.tr()}\n"),
+
                 RText(prefix + " ls players", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} list players")
-                .h(TranslationKeys.hover.tr()),
-                RText(f"{TranslationKeys.help.hint_ls_players.tr()}\n"),
+                .h(TranslationKeys.hover.rtr()),
+                RText(f"{TranslationKeys.help_info_list_players.tr()}\n"),
+
                 msgs_on_helper,
                 msgs_on_admin,
                 RText("§a『别名 Alias』§r\n"),
-                RText("    list -> ls 或 l\n", RColor.gray),
+                RText("    list -> ls / l\n", RColor.gray),
                 RText("    receive -> r\n", RColor.gray),
                 RText("    post -> p\n", RColor.gray),
                 RText("    cancel -> c\n", RColor.gray),
-                RText(f'根指令: {", ".join(self._prefixes)}\n'),
                 RText("-----------------------"),
             )
         )
@@ -95,7 +100,7 @@ class CommandHelper:
         post_list = self._data_manager.get_orders_by_sender(src.get_info().player)
 
         if not post_list:
-            src.reply(TranslationKeys.no_post_orders.tr())
+            src.reply(TranslationKeys.list_post_none.rtr())
             return
 
         msg = ""
@@ -112,9 +117,9 @@ class CommandHelper:
             "-------------------------------------------\n"
             "{2}"
             "===========================================\n".format(
-                TranslationKeys.list_post_orders_title.tr(),
+                TranslationKeys.list_post_title.tr(),
                 msg,
-                TranslationKeys.hint_cancel.tr(),
+                TranslationKeys.list_post_cancel_tip.tr(),
             )
         )
 
@@ -123,7 +128,7 @@ class CommandHelper:
         receive_list = self._data_manager.get_orders_by_receiver(src.get_info().player)
 
         if not receive_list:
-            src.reply(TranslationKeys.no_receive_orders.tr())
+            src.reply(TranslationKeys.list_receive_none.rtr())
             return
 
         msg = ""
@@ -138,9 +143,9 @@ class CommandHelper:
             "-------------------------------------------\n"
             "{2}"
             "===========================================\n".format(
-                TranslationKeys.list_receive_orders_title.tr(),
+                TranslationKeys.list_receive_title.tr(),
                 msg,
-                TranslationKeys.hint_order_receive.tr(),
+                TranslationKeys.list_receive_tip.tr(),
             )
         )
 
@@ -149,7 +154,7 @@ class CommandHelper:
         all_orders = self._data_manager.get_orders()
 
         if not all_orders:
-            src.reply(TranslationKeys.no_orders.tr())
+            src.reply(TranslationKeys.list_all_none.rtr())
             return
 
         msg = ""
@@ -162,6 +167,6 @@ class CommandHelper:
             "{0}\n"
             "{1}\n"
             "===========================================\n".format(
-                TranslationKeys.list_orders_title.tr(), msg
+                TranslationKeys.list_all_title.tr(), msg
             )
         )

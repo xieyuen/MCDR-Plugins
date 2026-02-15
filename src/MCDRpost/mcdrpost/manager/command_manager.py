@@ -65,7 +65,7 @@ class CommandManager:
     def gen_post_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.no_input_receiver.tr()))
+            .runs(lambda src: src.reply(TranslationKeys.post_fail_receiver_unregistered.rtr()))
             .then(
                 Text("receiver")
                 .suggests(self.data_manager.get_players)
@@ -86,7 +86,7 @@ class CommandManager:
     def gen_receive_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.no_input_receive_orderid.tr()))
+            .runs(lambda src: src.reply(TranslationKeys.receive_fail_undefined_id.rtr()))
             .then(
                 Integer("orderid")
                 .suggests(
@@ -117,7 +117,7 @@ class CommandManager:
     def gen_cancel_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.no_input_cancel_orderid.tr()))
+            .runs(lambda src: src.reply(TranslationKeys.cancel_fail_undefined_id.tr()))
             .then(
                 Integer("orderid")
                 .suggests(
@@ -137,13 +137,13 @@ class CommandManager:
     def gen_list_node(self, node_name: str) -> Literal:
         return (
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+            .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.tr()))
             .then(
                 Literal("players")
                 .requires(lambda src: src.has_permission(self._perm.list_player))
                 .runs(
                     lambda src: src.reply(
-                        TranslationKeys.list_player_title.tr()
+                        TranslationKeys.list_players_title.tr()
                         + str(self.data_manager.get_players())
                     )
                 )
@@ -153,7 +153,7 @@ class CommandManager:
                 .requires(lambda src: src.has_permission(self._perm.list_orders))
                 .on_error(
                     RequirementNotMet,
-                    lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                    lambda src: src.reply(TranslationKeys.error_no_perm.rtr()),
                     handled=True,
                 )
                 .runs(
@@ -192,18 +192,18 @@ class CommandManager:
             .requires(lambda src: src.has_permission(self._perm.player))
             .on_error(
                 RequirementNotMet,
-                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                lambda src: src.reply(TranslationKeys.error_no_perm.rtr()),
                 handled=True,
             )
-            .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+            .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
             .then(
                 Literal("add")
-                .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+                .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
                 .then(Text("player_id").runs(self.pre_handler.add_player))
             )
             .then(
                 Literal("remove")
-                .runs(lambda src: src.reply(TranslationKeys.command_incomplete.tr()))
+                .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
                 .then(
                     Text("player_id")
                     .suggests(self.data_manager.get_players)
@@ -213,17 +213,19 @@ class CommandManager:
         )
 
     def gen_reload_node(self, prefix) -> Literal:
+        """deprecated in 2026.2.15"""
         def reload(src: CommandSource):
             self.coo.config_manager.reload()
             self.coo.data_manager.reload()
-            src.reply(TranslationKeys.reload_success.tr())
+            src.reply(TranslationKeys.config_reloaded.rtr())
+            src.reply(TranslationKeys.data_loaded.rtr())
 
         return (
             Literal(prefix)
             .requires(lambda src: src.has_permission(self._perm.reload))
             .on_error(
                 RequirementNotMet,
-                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                lambda src: src.reply(TranslationKeys.error_no_perm.rtr()),
                 handled=True,
             )
             .runs(reload)
@@ -255,5 +257,5 @@ class CommandManager:
             .then(self.gen_list_node("ls"))
             .then(self.gen_list_node("list"))
             .then(self.gen_player_node("player"))
-            .then(self.gen_reload_node("reload"))
+            # .then(self.gen_reload_node("reload"))
         )

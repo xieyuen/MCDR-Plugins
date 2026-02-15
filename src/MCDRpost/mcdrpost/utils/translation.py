@@ -43,95 +43,104 @@ class TranslationKeyItem:
 
 
 class TranslationKeys:
-    """MCDRpost 翻译"""
+    """MCDRpost 翻译键"""
 
-    desc = TranslationKeyItem("desc")
-    info_msg = TranslationKeyItem("info_msg")
-    hover = TranslationKeyItem("hover")
-    new_player_joined = TranslationKeyItem("new_player_joined")
+    # basic
+    description = TranslationKeyItem("mcdrpost.basic.description")
+    info = TranslationKeyItem("mcdrpost.basic.info")
 
-    class help:
-        title = TranslationKeyItem("help.title")
-        hint_help = TranslationKeyItem("help.hint_help")
-        hint_p = TranslationKeyItem("help.hint_p")
-        hint_rl = TranslationKeyItem("help.hint_rl")
-        hint_r = TranslationKeyItem("help.hint_r")
-        hint_pl = TranslationKeyItem("help.hint_pl")
-        hint_c = TranslationKeyItem("help.hint_c")
-        hint_ls_players = TranslationKeyItem("help.hint_ls_players")
-        hint_ls_orders = TranslationKeyItem("help.hint_ls_orders")
-        hint_player_add = TranslationKeyItem("help.hint_player_add")
-        hint_player_remove = TranslationKeyItem("help.hint_player_remove")
-        p = TranslationKeyItem("help.p")
-        r = TranslationKeyItem("help.r")
-        c = TranslationKeyItem("help.c")
-        player_add = TranslationKeyItem("help.player_add")
-        player_remove = TranslationKeyItem("help.player_remove")
+    # config
+    config_loaded = TranslationKeyItem("mcdrpost.config.loaded")
+    config_reloaded = TranslationKeyItem("mcdrpost.config.reloaded")
 
-    no_datafile = TranslationKeyItem("no_datafile")
-    clear_offhand = TranslationKeyItem("clear_offhand")
-    no_comment = TranslationKeyItem("no_comment")
-    at_max_storage = TranslationKeyItem("at_max_storage")
-    no_receiver = TranslationKeyItem("no_receiver")
-    same_person = TranslationKeyItem("same_person")
-    check_offhand = TranslationKeyItem("check_offhand")
-    reply_success_post = TranslationKeyItem("reply_success_post")
-    hint_receive = TranslationKeyItem("hint_receive")
+    # data
+    data_loaded = TranslationKeyItem("mcdrpost.data.loaded")
+    data_saved = TranslationKeyItem("mcdrpost.data.saved")
+    data_validation_failed = TranslationKeyItem("mcdrpost.data.validation_failed")
+    data_auto_fix = TranslationKeyItem("mcdrpost.data.auto_fix")
 
-    no_post_orders = TranslationKeyItem("no_post_orders")
-    list_post_orders_title = TranslationKeyItem("list_post_orders_title")
-    hint_cancel = TranslationKeyItem("hint_cancel")
+    # deprecation
+    deprecation_info = TranslationKeyItem("mcdrpost.deprecation.info")
+    deprecation_replacement_info = TranslationKeyItem("mcdrpost.deprecation.replacement_info")
+    deprecation_final = TranslationKeyItem("mcdrpost.deprecation.final")
 
-    not_receiver = TranslationKeyItem("not_receiver")
-    unchecked_orderid = TranslationKeyItem("unchecked_orderid")
-    receive_success = TranslationKeyItem("receive_success")
+    # event
+    hover = TranslationKeyItem("mcdrpost.event.hover")
+    on_new_player_joined = TranslationKeyItem("mcdrpost.event.on_new_player_joined")
+    on_old_player_joined = TranslationKeyItem("mcdrpost.event.on_old_player_joined")
 
-    no_receive_orders = TranslationKeyItem("no_receive_orders")
-    list_receive_orders_title = TranslationKeyItem("list_receive_orders_title")
-    hint_order_receive = TranslationKeyItem("hint_order_receive")
+    # rcon
+    rcon_not_running = TranslationKeyItem("mcdrpost.rcon_not_running")
 
-    no_sender = TranslationKeyItem("no_sender")
-    cancel_success = TranslationKeyItem("cancel_success")
-    list_player_title = TranslationKeyItem("list_player_title")
-    no_orders = TranslationKeyItem("no_orders")
-    list_orders_title = TranslationKeyItem("list_orders_title")
+    # command - post
+    post_default_comment = TranslationKeyItem("mcdrpost.command.post.default_comment")
+    post_success_sender = TranslationKeyItem("mcdrpost.command.post.success.sender")
+    post_success_receiver = TranslationKeyItem("mcdrpost.command.post.success.receiver")
+    post_fail_reached_max_storage = TranslationKeyItem("mcdrpost.command.post.fail.reached_max_storage")
+    post_fail_send_to_self = TranslationKeyItem("mcdrpost.command.post.fail.send_to_self")
+    post_fail_invalid_item = TranslationKeyItem("mcdrpost.command.post.fail.invalid_item")
+    post_fail_receiver_unregistered = TranslationKeyItem("mcdrpost.command.post.fail.receiver_unregistered")
 
-    has_player = TranslationKeyItem("has_player")
-    login_success = TranslationKeyItem("login_success")
-    login_log = TranslationKeyItem("login_log")
-    cannot_del_player = TranslationKeyItem("cannot_del_player")
-    del_player_success = TranslationKeyItem("del_player_success")
-    del_player_log = TranslationKeyItem("del_player_log")
+    # command - receive
+    receive_success = TranslationKeyItem("mcdrpost.command.receive.success")
+    receive_fail_no_order = TranslationKeyItem("mcdrpost.command.receive.fail.no_order")
+    receive_fail_no_right = TranslationKeyItem("mcdrpost.command.receive.fail.no_right")
+    receive_fail_hands_not_cleared = TranslationKeyItem("mcdrpost.command.receive.fail.hands_not_cleared")
+    receive_fail_undefined_id = TranslationKeyItem("mcdrpost.command.receive.fail.undefined_id")
 
-    only_for_player = TranslationKeyItem("only_for_player")
-    no_permission = TranslationKeyItem("no_permission")
-    no_input_receiver = TranslationKeyItem("no_input_receiver")
-    no_input_receive_orderid = TranslationKeyItem("no_input_receive_orderid")
-    no_input_cancel_orderid = TranslationKeyItem("no_input_cancel_orderid")
-    command_incomplete = TranslationKeyItem("command_incomplete")
+    # command - cancel
+    cancel_success = TranslationKeyItem("mcdrpost.command.cancel.success")
+    cancel_fail_no_order = TranslationKeyItem("mcdrpost.command.cancel.fail.no_order")
+    cancel_fail_no_right = TranslationKeyItem("mcdrpost.command.cancel.fail.no_right")
+    cancel_fail_hands_not_cleared = TranslationKeyItem("mcdrpost.command.cancel.fail.hands_not_cleared")
+    cancel_fail_undefined_id = TranslationKeyItem("mcdrpost.command.cancel.fail.undefined_id")
 
-    wait_for_receive = TranslationKeyItem("wait_for_receive")
+    # command - list all
+    list_all_none = TranslationKeyItem("mcdrpost.command.list.all.none")
+    list_all_title = TranslationKeyItem("mcdrpost.command.list.all.title")
 
-    class config:
-        load = TranslationKeyItem("config.load")
-        save = TranslationKeyItem("config.save")
+    # command - list post
+    list_post_none = TranslationKeyItem("mcdrpost.command.list.post.none")
+    list_post_title = TranslationKeyItem("mcdrpost.command.list.post.title")
+    list_post_cancel_tip = TranslationKeyItem("mcdrpost.command.list.post.cancel_tip")
 
-    class data:
-        load = TranslationKeyItem("data.load")
-        save = TranslationKeyItem("data.save")
+    # command - list receive
+    list_receive_none = TranslationKeyItem("mcdrpost.command.list.receive.none")
+    list_receive_title = TranslationKeyItem("mcdrpost.command.list.receive.title")
+    list_receive_tip = TranslationKeyItem("mcdrpost.command.list.receive.receive_tip")
 
-    class error:
-        invalid_order = TranslationKeyItem("error.invalid_order")
-        running = TranslationKeyItem("error.running")
+    # command - list players
+    list_players_none = TranslationKeyItem("mcdrpost.command.list.player.none")
+    list_players_title = TranslationKeyItem("mcdrpost.command.list.player.title")
 
-    class auto_fix:
-        invalid_order = TranslationKeyItem("auto_fix.invalid_order")
+    # command - player
+    player_registered = TranslationKeyItem("mcdrpost.command.player.registered")
+    player_removed = TranslationKeyItem("mcdrpost.command.player.removed")
+    player_fail_already_registered = TranslationKeyItem("mcdrpost.command.player.fail.already_registered")
+    player_fail_unable_del = TranslationKeyItem("mcdrpost.command.player.fail.unable_del")
 
-    class rcon:
-        not_running = TranslationKeyItem("rcon.not_running")
+    # command - error
+    error_incomplete_general = TranslationKeyItem("mcdrpost.command.error.incomplete.general")
+    error_incomplete_receiver = TranslationKeyItem("mcdrpost.command.error.incomplete.receiver")
+    error_incomplete_order_id = TranslationKeyItem("mcdrpost.command.error.incomplete.order_id")
+    error_player_only = TranslationKeyItem("mcdrpost.command.error.player_only")
+    error_no_perm = TranslationKeyItem("mcdrpost.command.error.no_perm")
 
-    class env:
-        server_no_start = TranslationKeyItem("env.server_no_start")
-        version = TranslationKeyItem("env.version")
+    # command - help
+    help_title = TranslationKeyItem("mcdrpost.command.help.title")
 
-    reload_success = TranslationKeyItem("reload_success")
+    help_info_help = TranslationKeyItem("mcdrpost.command.help.info.help")
+    help_info_post = TranslationKeyItem("mcdrpost.command.help.info.post")
+    help_info_receive_list = TranslationKeyItem("mcdrpost.command.help.info.receive_list")
+    help_info_receive = TranslationKeyItem("mcdrpost.command.help.info.receive")
+    help_info_post_list = TranslationKeyItem("mcdrpost.command.help.info.post_list")
+    help_info_cancel = TranslationKeyItem("mcdrpost.command.help.info.cancel")
+    help_info_list_players = TranslationKeyItem("mcdrpost.command.help.info.list_players")
+    help_info_list_orders = TranslationKeyItem("mcdrpost.command.help.info.list_orders")
+    help_info_player_add = TranslationKeyItem("mcdrpost.command.help.info.player.add")
+    help_info_player_remove = TranslationKeyItem("mcdrpost.command.help.info.player.remove")
+    help_usage_post = TranslationKeyItem("mcdrpost.command.help.usage.post")
+    help_usage_receive = TranslationKeyItem("mcdrpost.command.help.usage.receive")
+    help_usage_cancel = TranslationKeyItem("mcdrpost.command.help.usage.cancel")
+    help_usage_player_add = TranslationKeyItem("mcdrpost.command.help.usage.player.add")
+    help_usage_player_remove = TranslationKeyItem("mcdrpost.command.help.usage.player.remove")

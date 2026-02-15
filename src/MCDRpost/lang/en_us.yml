@@ -1,75 +1,107 @@
 mcdrpost:
-  desc: "An MCDR plugin for post/teleport items"
-  info_msg: "post/teleport weapon hands items"
-  hover: "Click to write to chat bar"
-  new_player_joined: "§6[MCDRpost] §eNew player §b{0} §ejoined the server but is not registered, use §7!!po player add §eto register them"
-  help:
-    title: "§a『Command Usage』§r"
-    hint_help: "show help"
-    hint_p: " | Send off-hand item to §e[Receiver]§r. §b[Comment]§r is optional"
-    hint_rl: " | List orders to be received"
-    hint_r: " | Confirm to receive the item of the order number to the off-hand"
-    hint_pl: " | List sent orders"
-    hint_c: " | Cancel the delivery of the item, the item will be returned to the off-hand"
-    hint_ls_players: " | List registered players that can be a receiver"
-    hint_ls_orders: " | List all orders in the current transit station"
-    hint_player_add: " | Manually register players to the list of sendable players"
-    hint_player_remove: " | delete a registered player"
-    p: " post §e[<Receiver>] §b[<Comment>]"
-    r: " receive §6[<orderid>]"
-    c: " cancel §6[<orderid>]"
-    player_add: " player add §e[<Player>]"
-    player_remove: " player remove §e[<Player>]"
-  no_datafile: "Data file not found, will be automatically generated"
-  clear_offhand: "§e* Sorry, Please empty your §6off-hand item§e"
-  no_comment: "no_comment"
-  at_max_storage: "§e* You have reached the limit num of orders currently stored at the transfer station: {0}\nCommand §7!!po post_list§e to check your sent orders"
-  no_receiver: "§e* Receiver §b{0}§e is not registered yet, please check"
-  same_person: "§e* Sender and Receiver cannot be the same person~"
-  check_offhand: "§e* The off-hand cannot detect the deliverable item, please check the off-hand"
-  reply_success_post: "§6* Items are stored at the transfer station, waiting for the other party to receive\n* Use §7!!po post_list§6 to check sent orders"
-  hint_receive: "§6[MCDRpost] §eYou have a new shipment, Use §7!!po receive_list§e to check receive orders\n* Use §7!!po receive {0}§e to receive the express directly"
-  no_post_orders: "§6* You currently have no sent orders in transit~"
-  list_post_orders_title: "order_id    |   receiver  |   send_time  |   comment"
-  hint_cancel: "§6Use command §7!!po cancel [orderid] §6to cancel the order§r"
-  not_receiver: "§e* You are not the receiver of this order and have no right to operate on it, please check"
-  unchecked_orderid: "§e* The order id is not found, please check"
-  receive_success: "§e* Order {0} received successfully, item received to off-hand"
-  no_receive_orders: "§e* You currently have no received orders~"
-  list_receive_orders_title: "order id  |  sender  |  send time  |   comment"
-  hint_order_receive: "§6Use §7!!po receive [orderid]§6 to receive the item§r"
-  not_sender: "§e* You are not the sender of this order and have no right to operate on it, please check"
-  cancel_success: "§e* Order {0} cancelled successfully, items are recovered to the off-hand"
-  list_player_title: "§6[MCDRpost] §eList of register players: \n§r"
-  no_orders: "§6* There is no order in the transit station~"
-  list_orders_title: "order id   |   sender  |   receiver  |   send time  |   comment"
-  has_player: "§4* The player is already registered, please check \n§rUse §7!!po list players§r to check registered players"
-  login_success: "§e[MCDRpost] §aRegister player successfully §b{0} §a, Use §7!!po list players§a to check registered players"
-  login_log: "Register Player: {0}"
-  cannot_del_player: "§4* The player is not registered and cannot be deleted \n§rUse §7!!po list players§r to check registered players"
-  del_player_success: "§e[MCDRpost] §aDelete player successfully §b{0} §a, Use §7!!po list players§a to check registered players"
-  del_player_log: "Delete register player: {0}"
-  only_for_player: "§c* This command is for player use only"
-  no_permission: "§c* Sorry, you do not have permission to use this command"
-  no_input_receiver: "§e* No receiver entered, §7!!po§e to check help message"
-  no_input_receive_orderid: "§e* No order id entered, §7!!po§e to check help message"
-  no_input_cancel_orderid: "§e* No order id entered, §7!!po§e to check help message"
-  command_incomplete: "§e* Incomplete command, §7!!po§e to check help message"
-  wait_for_receive: "§6[MCDRpost] §eYou have a pending shipment~ Use §7!!po receive_list§e to check"
+  basic:
+    description: "An MCDR plugin for post/teleport items"
+    info: "post/teleport weapon hands items"
+
   config:
-    load: "loaded configuration"
-    save: "saved configuration"
+    loaded: "Configuration has already been loaded."
+    reloaded: "Configuration has already been reloaded."
+
   data:
-    load: "loaded order data"
-    save: "saved order data"
-  error:
-    invalid_order: "There is an order with 2 different order id: {0} and {1}"
-    running: "An error occurred when MCDRpost is running, please check the log"
-  auto_fix:
-    invalid_order: "The invalid order will be fixed to use {0} as order id"
-  rcon:
-    not_running: "RCON is not running, It is highly recommended to enable RCON for faster query"
-  env:
-    server_no_start: "Minecraft Server is not started, Unable to get the version"
-    version: "Minecraft Server Version: {0}"
-  reload_success: "successfully reload configuration and data"
+    loaded: "Order data has already been loaded."
+    saved: "Order data has already been saved."
+
+    validation_failed: "Found invalid order that has two different id: {0} and {1}"
+    auto_fix: "Automatically use {0}"
+
+  deprecation:
+    info: "{0} is deprecated in v{1}, and will be removed in v{2}."
+    replacement_info: "Please use {0} instead."
+    final: "Please abandon that/those as soon as possible."
+
+  event:
+    hover: "Click to write to chat bar"
+    on_new_player_joined: "§6[MCDRpost] §eNew player §b{0} §ejoined the server but is not registered, use §7!!po player add §eto register them"
+    on_old_player_joined: "§6[MCDRpost] §eYou have a pending shipment~ Use §7!!po receive_list§e to check"
+
+  rcon_not_running: "RCON is not running, It is highly recommended to enable RCON for faster query"
+
+  # main interactions
+  command:
+    post:
+      default_comment: "no comment"
+      success:
+        sender: "§6* Items are stored at the transfer station, waiting for the other party to receive\n* Use §7!!po post_list§6 to check sent orders"
+        receiver: "§6[MCDRpost] §eYou have a new shipment, Use §7!!po receive_list§e to check receive orders\n* Use §7!!po receive {0}§e to receive the express"
+      fail:
+        reached_max_storage: "§e* You have reached the limit num of orders currently stored at the transfer station: {0}\nCommand §7!!po post_list§e to check your sent orders"
+        send_to_self: "§e* Sender and Receiver cannot be the same person~"
+        invalid_item: "§e* The off-hand cannot detect the deliverable item, please check the off-hand"
+        receiver_unregistered: "§e* Receiver §b{0}§e is not registered yet, please check"
+    _fail: &common_failure
+      hands_not_cleared: "§e* Sorry, Please empty your §6off-hand item§e"
+      undefined_id: "§e* The order id is not found, please check"
+    receive:
+      success: "§e* Order {0} received successfully, item received to off-hand"
+      fail:
+        <<: *common_failure
+        no_order: "§e* You currently have no received orders~"
+        no_right: "§e* You are not the receiver of this order and have no right to operate on it, please check"
+    cancel:
+      success: "§e* Order {0} cancelled successfully, items are recovered to the off-hand"
+      fail:
+        <<: *common_failure
+        no_order: "§6* You currently have no sent orders in transit~"
+        no_right: "§e* You are not the sender of this order and have no right to operate on it, please check"
+    list:
+      all:
+        none: "§6* There is no order in the transit station~"
+        title: "order id   |   sender  |   receiver  |   send time  |   comment"
+      post:
+        none: "§6* You currently have no sent orders in transit~"
+        title: "order_id    |   receiver  |   send_time  |   comment"
+        cancel_tip: "§6Use command §7!!po cancel [orderid] §6to cancel the order§r"
+      receive:
+        none: "§e* You currently have no received orders~"
+        title: "order id  |  sender  |  send time  |   comment"
+        receive_tip: "§6Use §7!!po receive [orderid]§6 to receive the item§r"
+      player:
+        none: "§e* There is no registered player~"
+        title: "§6[MCDRpost]§e List of register players: \n§r"
+    player:
+      registered: "§e[MCDRpost] §aRegister player successfully §b{0} §a, Use §7!!po list players§a to check registered players"
+      removed: "§e[MCDRpost] §aDelete player successfully §b{0} §a, Use §7!!po list players§a to check registered players"
+      fail:
+        already_registered: "§4* The player is already registered, please check \n§rUse §7!!po list players§r to check registered players"
+        unable_del: "§4* The player is not registered and cannot be deleted \n§rUse §7!!po list players§r to check registered players"
+
+    error:
+      incomplete:
+        general: "§e* Incomplete command, §7!!po§e to check help message"
+        receiver: "§e* No receiver entered, §7!!po§e to check help message"
+        order_id: "§e* No order id entered, §7!!po§e to check help message"
+
+      player_only: "§c* This command is for player use only"
+      no_perm: "§c* Sorry, you do not have permission to use this command"
+
+    help:
+      title: "§a『Command Usage』§r"
+      info:
+        help: "show help"
+        post: " | Send off-hand item to §e[Receiver]§r. §b[Comment]§r is optional"
+        receive_list: " | List orders to be received"
+        receive: " | Confirm to receive the item of the order number to the off-hand"
+        post_list: " | List sent orders"
+        cancel: " | Cancel the delivery of the item, the item will be returned to the off-hand"
+        list_players: " | List registered players that can be a receiver"
+        list_orders: " | List all orders in the current transit station"
+        player:
+          add: " | Manually register players to the list of sendable players"
+          remove: " | delete a registered player"
+      usage:
+        post: " post §e[<Receiver>] §b[<Comment>]"
+        receive: " receive §6[<orderid>]"
+        cancel: " cancel §6[<orderid>]"
+        player:
+          add: " player add §e[<Player>]"
+          remove: " player remove §e[<Player>]"

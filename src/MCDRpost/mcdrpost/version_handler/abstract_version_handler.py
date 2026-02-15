@@ -108,7 +108,7 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
                 self.server.rcon_query(Commands.GET_ITEM.format(player))
             )
         else:
-            self.server.logger.warning(TranslationKeys.rcon.not_running.tr())
+            self.server.logger.warning(TranslationKeys.rcon_not_running.rtr())
 
             @new_thread("MCDRpost | get offhand item")
             def get():
