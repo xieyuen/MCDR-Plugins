@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [3.4.1-alpha.1]
+
 ### Added
 
 - 新增配置检查
