@@ -35,7 +35,7 @@ class _Deprecations:
 
     def log(self, server: PluginServerInterface):
         plg_version: SemanticVersion = SemanticVersion(
-            str(server.get_plugin_metadata(PLUGIN_ID).version)
+            str(server.get_self_metadata().version)
         )
         has_warned: bool = False
 
@@ -46,7 +46,7 @@ class _Deprecations:
 
         if has_warned:
             server.logger.warning(
-                "Please discontinue these features as soon as possible."
+                "Please abandon these features as soon as possible."
             )
 
 
