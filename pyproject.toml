@@ -13,6 +13,9 @@ license = { file = "LICENSE" }
 minecraft-data-api = [
     "hjson>=3.1.0",
 ]
+mcdrpost = [
+    "pydantic>=2.12.5",
+]
 
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple"
