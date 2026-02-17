@@ -3,7 +3,7 @@ name = "mcdr-plugins"
 version = "0.1.0"
 description = "My MCDR Plugins"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "mcdreforged>=2.15.6",
 ]
@@ -12,6 +12,9 @@ license = { file = "LICENSE" }
 [project.optional-dependencies]
 minecraft-data-api = [
     "hjson>=3.1.0",
+]
+kill-server = [
+    "dowhen>=0.1.0",
 ]
 
 [[tool.uv.index]]
