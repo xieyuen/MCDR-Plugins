@@ -1,0 +1,16 @@
+{
+    "id": "kill_server",
+    "version": "0.1.0",
+    "name": "KillServer",
+    "description": {
+        "en_us": "Force to kill mc server",
+        "zh_cn": "强制关闭 Minecraft 服务端"
+    },
+    "author": [
+        "xieyuen"
+    ],
+    "dependencies": {
+        "python": ">=3.12",
+        "mcdreforged": ">=2.10"
+    }
+}
