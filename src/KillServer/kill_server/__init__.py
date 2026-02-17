@@ -22,16 +22,18 @@ config: Config
 
 handler: EventHandler
 
-@new_thread("KillServer")
+
 def force_kill_server():
     """强制关闭服务器"""
-    server_interface.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
+    @new_thread("KillServer")
+    def logic():
+        server_interface.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
-    time.sleep(config.waiting_time)
-    if server_interface.is_server_running():
-        server_interface.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
-        server_interface.kill()
-
+        time.sleep(config.waiting_time)
+        if server_interface.is_server_running():
+            server_interface.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
+            server_interface.kill()
+    logic()
 
 def on_load(server: PluginServerInterface, prev_module):
     global server_interface, config, handler
