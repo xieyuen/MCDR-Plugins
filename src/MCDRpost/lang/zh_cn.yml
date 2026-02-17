@@ -14,6 +14,8 @@ mcdrpost:
     validation_failed: "发现无效订单占用了两个不同的 ID：{0} 和 {1}"
     auto_fix: "已自动使用 {0} 作为订单 ID"
 
+    auto_register: "已登记玩家 {0}"
+
   deprecation:
     info: "{0} 已在 v{1} 版本中弃用，将在 v{2} 版本中移除"
     replacement_info: "请改用 {0}"
@@ -25,6 +27,7 @@ mcdrpost:
     on_old_player_joined: "§6[MCDRpost] §e您有待查收的快件~ 使用 §7!!po receive_list §e查看详情"
 
   rcon_not_running: "Minecraft Server RCON 未开启，建议开启 RCON 以提高查询速度"
+  error_occurred: "MCDRpost 运行时出现错误, 请联系管理员查看控制台"
 
   # main interactions
   command:

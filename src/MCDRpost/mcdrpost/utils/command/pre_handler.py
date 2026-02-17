@@ -38,17 +38,17 @@ class CommandPreHandler:
     def add_player(self, src: CommandSource, ctx: CommandContext):
         player = ctx["player_id"]
         if not self._data_manager.add_player(player):
-            src.reply(TranslationKeys.has_player.tr(player))
+            src.reply(TranslationKeys.player_fail_already_registered.rtr(player))
             return
 
-        src.reply(TranslationKeys.login_success.tr(player))
-        self.logger.info(TranslationKeys.login_log.tr(player))
+        src.reply(TranslationKeys.player_registered.rtr(player))
+        self.logger.info(TranslationKeys.data_auto_register.rtr(player))
 
     def remove_player(self, src: CommandSource, ctx: CommandContext):
         player = ctx["player_id"]
         if not self._data_manager.remove_player(player):
-            src.reply(TranslationKeys.cannot_del_player.tr(player))
+            src.reply(TranslationKeys.player_fail_unable_del.rtr(player))
             return
 
-        src.reply(TranslationKeys.del_player_success.tr(player))
-        self.logger.info(TranslationKeys.del_player_log.tr(player))
+        src.reply(TranslationKeys.player_removed.rtr(player))
+        self.logger.info(TranslationKeys.player_removed.rtr(player))

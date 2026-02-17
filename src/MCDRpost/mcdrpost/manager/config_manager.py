@@ -25,7 +25,7 @@ class ConfigurationManager:
 
     def reload(self) -> None:
         """(重新)加载配置文件"""
-        self._server.logger.info(TranslationKeys.config.load.tr())
+        self._server.logger.info(TranslationKeys.config_loaded.rtr())
         self._config = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,

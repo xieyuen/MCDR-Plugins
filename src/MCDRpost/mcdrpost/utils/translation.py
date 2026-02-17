@@ -58,6 +58,7 @@ class TranslationKeys:
     data_saved = TranslationKeyItem("mcdrpost.data.saved")
     data_validation_failed = TranslationKeyItem("mcdrpost.data.validation_failed")
     data_auto_fix = TranslationKeyItem("mcdrpost.data.auto_fix")
+    data_auto_register = TranslationKeyItem("mcdrpost.data.auto_register")
 
     # deprecation
     deprecation_info = TranslationKeyItem("mcdrpost.deprecation.info")
@@ -71,6 +72,8 @@ class TranslationKeys:
 
     # rcon
     rcon_not_running = TranslationKeyItem("mcdrpost.rcon_not_running")
+
+    error_occurred = TranslationKeyItem("mcdrpost.error_occurred")
 
     # command - post
     post_default_comment = TranslationKeyItem("mcdrpost.command.post.default_comment")

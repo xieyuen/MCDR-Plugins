@@ -55,7 +55,7 @@ class EventManager:
             if self.config.auto_register:
                 # 还未注册的玩家
                 self.data_manager.add_player(player)
-                server.logger.info(TranslationKeys.login_log.tr(player))
+                server.logger.info(TranslationKeys.data_auto_register.rtr(player))
                 self.data_manager.save()
                 return
 
@@ -64,9 +64,9 @@ class EventManager:
             for online_player in player_list:
                 if server.get_permission_level(online_player) >= 3:
                     server.tell(
-                        online_player, TranslationKeys.new_player_joined.tr(player)
+                        online_player, TranslationKeys.on_new_player_joined.rtr(player)
                     )
-            server.logger.info(TranslationKeys.new_player_joined.tr(player))
+            server.logger.info(TranslationKeys.on_new_player_joined.rtr(player))
             return
 
         # 已注册的玩家，向他推送订单消息（如果有）
@@ -74,7 +74,7 @@ class EventManager:
             @new_thread("MCDRpost|send receiving tip")
             def send_receive_tip():
                 time.sleep(self.config.receiving_tip_delay)
-                server.tell(player, TranslationKeys.wait_for_receive.tr())
+                server.tell(player, TranslationKeys.on_old_player_joined.rtr())
                 self.version_manager.play_sound.has_something_to_receive(player)
 
             send_receive_tip()

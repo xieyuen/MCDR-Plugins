@@ -14,6 +14,8 @@ mcdrpost:
     validation_failed: "Found invalid order that has two different id: {0} and {1}"
     auto_fix: "Automatically use {0}"
 
+    auto_register: "Registered player {0}"
+
   deprecation:
     info: "{0} is deprecated in v{1}, and will be removed in v{2}."
     replacement_info: "Please use {0} instead."
@@ -25,6 +27,7 @@ mcdrpost:
     on_old_player_joined: "§6[MCDRpost] §eYou have a pending shipment~ Use §7!!po receive_list§e to check"
 
   rcon_not_running: "RCON is not running, It is highly recommended to enable RCON for faster query"
+  error_occurred: "An error occurred, please call admin to check the console for details"
 
   # main interactions
   command:

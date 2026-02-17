@@ -238,7 +238,7 @@ class CommandManager:
             .requires(lambda src: src.has_permission(self._perm.root))
             .on_error(
                 RequirementNotMet,
-                lambda src: src.reply(TranslationKeys.no_permission.tr()),
+                lambda src: src.reply(TranslationKeys.error_no_perm.rtr()),
                 handled=True,
             )
             .runs(lambda src: self._helper.output_help_message(src, prefix))

@@ -3,7 +3,7 @@ import warnings
 from mcdreforged import PluginServerInterface
 from typing_extensions import NamedTuple
 
-from mcdrpost.constants import Deprecations as Const, PLUGIN_ID
+from mcdrpost.constants import Deprecations as Const
 from mcdrpost.utils.version import SemanticVersion
 
 

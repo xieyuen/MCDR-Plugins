@@ -1,7 +1,6 @@
 import re
 
 from pydantic import BaseModel, Field, PositiveInt, field_validator
-from typing_extensions import Self
 
 
 class Item(BaseModel):
@@ -25,7 +24,7 @@ class Item(BaseModel):
 
     @field_validator('id')
     @classmethod
-    def validate_id(cls, value: str) -> Self:
+    def validate_id(cls, value: str) -> str:
         if ":" not in value:
             raise ValueError(f"Invalid item: no namespace ({value})")
         namespace, name = value.split(":")

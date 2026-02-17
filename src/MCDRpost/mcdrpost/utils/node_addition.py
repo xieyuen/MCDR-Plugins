@@ -22,9 +22,9 @@ def add_requirements(
 
     def on_require_not_met(src: CommandSource):
         if require_player and not src.is_player:
-            src.reply(TranslationKeys.only_for_player.tr())
+            src.reply(TranslationKeys.error_player_only.rtr())
             return
-        src.reply(TranslationKeys.no_permission.tr())
+        src.reply(TranslationKeys.error_no_perm.rtr())
 
     node.requires(require_callback).on_error(
         RequirementNotMet, on_require_not_met, handled=True
