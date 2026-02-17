@@ -21,3 +21,9 @@ MCDRpost: 一个用于邮寄/传送物品的MCDR插件
 DevelopHandler: 让 MCDR 能够识别 say
 
 点此查看 [README](src/DevelopHandler/README.md)
+
+### KillServer
+
+KillServer: 强制关闭服务器
+
+点此查看 [README](src/KillServer/README.md)
