@@ -1,6 +1,6 @@
 {
     "id": "kill_server",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "name": "KillServer",
     "description": {
         "en_us": "Force to kill mc server",
