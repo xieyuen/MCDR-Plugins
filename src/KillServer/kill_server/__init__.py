@@ -1,9 +1,10 @@
-﻿import time
+﻿import re
+import time
 from typing import Any
 
 from dowhen import when
 from dowhen.handler import EventHandler
-from mcdreforged import PluginServerInterface, Serializable, new_thread
+from mcdreforged import *
 
 
 class Config(Serializable):
@@ -21,19 +22,30 @@ server_interface: PluginServerInterface
 config: Config
 
 handler: EventHandler
+is_world_saved: bool = False
 
 
 def force_kill_server():
     """强制关闭服务器"""
+
     @new_thread("KillServer")
     def logic():
+        """开新线程运行并且保证 force_kill_server 返回 None"""
         server_interface.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
         time.sleep(config.waiting_time)
-        if server_interface.is_server_running():
-            server_interface.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
-            server_interface.kill()
+        if not server_interface.is_server_running():
+            return
+        server_interface.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
+        # TODO: 检查世界是否保存
+        # if not is_world_saved:
+        #     server_interface.logger.warning("世界未完全保存, 重新等待")
+        #     goto("time.sleep(config.waiting_time)")
+        #     return
+        server_interface.kill()
+
     logic()
+
 
 def on_load(server: PluginServerInterface, prev_module):
     global server_interface, config, handler
@@ -44,3 +56,14 @@ def on_load(server: PluginServerInterface, prev_module):
         prev_module.handler.remove()
 
     handler = when(server.stop, "return").do(force_kill_server)
+
+
+def on_server_startup(_server: PluginServerInterface):
+    global is_world_saved
+    is_world_saved = False
+
+
+def on_info(_server: PluginServerInterface, info: Info):
+    if re.fullmatch(r".*All dimensions are saved", info.content):
+        global is_world_saved
+        is_world_saved = True
