@@ -46,7 +46,7 @@
 
 KillServer 创建了三个字面量事件 [`ServerStoppingEvent`](#serverstoppingevent),
 [`PluginStoppingServerEvent`](#pluginstoppingserverevent)
-和 `WorldSavedEvent`
+和 [`WorldSavedEvent`](#worldsavedevent)
 
 ```python
 from kill_server import ServerStoppingEvent, PluginStoppingServerEvent, WorldSavedEvent
@@ -68,9 +68,9 @@ KillServer 创建了一个字面量事件 `PluginStoppingServerEvent = LiteralEv
 - **事件 ID**: `kill_server.plugin_stopping_server`
 - **回调参数**: `PluginServerInterface`
 
-### ServerStoppingEvent
+### WorldSavedEvent
 
-KillServer 创建了一个字面量事件 `ServerStoppingEvent = LiteralEvent("kill_server.world_saved")`
+KillServer 创建了一个字面量事件 `WorldSavedEvent = LiteralEvent("kill_server.world_saved")`
 用以监听服务器是否将世界保存好, 这个事件会在服务器保存世界完成时 (例如 `/save` 被调用之后) 分发
 
 - **事件 ID**: `kill_server.world_saved`
