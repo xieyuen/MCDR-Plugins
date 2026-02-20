@@ -1,6 +1,6 @@
 {
     "id": "kill_server",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "name": "KillServer",
     "description": {
         "en_us": "Force to kill mc server",
@@ -11,6 +11,6 @@
     ],
     "dependencies": {
         "python": ">=3.12",
-        "mcdreforged": ">=2.10"
+        "mcdreforged": ">=2.15"
     }
 }

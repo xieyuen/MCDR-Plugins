@@ -1,46 +1,56 @@
-﻿import time
-from typing import Any
+﻿import re
+import time
 
 from dowhen import when
 from dowhen.handler import EventHandler
-from mcdreforged import PluginServerInterface, Serializable, new_thread
+from mcdreforged import *
 
+from kill_server.config import Config
 
-class Config(Serializable):
-    waiting_time: float = 60
-    """等待时间, 超时之后才强制关闭服务器, 单位为秒"""
-
-    def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
-        if attr_value <= 0:
-            raise ValueError(f"配置项 waiting_time 必须是正值, 实际配置: {attr_value}")
-        if attr_value <= 3:
-            server_interface.logger.warning(f"配置项 waiting_time 单位为秒, 实际配置 {attr_value} 可能过小")
-
-
-server_interface: PluginServerInterface
+psi: PluginServerInterface
 config: Config
-
 handler: EventHandler
 
+ServerStoppingEvent = LiteralEvent("kill_server.server_stopping")
+PluginStoppingServerEvent = LiteralEvent("kill_server.plugin_stopping_server")
+WorldSavedEvent = LiteralEvent("kill_server.world_saved")
 
+
+@event_listener(ServerStoppingEvent)
+@new_thread("KillServer")
 def force_kill_server():
     """强制关闭服务器"""
-    @new_thread("KillServer")
-    def logic():
-        server_interface.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
+    if not config.enable:
+        return
 
-        time.sleep(config.waiting_time)
-        if server_interface.is_server_running():
-            server_interface.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
-            server_interface.kill()
-    logic()
+    psi.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
+
+    time.sleep(config.waiting_time)
+    if not psi.is_server_running():
+        return
+    psi.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
+    # TODO: 检查世界是否保存
+    psi.kill()
+
+
+def dispatch(event: PluginEvent):
+    psi.dispatch_event(event, ())
+
 
 def on_load(server: PluginServerInterface, prev_module):
-    global server_interface, config, handler
-    server_interface = server
+    global psi, config, handler
+    psi = server
     config = server.load_config_simple(target_class=Config)
 
     if prev_module is not None:
         prev_module.handler.remove()
 
-    handler = when(server.stop, "return").do(force_kill_server)
+    # noinspection PyTypeChecker
+    handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
+
+
+def on_info(_server: PluginServerInterface, info: Info):
+    if re.fullmatch(r"Stopping the server", info.content):
+        dispatch(ServerStoppingEvent)
+    if re.fullmatch(r".*All dimensions are saved", info.content):
+        dispatch(WorldSavedEvent)
