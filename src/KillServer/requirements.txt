@@ -1,2 +1,2 @@
 dowhen
-mcdreforged
+mcdreforged>=2.15.0

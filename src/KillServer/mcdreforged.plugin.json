@@ -11,6 +11,6 @@
     ],
     "dependencies": {
         "python": ">=3.12",
-        "mcdreforged": ">=2.10"
+        "mcdreforged": ">=2.15"
     }
 }
