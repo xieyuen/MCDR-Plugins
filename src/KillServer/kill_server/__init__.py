@@ -39,13 +39,10 @@ def dispatch(event: PluginEvent):
     psi.dispatch_event(event, ())
 
 
-def on_load(server: PluginServerInterface, prev_module):
+def on_load(server: PluginServerInterface, _prev_module):
     global psi, config, handler
     psi = server
     config = server.load_config_simple(target_class=Config)
-
-    if prev_module is not None:
-        prev_module.handler.remove()
 
     # noinspection PyTypeChecker
     handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
