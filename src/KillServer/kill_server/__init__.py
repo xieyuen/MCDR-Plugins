@@ -20,19 +20,19 @@ __all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"
 
 @event_listener(ServerStoppingEvent)
 @new_thread("KillServer")
-def force_kill_server():
+def force_kill_server(server: PluginServerInterface):
     """强制关闭服务器"""
     if not config.enable:
         return
 
-    psi.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
+    server.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
     time.sleep(config.waiting_time)
-    if not psi.is_server_running():
+    if not server.is_server_running():
         return
-    psi.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
+    server.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
     # TODO: 检查世界是否保存
-    psi.kill()
+    server.kill()
 
 
 def dispatch(event: PluginEvent):
