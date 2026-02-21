@@ -15,6 +15,8 @@ ServerStoppingEvent = LiteralEvent("kill_server.server_stopping")
 PluginStoppingServerEvent = LiteralEvent("kill_server.plugin_stopping_server")
 WorldSavedEvent = LiteralEvent("kill_server.world_saved")
 
+__all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"]
+
 
 @event_listener(ServerStoppingEvent)
 @new_thread("KillServer")
@@ -49,7 +51,10 @@ def on_load(server: PluginServerInterface, prev_module):
     handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
 
 
-def on_info(_server: PluginServerInterface, info: Info):
+def on_unload(_server: PluginServerInterface):
+    handler.remove()
+
+
 def on_info(server: PluginServerInterface, info: Info):
     if re.fullmatch(r"Stopping the server", info.content):
         dispatch(ServerStoppingEvent)
