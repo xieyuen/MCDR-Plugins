@@ -14,11 +14,11 @@ jobs:
         run: |
           SOURCE_BRANCH="${{ github.head_ref }}"
           TARGET_BRANCH="${{ github.base_ref }}"
-          
+
           # If source is a feature branch
           if [[ $SOURCE_BRANCH == feature/* ]]; then
             # It can only be merged to dev/* branches
-            if [[ $TARGET_BRANCH == dev/* ]]; then
+            if [[ $TARGET_BRANCH == dev/* ]] || [[ $TARGET_BRANCH == dev ]]; then
               echo "✓ Feature branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
               echo "FEATURE_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
@@ -35,7 +35,7 @@ jobs:
           # If source is a fix branch
           if [[ $SOURCE_BRANCH == fix/* ]]; then
             # It can only be merged to dev/* branches
-            if [[ $TARGET_BRANCH == dev/* ]]; then
+            if [[ $TARGET_BRANCH == dev/* ]] || [[ $TARGET_BRANCH == dev ]]; then
               echo "✓ Fix branch $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
               echo "FIX_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
@@ -51,7 +51,7 @@ jobs:
           
           # If merging to master, only allow dev/* or hotfix/* branches
           if [[ $TARGET_BRANCH == master ]]; then
-            if [[ $SOURCE_BRANCH == dev/* ]] || [[ $SOURCE_BRANCH == hotfix/* ]]; then
+            if [[ $SOURCE_BRANCH == dev/* ]] || [[ $SOURCE_BRANCH == hotfix/* ]] || [[ $SOURCE_BRANCH == dev ]]; then
               echo "✓ $SOURCE_BRANCH can be merged to $TARGET_BRANCH"
               echo "MASTER_BRANCH_CHECK=true" >> $GITHUB_ENV
             else
@@ -64,7 +64,7 @@ jobs:
           else
             echo "MASTER_BRANCH_CHECK=skipped" >> $GITHUB_ENV
           fi
-          
+
       - name: Create Job Summary
         run: |
           echo "## Branch Protection Check Results" >> $GITHUB_STEP_SUMMARY
