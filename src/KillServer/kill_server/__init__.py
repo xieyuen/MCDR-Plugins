@@ -18,13 +18,9 @@ WorldSavedEvent = LiteralEvent("kill_server.world_saved")
 __all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"]
 
 
-@event_listener(ServerStoppingEvent)
 @new_thread("KillServer")
 def force_kill_server(server: PluginServerInterface):
     """强制关闭服务器"""
-    if not config.enable:
-        return
-
     server.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
     time.sleep(config.waiting_time)
@@ -44,6 +40,12 @@ def on_load(server: PluginServerInterface, _prev_module):
     psi = server
     config = server.load_config_simple(target_class=Config)
 
+    if not config.enable:
+        server.logger.info("强制关闭功能已关闭")
+    else:
+        server.logger.info("强制关闭功能已开启")
+        server.register_event_listener(ServerStoppingEvent, force_kill_server)
+
     # noinspection PyTypeChecker
     handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
 
@@ -59,7 +61,10 @@ def on_info(server: PluginServerInterface, info: Info):
     if re.fullmatch(r".*All dimensions are saved", info.content):
         dispatch(WorldSavedEvent)
         return
-    if info.content == "请按任意键继续. . .":
+    if any(
+            i == "请按任意键继续. . ."
+            for i in (info.raw_content, info.content)
+    ):
         msgs = [
             "检测到 pause 命令的输出",
             "请检查 MCDR 配置文件内的 start_command 配置项和(如果存在)启动脚本内有没有 pause 命令",
