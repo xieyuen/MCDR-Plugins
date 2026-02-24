@@ -4,9 +4,7 @@ from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
 from mcdrpost.utils.general import TotalOrdering
 
-ValidVersionTupleType: (
-    TypeAlias
-) = (  # TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
+ValidVersionTupleType: TypeAlias = (
         tuple[int, int]  # major and minor, its patch version will be set to 0
         # major, minor, patch
         | tuple[int, int, int]
@@ -16,6 +14,8 @@ ValidVersionTupleType: (
         # pre_release cannot be None, but can be an empty str for a non-pre-release version
         | tuple[int, int, int, str, str]
 )
+
+# TODO: transform into 3.12 generic grammar
 SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
 
 
@@ -40,7 +40,7 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-ComparableType = SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
+ComparableType: TypeAlias = SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
 
 
 class SemanticVersion(TotalOrdering[ComparableType]):
@@ -87,12 +87,12 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 
     @overload
     @staticmethod
-    def __param_normalize(param: ComparableType) -> SemanticVersionType:
+    def __param_normalize(param: Any) -> NotImplementedType:
         ...
 
     @overload
     @staticmethod
-    def __param_normalize(param: Any) -> NotImplementedType:
+    def __param_normalize(param: ComparableType) -> SemanticVersionType:  # type: ignore[type-var, misc]
         ...
 
     @staticmethod
@@ -180,49 +180,52 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
     """
 
     major: int
+    """主版本号"""
+
     minor: int
+    """次版本号"""
+
     patch: int
+    """补丁版本号, 或快照版本号(snapshot后的数字)"""
+
     pre_release: str | None = None
+    """预发布版本号"""
+
     build_metadata: str | None = None
+    """构建元数据"""
+
     version: SemanticVersion
+    """语义化版本号"""
+
+    __NEW_VERSION_PATTERN = re.compile(r"(\d+)\.(\d+)(-snapshot-(\d+))?")
 
     def __init__(self, original_version_str: str):
         try:
             self.version = SemanticVersion(original_version_str)
-            (
-                self.major,
-                self.minor,
-                self.patch,
-                self.pre_release,
-                self.build_metadata,
-            ) = (
-                self.version.major,
-                self.version.minor,
-                self.version.patch,
-                self.version.pre_release,
-                self.version.build_metadata,
-            )
         except ValueError:
-            ver = original_version_str.split(".")
-            self.major = int(ver[0])
-            minor_pre = ver[1].split("-")
-            self.minor = int(minor_pre[0])
-            self.patch = int(minor_pre[-1])
-            self.pre_release = "-".join(minor_pre[1:])
+            match = re.match(self.__NEW_VERSION_PATTERN, original_version_str)
+            if not match:
+                raise ValueError(f"Invalid version string: {original_version_str}")
+
+            (major, minor, pre_release, patch) = match.groups()
+
             self.build_metadata = None
             self.version = SimpleVersionTuple(
-                self.major,
-                self.minor,
-                self.patch,
-                self.pre_release,
-                self.build_metadata,
+                int(major),
+                int(minor),
+                int(patch),
+                pre_release[1:],
             ).to_semantic_version()
+
+        self.major = self.version.major
+        self.minor = self.version.minor
+        self.patch = self.version.patch
+        self.pre_release = self.version.pre_release
+        self.build_metadata = self.version.build_metadata
 
     @overload
     @staticmethod
-    def __param_normalize(
-            other: ComparableType | MinecraftVersionType,
-    ) -> MinecraftVersionType:
+    def __param_normalize(other: ComparableType | MinecraftVersionType) -> MinecraftVersionType:
         pass
 
     @overload
