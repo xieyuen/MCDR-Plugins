@@ -28,6 +28,7 @@ class Item(BaseModel):
         if ":" not in value:
             raise ValueError(f"Invalid item: no namespace ({value})")
         namespace, name = value.split(":")
+
         # https://zh.minecraft.wiki/w/%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4ID
         if not re.match(r"[a-z0-9_\-.]+", namespace):
             raise ValueError(f"Invalid item: invalid namespace with illegal char(s) ({namespace})")

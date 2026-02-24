@@ -25,10 +25,10 @@ class Item(Serializable):
 
     def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
         if attr_name == "id":
-            attr_value: str
-
+            assert isinstance(attr_value, str)
             if ":" not in attr_value:
                 raise ValueError(f"Invalid item: no namespace ({attr_value})")
+
             namespace, name = attr_value.split(":")
             # https://zh.minecraft.wiki/w/%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4ID
             if not re.match(r"[a-z0-9_\-.]+", namespace):
