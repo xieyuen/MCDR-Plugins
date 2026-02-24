@@ -77,7 +77,7 @@ def on_info(server: PluginServerInterface, info: Info):
         dispatch(WorldSavedEvent)
         return
     if any(
-            i == "请按任意键继续. . ."
+            i == "请按任意键继续. . . "
             for i in (info.raw_content, info.content)
     ):
         msgs = [
