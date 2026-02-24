@@ -15,42 +15,81 @@ ServerStoppingEvent = LiteralEvent("kill_server.server_stopping")
 PluginStoppingServerEvent = LiteralEvent("kill_server.plugin_stopping_server")
 WorldSavedEvent = LiteralEvent("kill_server.world_saved")
 
+__all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"]
 
-@event_listener(ServerStoppingEvent)
+is_world_saved: bool = False
+
+
+def on_server_startup(_server: PluginServerInterface):
+    global is_world_saved
+    is_world_saved = False
+
+
+@event_listener(WorldSavedEvent)
+def on_world_saved(_server: PluginServerInterface):
+    global is_world_saved
+    is_world_saved = True
+
+
 @new_thread("KillServer")
-def force_kill_server():
+def force_kill_server(server: PluginServerInterface):
     """强制关闭服务器"""
-    if not config.enable:
-        return
-
-    psi.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
+    server.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
     time.sleep(config.waiting_time)
-    if not psi.is_server_running():
+    if not server.is_server_running():
         return
-    psi.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
+    server.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
     # TODO: 检查世界是否保存
-    psi.kill()
+    if not is_world_saved:
+        server.logger.warning("世界仍未保存完成, 建议增加等待时间")
+    server.kill()
 
 
 def dispatch(event: PluginEvent):
     psi.dispatch_event(event, ())
 
 
-def on_load(server: PluginServerInterface, prev_module):
+def on_load(server: PluginServerInterface, _prev_module):
     global psi, config, handler
     psi = server
     config = server.load_config_simple(target_class=Config)
 
-    if prev_module is not None:
-        prev_module.handler.remove()
+    if not config.enable:
+        server.logger.info("强制关闭功能已关闭")
+    elif config.mcdr_only:
+        server.logger.info("配置 mcdr_only 已启用")
+        server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
+    else:
+        server.register_event_listener(ServerStoppingEvent, force_kill_server)
 
     # noinspection PyTypeChecker
     handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
 
 
-def on_info(_server: PluginServerInterface, info: Info):
+def on_unload(_server: PluginServerInterface):
+    handler.remove()
+
+
+def on_info(server: PluginServerInterface, info: Info):
     if re.fullmatch(r"Stopping the server", info.content):
         dispatch(ServerStoppingEvent)
+        return
     if re.fullmatch(r".*All dimensions are saved", info.content):
         dispatch(WorldSavedEvent)
+        return
+    if any(
+            i == "请按任意键继续. . . "
+            for i in (info.raw_content, info.content)
+    ):
+        msgs = [
+            "检测到 pause 命令的输出",
+            "请检查 MCDR 配置文件内的 start_command 配置项和(如果存在)启动脚本内有没有 pause 命令",
+            "如果存在, 请尽快删除",
+            "pause 引起的一些 issue:",
+            "https://github.com/MCDReforged/MCDReforged/issues/394",
+            "https://github.com/TISUnion/PrimeBackup/issues/85",
+        ]
+        for msg in msgs:
+            server.logger.critical(msg)
+        return

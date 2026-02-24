@@ -12,6 +12,9 @@ class Config(Serializable):
     waiting_time: float = 60
     """等待时间, 超时之后才强制关闭服务器, 单位为秒"""
 
+    mcdr_only: bool = False
+    """是否只监听由 MCDR 或插件调用 ``ServerInterface.stop()`` 引起的关闭"""
+
     def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
         if attr_name == "waiting_time":
             if attr_value <= 0:
