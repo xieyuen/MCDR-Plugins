@@ -40,6 +40,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = [
     "packaging",
-    "minecraft_data_api",
+    "pydantic",
 ]
 ignore_missing_imports = true
