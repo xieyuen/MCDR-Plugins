@@ -14,7 +14,6 @@ class CommandHelper:
     def __init__(self, cmd_manager: "CommandManager"):
         self._data_manager: "DataManager" = cmd_manager.data_manager
 
-
     # helper methods
     @staticmethod
     def output_help_message(source: InfoCommandSource, prefix: str) -> None:

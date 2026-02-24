@@ -214,6 +214,7 @@ class CommandManager:
 
     def gen_reload_node(self, prefix) -> Literal:
         """deprecated in 2026.2.15"""
+
         def reload(src: CommandSource):
             self.coo.config_manager.reload()
             self.coo.data_manager.reload()
