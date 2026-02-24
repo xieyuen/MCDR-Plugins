@@ -69,7 +69,7 @@ def on_info(server: PluginServerInterface, info: Info):
             "检测到 pause 命令的输出",
             "请检查 MCDR 配置文件内的 start_command 配置项和(如果存在)启动脚本内有没有 pause 命令",
             "如果存在, 请尽快删除",
-            "相关 issue:",
+            "pause 引起的一些 issue:",
             "https://github.com/MCDReforged/MCDReforged/issues/394",
             "https://github.com/TISUnion/PrimeBackup/issues/85",
         ]
