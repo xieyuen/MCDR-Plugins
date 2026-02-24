@@ -19,9 +19,11 @@ __all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"
 
 is_world_saved: bool = False
 
+
 def on_server_startup(_server: PluginServerInterface):
     global is_world_saved
     is_world_saved = False
+
 
 @event_listener(WorldSavedEvent)
 def on_world_saved(_server: PluginServerInterface):
