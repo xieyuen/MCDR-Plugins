@@ -17,6 +17,17 @@ WorldSavedEvent = LiteralEvent("kill_server.world_saved")
 
 __all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"]
 
+is_world_saved: bool = False
+
+def on_server_startup(_server: PluginServerInterface):
+    global is_world_saved
+    is_world_saved = False
+
+@event_listener(WorldSavedEvent)
+def on_world_saved(_server: PluginServerInterface):
+    global is_world_saved
+    is_world_saved = True
+
 
 @new_thread("KillServer")
 def force_kill_server(server: PluginServerInterface):
@@ -28,6 +39,8 @@ def force_kill_server(server: PluginServerInterface):
         return
     server.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
     # TODO: 检查世界是否保存
+    if not is_world_saved:
+        server.logger.warning("世界仍未保存完成, 建议增加等待时间")
     server.kill()
 
 
