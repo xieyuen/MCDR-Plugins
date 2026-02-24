@@ -42,8 +42,10 @@ def on_load(server: PluginServerInterface, _prev_module):
 
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
+    elif config.mcdr_only:
+        server.logger.info("配置 mcdr_only 已启用")
+        server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
     else:
-        server.logger.info("强制关闭功能已开启")
         server.register_event_listener(ServerStoppingEvent, force_kill_server)
 
     # noinspection PyTypeChecker
