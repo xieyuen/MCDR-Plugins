@@ -35,6 +35,7 @@ def force_kill_server(server: PluginServerInterface):
 
     time.sleep(config.waiting_time)
     if not server.is_server_running():
+        server.logger.info("服务器已关闭, 取消强制关闭任务")
         return
     server.logger.info("等待服务器关闭超时, 正在强制关闭服务器")
     # TODO: 检查世界是否保存
@@ -53,16 +54,22 @@ def on_load(server: PluginServerInterface, _prev_module):
     psi = server
     config = server.load_config_simple(target_class=Config)
 
+    # noinspection PyTypeChecker
+    handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
+
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
+        return
+    if "just_kill_it" in PluginServerInterface.si().get_plugin_list():
+        server.logger.error("本插件与 Just Kill It 不兼容, enable 配置已设为 False")
+        config.enable = False
+        server.save_config_simple(config)
+        # 后面不为事件注册监听器
     elif config.mcdr_only:
         server.logger.info("配置 mcdr_only 已启用")
         server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
     else:
         server.register_event_listener(ServerStoppingEvent, force_kill_server)
-
-    # noinspection PyTypeChecker
-    handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
 
 
 def on_unload(_server: PluginServerInterface):
