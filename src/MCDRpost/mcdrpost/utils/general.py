@@ -15,7 +15,7 @@ ComparableType = TypeVar("ComparableType")
 class TotalOrdering(Generic[ComparableType], ABC):
     @abstractmethod
     def __eq__(self, other) -> bool:  # self == other
-        raise NotImplementedError
+        return super().__eq__(other)
 
     @abstractmethod
     def __lt__(self, other: ComparableType) -> bool:  # self < other

@@ -6,13 +6,13 @@ from mcdrpost.constants import END_LINE
 from mcdrpost.utils.translation import TranslationKeys
 
 if TYPE_CHECKING:
-    from mcdrpost.manager.command_manager import CommandManager
+    from mcdrpost.coordinator import MCDRpostCoordinator
     from mcdrpost.manager.data_manager import DataManager
 
 
 class CommandHelper:
-    def __init__(self, cmd_manager: "CommandManager"):
-        self._data_manager: "DataManager" = cmd_manager.data_manager
+    def __init__(self, coo: "MCDRpostCoordinator"):
+        self._data_manager: "DataManager" = coo.data_manager
 
     # helper methods
     @staticmethod
