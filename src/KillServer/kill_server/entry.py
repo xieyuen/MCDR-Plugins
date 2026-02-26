@@ -8,6 +8,8 @@ from mcdreforged import Info, PluginEvent, PluginServerInterface, event_listener
 from kill_server.config import Config
 from kill_server.events import PluginStoppingServerEvent, ServerStoppingEvent, WorldSavedEvent
 
+PAUSE_PROMPT: tuple[str, str] = ("请按任意键继续. . . ", "Press any key to continue . . . ")
+
 psi: PluginServerInterface
 config: Config
 handler: EventHandler
@@ -29,8 +31,6 @@ def on_world_saved(_server: PluginServerInterface):
 @new_thread("KillServer")
 def force_kill_server(server: PluginServerInterface):
     """强制关闭服务器"""
-    global is_world_saved
-
     server.logger.info("检测到服务器关闭命令执行, 等待服务器自动关闭")
 
     time.sleep(config.waiting_time)
@@ -60,7 +60,7 @@ def on_load(server: PluginServerInterface, _prev_module):
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
         return
-    if "just_kill_it" in PluginServerInterface.si().get_plugin_list():
+    if "just_kill_it" in server.get_plugin_list():
         server.logger.error("本插件与 Just Kill It 不兼容, enable 配置已设为 False")
         config.enable = False
         server.save_config_simple(config)
@@ -77,7 +77,8 @@ def on_unload(_server: PluginServerInterface):
 
 
 def on_info(server: PluginServerInterface, info: Info):
-    if info.is_player:
+    if info.is_user:
+        # 防熊
         return
 
     if re.fullmatch(r"Stopping the server", info.content):
@@ -86,13 +87,10 @@ def on_info(server: PluginServerInterface, info: Info):
     if re.fullmatch(r".*All dimensions are saved", info.content):
         dispatch(WorldSavedEvent)
         return
-    if any(
-            i == "请按任意键继续. . . "
-            for i in (info.raw_content, info.content)
-    ):
+    if info.raw_content in PAUSE_PROMPT:
         msgs = [
             "检测到 pause 命令的输出",
-            "请检查 MCDR 配置文件内的 start_command 配置项和(如果存在)启动脚本内有没有 pause 命令",
+            "请检查 MCDR 配置文件内的 start_command 配置项和 MC 服务器启动脚本(如果存在)内有没有 pause 命令",
             "如果存在, 请尽快删除",
             "pause 引起的一些 issue:",
             "https://github.com/MCDReforged/MCDReforged/issues/394",
