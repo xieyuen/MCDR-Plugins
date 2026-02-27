@@ -90,6 +90,8 @@ def on_load(server: PluginServerInterface, _prev_module):
         config.enable = False
         server.save_config_simple(config)
         # 后面不为事件注册监听器
+        return
+
     if config.mcdr_only:
         server.logger.info("配置 mcdr_only 已启用")
         server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
