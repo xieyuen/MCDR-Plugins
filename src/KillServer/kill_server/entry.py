@@ -17,14 +17,23 @@ handler: EventHandler
 is_world_saved: bool = False
 
 
-def on_server_startup(_server: PluginServerInterface):
+def on_server_startup(server: PluginServerInterface):
     global is_world_saved
+    server.logger.debug("检测到服务器已完全启动")
     is_world_saved = False
 
 
 @event_listener(WorldSavedEvent)
-def on_world_saved(_server: PluginServerInterface):
+def on_world_saved(server: PluginServerInterface):
     global is_world_saved
+    server.logger.debug("检测到世界保存完成")
+    is_world_saved = True
+
+
+def on_server_stop(server: PluginServerInterface, server_return_code: int):
+    global is_world_saved
+    server.logger.debug(f"检测到服务器已关闭, 返回值: {server_return_code}")
+    # 认定服务器被其他因素强制关闭时世界已保存
     is_world_saved = True
 
 
@@ -46,7 +55,23 @@ def force_kill_server(server: PluginServerInterface):
 
 
 def dispatch(event: PluginEvent):
+    """*Usable when plugin having loaded*"""
     psi.dispatch_event(event, ())
+
+
+def __check_environment(server: PluginServerInterface) -> bool:
+    from mcdreforged.mcdr_config import MCDReforgedConfig
+
+    mcdr_cfg = MCDReforgedConfig.deserialize(server.get_mcdr_config())
+    INVALID_HANDLERS = {"bungeecord_handler", "waterfall_handler", "velocity_handler"}
+
+    if mcdr_cfg.handler in INVALID_HANDLERS:
+        server.logger.error("本插件不支持跳转服")
+        return False
+    if "just_kill_it" in server.get_plugin_list():
+        server.logger.error("本插件与 Just Kill It 不兼容")
+        return False
+    return True
 
 
 def on_load(server: PluginServerInterface, _prev_module):
@@ -60,12 +85,12 @@ def on_load(server: PluginServerInterface, _prev_module):
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
         return
-    if "just_kill_it" in server.get_plugin_list():
-        server.logger.error("本插件与 Just Kill It 不兼容, enable 配置已设为 False")
+    if not __check_environment(server):
+        server.logger.error("本插件已自动禁用")
         config.enable = False
         server.save_config_simple(config)
         # 后面不为事件注册监听器
-    elif config.mcdr_only:
+    if config.mcdr_only:
         server.logger.info("配置 mcdr_only 已启用")
         server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
     else:
