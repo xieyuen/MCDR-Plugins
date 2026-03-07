@@ -1,3 +1,3 @@
-from kill_server.events import PluginStoppingServerEvent, ServerStoppingEvent, WorldSavedEvent
+from kill_server.events.server_event import ServerEvents
 
-__all__ = ["ServerStoppingEvent", "PluginStoppingServerEvent", "WorldSavedEvent"]
+__all__ = ["ServerEvents"]

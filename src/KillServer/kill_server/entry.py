@@ -1,41 +1,20 @@
 ﻿import re
 import time
 
-from dowhen import when
+import dowhen
 from dowhen.handler import EventHandler
-from mcdreforged import Info, PluginEvent, PluginServerInterface, event_listener, new_thread
+from mcdreforged import Info, PluginServerInterface, event_listener, new_thread, PluginEvent
 
 from kill_server.config import Config
-from kill_server.events import PluginStoppingServerEvent, ServerStoppingEvent, WorldSavedEvent
+from kill_server.events.server_event import ServerEvents, dispatch
+from kill_server.handler_storage import HandlerStorage
 
 PAUSE_PROMPT: tuple[str, str] = ("请按任意键继续. . . ", "Press any key to continue . . . ")
 
-psi: PluginServerInterface
 config: Config
-handler: EventHandler
+handler_storage: HandlerStorage = HandlerStorage()
 
 is_world_saved: bool = False
-
-
-def on_server_startup(server: PluginServerInterface):
-    global is_world_saved
-    server.logger.debug("检测到服务器已完全启动")
-    is_world_saved = False
-
-
-@event_listener(WorldSavedEvent)
-def on_world_saved(server: PluginServerInterface):
-    global is_world_saved
-    server.logger.debug("检测到世界保存完成")
-    is_world_saved = True
-
-
-def on_server_stop(server: PluginServerInterface, server_return_code: int):
-    global is_world_saved
-    server.logger.debug(f"检测到服务器已关闭, 返回值: {server_return_code}")
-    # 认定服务器被其他因素强制关闭时世界已保存
-    is_world_saved = True
-
 
 @new_thread("KillServer")
 def force_kill_server(server: PluginServerInterface):
@@ -54,11 +33,6 @@ def force_kill_server(server: PluginServerInterface):
     # kill 之后由 on_server_startup 把 is_world_saved 设置为 False
 
 
-def dispatch(event: PluginEvent):
-    """*Usable when plugin having loaded*"""
-    psi.dispatch_event(event, ())
-
-
 def __check_environment(server: PluginServerInterface) -> bool:
     from mcdreforged.mcdr_config import MCDReforgedConfig
 
@@ -73,14 +47,26 @@ def __check_environment(server: PluginServerInterface) -> bool:
         return False
     return True
 
+def __register_dispatcher(server: PluginServerInterface):
+    def gen_handler(func, event: PluginEvent)->tuple[PluginEvent, EventHandler]:
+        return event, dowhen.when(
+            func,
+            "<start>",
+        ).do(lambda: dispatch(event))
+
+    handlers: list[tuple[PluginEvent, EventHandler]] = [
+        gen_handler(server.stop, ServerEvents.PLUGIN_STOPPING_SERVER),
+        gen_handler(server.kill, ServerEvents.PLUGIN_KILLING_SERVER),
+    ]
+
+    for event, handler in handlers:
+        handler_storage.register(event, handler)
 
 def on_load(server: PluginServerInterface, _prev_module):
-    global psi, config, handler
-    psi = server
+    global config
     config = server.load_config_simple(target_class=Config)
 
-    # noinspection PyTypeChecker
-    handler = when(server.stop, "return").do(lambda: dispatch(PluginStoppingServerEvent))
+    __register_dispatcher(server)
 
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
@@ -94,13 +80,13 @@ def on_load(server: PluginServerInterface, _prev_module):
 
     if config.mcdr_only:
         server.logger.info("配置 mcdr_only 已启用")
-        server.register_event_listener(PluginStoppingServerEvent, force_kill_server)
+        server.register_event_listener(ServerEvents.PLUGIN_STOPPING_SERVER, force_kill_server)
     else:
-        server.register_event_listener(ServerStoppingEvent, force_kill_server)
+        server.register_event_listener(ServerEvents.SERVER_STOPPING, force_kill_server)
 
 
 def on_unload(_server: PluginServerInterface):
-    handler.remove()
+    handler_storage.remove()
 
 
 def on_info(server: PluginServerInterface, info: Info):
@@ -109,10 +95,10 @@ def on_info(server: PluginServerInterface, info: Info):
         return
 
     if re.fullmatch(r"Stopping the server", info.content):
-        dispatch(ServerStoppingEvent)
+        dispatch(ServerEvents.SERVER_STOPPING)
         return
     if re.fullmatch(r".*All dimensions are saved", info.content):
-        dispatch(WorldSavedEvent)
+        dispatch(ServerEvents.WORLD_SAVED)
         return
     if info.raw_content in PAUSE_PROMPT:
         msgs = [
@@ -126,3 +112,24 @@ def on_info(server: PluginServerInterface, info: Info):
         for msg in msgs:
             server.logger.critical(msg)
         return
+
+
+def on_server_startup(server: PluginServerInterface):
+    global is_world_saved
+    server.logger.debug("检测到服务器已完全启动")
+    is_world_saved = False
+
+
+@event_listener(ServerEvents.WORLD_SAVED)
+def on_world_saved(server: PluginServerInterface):
+    global is_world_saved
+    server.logger.debug("检测到世界保存完成")
+    is_world_saved = True
+
+
+def on_server_stop(server: PluginServerInterface, server_return_code: int):
+    global is_world_saved
+    server.logger.debug(f"检测到服务器已关闭, 返回值: {server_return_code}")
+    # 认定服务器被其他因素强制关闭时世界已保存
+    is_world_saved = True
+
