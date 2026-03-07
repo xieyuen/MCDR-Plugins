@@ -16,6 +16,7 @@ handler_storage: HandlerStorage = HandlerStorage()
 
 is_world_saved: bool = False
 
+
 @new_thread("KillServer")
 def force_kill_server(server: PluginServerInterface):
     """强制关闭服务器"""
@@ -47,12 +48,13 @@ def __check_environment(server: PluginServerInterface) -> bool:
         return False
     return True
 
-def __register_dispatcher(server: PluginServerInterface):
-    def gen_handler(func, event: PluginEvent)->tuple[PluginEvent, EventHandler]:
-        return event, dowhen.when(
+
+def __reg_dispatcher(server: PluginServerInterface):
+    def gen_handler(func, e: PluginEvent) -> tuple[PluginEvent, EventHandler]:
+        return e, dowhen.when(
             func,
             "<start>",
-        ).do(lambda: dispatch(event))
+        ).do(lambda: dispatch(e))
 
     handlers: list[tuple[PluginEvent, EventHandler]] = [
         gen_handler(server.stop, ServerEvents.PLUGIN_STOPPING_SERVER),
@@ -62,11 +64,12 @@ def __register_dispatcher(server: PluginServerInterface):
     for event, handler in handlers:
         handler_storage.register(event, handler)
 
+
 def on_load(server: PluginServerInterface, _prev_module):
     global config
     config = server.load_config_simple(target_class=Config)
 
-    __register_dispatcher(server)
+    __reg_dispatcher(server)
 
     if not config.enable:
         server.logger.info("强制关闭功能已关闭")
@@ -132,4 +135,3 @@ def on_server_stop(server: PluginServerInterface, server_return_code: int):
     server.logger.debug(f"检测到服务器已关闭, 返回值: {server_return_code}")
     # 认定服务器被其他因素强制关闭时世界已保存
     is_world_saved = True
-
