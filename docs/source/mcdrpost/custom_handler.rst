@@ -41,7 +41,7 @@ MCDRpost API--自定义 Handler
 .. autoclass:: mcdrpost.api.AbstractSoundPlayer
 .. autoclass:: mcdrpost.api.NewSoundPlayer
 .. autoclass:: mcdrpost.api.OldSoundPlayer
-.. autoclass:: :no-index: mcdrpost.api.Item
+.. autoclass:: mcdrpost.api.Item
 .. autoclass:: mcdrpost.api.Environment
 
 示例
