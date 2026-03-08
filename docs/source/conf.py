@@ -5,6 +5,7 @@
 import datetime
 import sys
 from pathlib import Path
+from contextlib import suppress
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -19,8 +20,10 @@ dependencies = Path(__file__).parent.parent.parent / "dependencies"
 
 for directory in src.iterdir():
     sys.path.append(str(directory))
-for directory in dependencies.iterdir():
-    sys.path.append(str(directory))
+
+with suppress(FileNotFoundError):
+    for directory in dependencies.iterdir():
+        sys.path.append(str(directory))
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
