@@ -1,7 +1,5 @@
-from mcdreforged import PluginEvent, PluginServerInterface, MCDRPluginEvents
+from mcdreforged import MCDRPluginEvents, PluginEvent, PluginServerInterface
 from mcdreforged.plugin.plugin_event import MCDREvent
-
-server: PluginServerInterface = PluginServerInterface.psi()
 
 
 class ServerEvent(PluginEvent):
@@ -40,18 +38,6 @@ class ServerEvents:
     所有的 MCDR 内置声明周期事件均为 MCDREvent 实例,
     所有的自定义事件均为 ServerEvent 实例.
 
-    Attributes:
-        SERVER_PRE_STARTING (MCDREvent): 服务器准备启动
-        SERVER_STARTING (MCDREvent): 服务器正在启动
-        SERVER_STARTED (MCDREvent): 服务器已启动
-
-        SERVER_STOPPING (ServerEvent): 服务器正在关闭
-        PLUGIN_STOPPING_SERVER (ServerEvent): 服务器被 MCDR 关闭, 当且仅当 ServerInterface.stop 被调用时分发
-        PLUGIN_KILLING_SERVER (ServerEvent): 服务器被 MCDR 强制关闭, 当且仅当 ServerInterface.kill 被调用时分发
-        SERVER_STOPPED (MCDREvent): 服务器已关闭
-
-        WORLD_SAVED (ServerEvent): 世界已保存
-
     See Also:
         MCDR 官方文档:
 
@@ -63,15 +49,29 @@ class ServerEvents:
 
     # Server starting
     SERVER_PRE_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START_PRE
+    """服务器准备启动"""
     SERVER_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START
+    """服务器正在启动"""
     SERVER_STARTED: MCDREvent = MCDRPluginEvents.SERVER_STARTUP
+    """服务器已启动"""
     # Server Stopping
     SERVER_STOPPING: ServerEvent = ServerEvent("kill_server.server_stopping")
+    """服务器正在停止"""
     PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_stopping_server")
+    """服务器正在被插件/MCDR命令关闭
+    
+    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.stop` 调用时触发
+    """
     PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_killing_server")
+    """服务器正在被插件/MCDR命令强制关闭
+    
+    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.kill` 调用时触发
+    """
     SERVER_STOPPED: MCDREvent = MCDRPluginEvents.SERVER_STOP
+    """服务器已停止"""
 
     WORLD_SAVED: ServerEvent = ServerEvent("kill_server.world_saved")
+    """世界已保存"""
 
     # Methods
     @classmethod
@@ -96,4 +96,4 @@ __register_server_events()
 
 def dispatch(event: PluginEvent, args: tuple = ()):
     """以指定参数分发事件"""
-    server.dispatch_event(event, args)
+    PluginServerInterface.psi().dispatch_event(event, args)
