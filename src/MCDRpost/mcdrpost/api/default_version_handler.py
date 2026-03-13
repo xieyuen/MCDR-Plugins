@@ -1,7 +1,13 @@
-import minecraft_data_api as api
+from typing import Any
+
 from mcdrpost.constants import OFFHAND_CODE
 from mcdrpost.data_structure import Item
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
+
+try:
+    import minecraft_data_api as api
+except ImportError:
+    api: Any = None
 
 
 class DefaultVersionHandler(AbstractVersionHandler):

@@ -154,7 +154,7 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 |   command_permission   |   `dict`    |          ~           | 见[权限表](#权限表)        | 已弃用[^3]                 |
 |      permissions       |   `dict`    |          ~           | 见[权限表](#权限表)        | 代替 `command_permission` |
 | prefix.enable_addition |   `bool`    |        `true`        | 是否注册多个根命令           | 代替 `allow_alias`        |
-|   prefix.more_prefix   |   `bool`    |        `true`        | 命令根节点               | 代替 `command_prefixes`   |
+|   prefix.more_prefix   |   `bool`    |     `['!!post']`     | 其他命令根节点             | 代替 `command_prefixes`   |
 
 > [!NOTE]
 > *Deprecated in v3.4.0 and will be removed in v3.6:*
@@ -183,13 +183,13 @@ OrderJsonFile = OrderJsonDirectory + 'PostOrders.json'
 
 ## 注意信息
 
-- 可能会有部分带有特殊复杂NBT标签的物品无法传送, 会提示检测不到可传送的物品, 所以尝试一下即可
-- 不开启 RCON 的话, 插件可能会有一定的延迟导致发送/接收失败
+1. 可能会有部分带有特殊复杂 NBT 标签的物品无法传送, 会提示检测不到可传送的物品, 所以尝试一下即可
+2. 不开启 RCON 的话, 插件可能会有一定的延迟导致发送/接收失败
 
 > [!WARNING]
 > ***切勿传送原版非法堆叠数的物品!!!***
 > 
-> 例如使用carpet地毯堆叠的空潜影盒, 会导致该物品无法接收
+> 例如使用 carpet 地毯堆叠的空潜影盒, 会导致该物品无法接收
 > 
 > ~~[自定义 Handler](#api) + 特定模组兼容 也许可以解决这个问题~~
 

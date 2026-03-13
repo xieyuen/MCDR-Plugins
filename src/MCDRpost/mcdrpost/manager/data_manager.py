@@ -33,7 +33,7 @@ class DataManager:
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
 
     def build_index(self) -> None:
@@ -57,9 +57,13 @@ class DataManager:
             if str(order.id) == order_id:
                 continue
             if not self.coo.config.auto_fix:
-                raise InvalidOrder(TranslationKeys.error.invalid_order.tr(order_id, order.id))
-            self._logger.error(TranslationKeys.error.invalid_order.tr(order_id, order.id))
-            self._logger.error(TranslationKeys.auto_fix.invalid_order.tr(order_id))
+                raise InvalidOrder(
+                    TranslationKeys.data_validation_failed.rtr(order_id, order.id)
+                )
+            self._logger.error(
+                TranslationKeys.data_validation_failed.rtr(order_id, order.id)
+            )
+            self._logger.error(TranslationKeys.data_auto_fix.rtr(order_id))
             self._order_data.orders[order_id].id = int(order_id)
             is_fixed = True
 
@@ -67,20 +71,22 @@ class DataManager:
             self.save()
 
     def reload(self) -> None:
-        self._logger.info(TranslationKeys.data.load.tr())
+        self._logger.info(TranslationKeys.data_loaded.rtr())
         self._order_data = self._server.load_config_simple(
             constants.ORDER_DATA_FILE_NAME,
             target_class=OrderData,
             file_format=constants.ORDERS_DATA_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
         self.check_orders()
         self.build_index()
 
     def save(self) -> None:
-        self._logger.info(TranslationKeys.data.save.tr())
+        self._logger.info(TranslationKeys.data_saved.rtr())
         # 直接对订单进行排序
-        self._order_data.orders = dict(sorted(self._order_data.orders.items(), key=lambda item: int(item[0])))
+        self._order_data.orders = dict(
+            sorted(self._order_data.orders.items(), key=lambda item: int(item[0]))
+        )
         self._server.save_config_simple(
             self._order_data,
             constants.ORDER_DATA_FILE_NAME,
@@ -166,6 +172,9 @@ class DataManager:
 
     def get_orders(self) -> list[Order]:
         return list(self._order_data.orders.values())
+
+    def contain_order(self, order_id: int) -> bool:
+        return str(order_id) in self._order_data.orders
 
     def get_orderid_by_sender(self, sender: str) -> list[int]:
         return self._sender_index[sender]

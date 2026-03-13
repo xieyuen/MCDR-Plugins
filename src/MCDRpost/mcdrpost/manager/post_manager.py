@@ -67,9 +67,14 @@ class PostManager:
         """
         if self.config.max_storage == -1:
             return False
-        return len(self.data_manager.get_orderid_by_sender(player)) >= self.config.max_storage
+        return (
+                len(self.data_manager.get_orderid_by_sender(player))
+                >= self.config.max_storage
+        )
 
-    def post(self, src: PlayerCommandSource, receiver: str, comment: str | None = None) -> None:
+    def post(
+            self, src: PlayerCommandSource, receiver: str, comment: str | None = None
+    ) -> None:
         """发送订单
 
         Args:
@@ -80,45 +85,49 @@ class PostManager:
         sender = src.player
 
         if self.is_storage_full(sender):
-            src.reply(TranslationKeys.at_max_storage.tr(self.config.max_storage))
+            src.reply(TranslationKeys.post_fail_reached_max_storage.rtr(self.config.max_storage))
             return
 
         if sender == receiver:
-            src.reply(TranslationKeys.same_person.tr())
+            src.reply(TranslationKeys.post_fail_send_to_self.rtr())
             return
 
         if comment is None:
-            comment = TranslationKeys.no_comment.tr()
+            comment = TranslationKeys.post_default_comment.tr()
 
         try:
             item = self.get_offhand_item(sender)
         except InvalidItem:
-            src.reply(TranslationKeys.check_offhand.tr())
+            src.reply(TranslationKeys.post_fail_invalid_item.rtr())
             return
-        except:
-            src.reply(TranslationKeys.error.running.tr())
+        except Exception:
+            src.reply(TranslationKeys.error_occurred.rtr())
             raise
 
         if item is None:
-            src.reply(TranslationKeys.check_offhand.tr())
+            src.reply(TranslationKeys.post_fail_invalid_item.rtr())
             return
 
         # create order
-        order_id = self.data_manager.add_order(OrderInfo(
-            sender=sender,
-            receiver=receiver,
-            item=item,
-            comment=comment,
-            time=get_formatted_time(),
-        ))
+        order_id = self.data_manager.add_order(
+            OrderInfo(
+                sender=sender,
+                receiver=receiver,
+                item=item,
+                comment=comment,
+                time=get_formatted_time(),
+            )
+        )
 
         self.replace(sender, constants.AIR)
-        src.reply(TranslationKeys.reply_success_post.tr())
-        self.server.tell(receiver, TranslationKeys.hint_receive.tr(order_id))
+        src.reply(TranslationKeys.post_success_sender.rtr())
+        self.server.tell(receiver, TranslationKeys.post_success_receiver.rtr(order_id))
         self.version_manager.play_sound.successfully_post(sender, receiver)
         self.data_manager.save()
 
-    def receive(self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]) -> bool:
+    def receive(
+            self, src: PlayerCommandSource, order_id: int, typ: Literal["cancel", "receive"]
+    ) -> bool:
         """接收订单的物品
 
         Args:
@@ -133,15 +142,25 @@ class PostManager:
 
         # 副手有东西 拒绝接收
         if not self.check_offhand_empty(player):
-            src.reply(TranslationKeys.clear_offhand.tr())
+            src.reply(TranslationKeys.receive_fail_hands_not_cleared.rtr())
+            return False
+
+        if not self.data_manager.contain_order(order_id):
+            src.reply(TranslationKeys.receive_fail_undefined_id.rtr())
             return False
 
         # 不是 TA
-        if typ == 'receive' and order_id not in self.data_manager.get_orderid_by_receiver(player):
-            src.reply(TranslationKeys.unchecked_orderid.tr())
+        if (
+                typ == "receive"
+                and order_id not in self.data_manager.get_orderid_by_receiver(player)
+        ):
+            src.reply(TranslationKeys.receive_fail_no_right.rtr())
             return False
-        elif typ == 'cancel' and order_id not in self.data_manager.get_orderid_by_sender(player):
-            src.reply(TranslationKeys.unchecked_orderid.tr())
+        elif (
+                typ == "cancel"
+                and order_id not in self.data_manager.get_orderid_by_sender(player)
+        ):
+            src.reply(TranslationKeys.cancel_fail_no_right.rtr())
             return False
 
         order = self.data_manager.pop_order(order_id)
