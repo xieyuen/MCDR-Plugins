@@ -19,7 +19,7 @@ class Environment:
     @property
     def mcdr_handler(self) -> str:
         """MCDR 正在使用的 handler"""
-        return self._server.get_mcdr_config()['handler']
+        return self._server.get_mcdr_config()["handler"]
 
 
-__all__ = ['Environment']
+__all__ = ["Environment"]

@@ -20,17 +20,17 @@ class ConfigurationManager:
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
             file_format=constants.CONFIG_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
 
     def reload(self) -> None:
         """(重新)加载配置文件"""
-        self._server.logger.info(TranslationKeys.config.load.tr())
+        self._server.logger.info(TranslationKeys.config_loaded.rtr())
         self._config = self._server.load_config_simple(
             constants.CONFIG_FILE_NAME,
             target_class=Configuration,
             file_format=constants.CONFIG_FILE_TYPE,
-            echo_in_console=False
+            echo_in_console=False,
         )
 
     def get_config(self) -> Configuration:

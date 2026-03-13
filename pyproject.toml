@@ -5,13 +5,16 @@ description = "My MCDR Plugins"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "mcdreforged>=2.15.6",
+    "mcdreforged>=2.15.7",
 ]
 license = { file = "LICENSE" }
 
 [project.optional-dependencies]
 minecraft-data-api = [
     "hjson>=3.1.0",
+]
+mcdrpost = [
+    "pydantic>=2.12.5",
 ]
 kill-server = [
     "dowhen>=0.1.0",
@@ -47,6 +50,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = [
     "packaging",
-    "minecraft_data_api",
+    "pydantic",
 ]
 ignore_missing_imports = true

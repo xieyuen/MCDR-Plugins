@@ -9,7 +9,9 @@ from mcdrpost.constants import Commands
 from mcdrpost.data_structure import Item
 from mcdrpost.utils.exception import InvalidItem
 from mcdrpost.utils.translation import TranslationKeys
-from mcdrpost.version_handler.sound_player.abstract_sound_player import AbstractSoundPlayer
+from mcdrpost.version_handler.sound_player.abstract_sound_player import (
+    AbstractSoundPlayer,
+)
 from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer
 
 
@@ -106,9 +108,9 @@ class BuiltinVersionHandler(AbstractVersionHandler, ABC):
                 self.server.rcon_query(Commands.GET_ITEM.format(player))
             )
         else:
-            self.server.logger.warning(TranslationKeys.rcon.not_running.tr())
+            self.server.logger.warning(TranslationKeys.rcon_not_running.rtr())
 
-            @new_thread('MCDRpost | get offhand item')
+            @new_thread("MCDRpost | get offhand item")
             def get():
                 return mc_data_api.get_player_info(player, constants.OFFHAND_CODE)
 
