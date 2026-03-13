@@ -26,7 +26,7 @@ KillServer
 使用方法
 --------
 
-直接安装到 MCDR 的插件文件夹下即可, 可以从 `GitHub <https://github/xieyuen/MCDR-Plugins>`_
+直接安装到 MCDR 的插件文件夹下即可, 可以从 `GitHub <https://github.com/xieyuen/MCDR-Plugins>`_
 或 `PluginCatalogue <https://mcdreforged.com/zh-CN/plugin/kill_server>`_ 手动下载插件文件
 
 你也可以用下面的 MCDR 命令安装 KillServer
