@@ -1,49 +1,61 @@
 MCDRpost API--自定义 Handler
 ============================
 
+.. py:currentmodule:: mcdrpost.api
+
 一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况（比如1.9版本） [#f1]_，MCDRpost可能无法满足需求，
 考虑到插件对 Minecraft 的兼容性，插件暴露了一定的 API 用于 Minecraft 一些特殊服务端的适配
 
 核心 API 有:
 
 - classes
-    - AbstractVersionHandler
-    - AbstractSoundPlayer
-    - DefaultVersionHandler
-    - NewSoundPlayer
-    - OldSoundPlayer
+    - :class:`AbstractVersionHandler`
+    - :class:`AbstractSoundPlayer`
+    - :class:`DefaultVersionHandler`
+    - :class:`NewSoundPlayer`
+    - :class:`OldSoundPlayer`
 - functions
-    - register_handler
+    - :func:`register_handler`
 - types
-    - Item
-    - Environment
+    - :class:`Item`
+    - :class:`Environment`
 - constants
     - OFFHAND_CODE
 
 你可以在导入的时候使用下面的方式：
 
-.. code:: python
+.. code-block:: python
 
     from mcdrpost.api import *
 
 当然如果不希望污染全局变量也可以这样：
 
-.. code:: python
+.. code-block:: python
 
     from mcdrpost import api as mp
 
 详细文档
 *********
 
+处理器
+--------
 
-.. autoclass:: mcdrpost.api.AbstractVersionHandler
-.. autoclass:: mcdrpost.api.DefaultVersionHandler
-.. autofunction:: mcdrpost.api.register_handler
-.. autoclass:: mcdrpost.api.AbstractSoundPlayer
-.. autoclass:: mcdrpost.api.NewSoundPlayer
-.. autoclass:: mcdrpost.api.OldSoundPlayer
-.. autoclass:: mcdrpost.api.Item
-.. autoclass:: mcdrpost.api.Environment
+.. autoclass:: AbstractVersionHandler
+.. autoclass:: DefaultVersionHandler
+.. autofunction:: register_handler
+
+声音播放器
+----------
+
+.. autoclass:: AbstractSoundPlayer
+.. autoclass:: NewSoundPlayer
+.. autoclass:: OldSoundPlayer
+
+类型
+--------
+
+.. autoclass:: Item
+.. autoclass:: Environment
 
 示例
 -------
@@ -107,7 +119,7 @@ MCDRpost API--自定义 Handler
 
 如果是用多文件插件的话，你甚至不需要定义 ``on_load``, 只需要在入口点内定义 Handler 并注册就好
 
-example_handler/entry.py
+在 ``example_handler/entry.py`` 文件内
 
 .. code:: python
 
@@ -148,4 +160,4 @@ example_handler/entry.py
 
 .. rubric:: 脚注
 
-.. [#f1] 1.13 以前没有 ``/data`` 命令，要获取玩家物品需要在服务端安装插件，但 MCDR 主打的就是不修改服务端，所以本插件不考虑支持旧版
+.. [#f1] 1.13 以前没有 ``/data`` 命令，要获取玩家物品需要在服务端安装插件，但 MCDR 主打的就是不修改服务端，所以本插件不考虑主动支持旧版
