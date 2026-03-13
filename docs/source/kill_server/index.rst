@@ -5,3 +5,4 @@ KillServer 文档
    :maxdepth: 2
 
    Readme<readme.rst>
+   Events<events.rst>

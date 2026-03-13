@@ -67,11 +67,9 @@ html_css_files = ['custom.css']
 # -- extension configuations -------------------------------------------------
 
 # 常用的外部文档链接映射
-# intersphinx_mapping = {
-#     'python': ('https://docs.python.org/3', None),
-#     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
-#     'mcdr': ('https://mcdreforged.com', None)
-# }
+intersphinx_mapping = {
+    'mcdreforged': ('https://docs.mcdreforged.com/zh-cn/latest/', None),
+}
 autodoc_default_options = {
     'members': True,           # 显示所有成员
     'member-order': 'bysource', # 按源代码顺序
@@ -79,6 +77,7 @@ autodoc_default_options = {
     'undoc-members': True,      # 显示没有文档的成员
     'show-inheritance': True,   # 显示继承关系
 }
+# napoleon_use_ivar = True  # 使用 :ivar: 而不是生成独立的属性文档
 
 # 删除线样式
 rst_prolog = """
