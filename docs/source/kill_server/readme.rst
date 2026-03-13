@@ -31,7 +31,7 @@ KillServer
 
 你也可以用下面的 MCDR 命令安装 KillServer
 
-.. code:: mcdr
+.. code-block::
 
    !!MCDR plg install kill_server
 

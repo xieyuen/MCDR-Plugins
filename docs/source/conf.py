@@ -62,6 +62,7 @@ language = 'zh_CN'
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
 # -- extension configuations -------------------------------------------------
 
@@ -78,3 +79,9 @@ autodoc_default_options = {
     'undoc-members': True,      # 显示没有文档的成员
     'show-inheritance': True,   # 显示继承关系
 }
+
+# 删除线样式
+rst_prolog = """
+.. role:: del
+    :class: del
+"""
