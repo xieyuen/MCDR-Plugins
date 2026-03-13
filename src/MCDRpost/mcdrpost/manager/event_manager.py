@@ -1,11 +1,15 @@
 import time
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from mcdreforged import Info, PluginServerInterface, new_thread
 
-import minecraft_data_api as api
 from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
+
+try:
+    import minecraft_data_api as api
+except ImportError:
+    api: Any = None
 
 if TYPE_CHECKING:
     from mcdrpost.coordinator import MCDRpostCoordinator

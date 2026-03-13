@@ -1,5 +1,7 @@
 from mcdreforged import RTextBase, RTextMCDRTranslation, ServerInterface
 
+si_opt = ServerInterface.si_opt()
+
 
 class TranslationKeyItem:
     """MCDRpost 翻译键
@@ -12,8 +14,8 @@ class TranslationKeyItem:
     """
 
     __FULL_KEY_TEMPLATE: str = "mcdrpost.{key}"
-    __tr = ServerInterface.si().tr
-    __rtr = ServerInterface.si().rtr
+    __tr = si_opt.tr if si_opt else None
+    __rtr = si_opt.rtr if si_opt else None
 
     def __init__(self, value: str):
         self.key = self.__FULL_KEY_TEMPLATE.format(key=value)
