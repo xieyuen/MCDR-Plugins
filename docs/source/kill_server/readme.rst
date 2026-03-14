@@ -6,7 +6,7 @@ KillServer
 .. warning::
    此插件使用 `dowhen <http://github.com/gaogaotiantian/dowhen/>`_ 模块实现, 可能不够稳定
 
-.. tip::
+.. note::
    BUG Report: `GitHub issues <https://github.com/xieyuen/MCDR-Plugins/issues/new>`_
 
 介绍
@@ -21,7 +21,8 @@ KillServer
     - `TISUnion/PrimeBackup#85 <https://github.com/TISUnion/PrimeBackup/issues/85>`_
     - `MCDReforged/MCDReforged#394 <https://github.com/MCDReforged/MCDReforged/issues/394>`_
 
-本插件提供监听服务器关闭并且在这些情况下强制关闭服务器的功能, 给小白腐竹们提供一个简单且无脑的解决方案
+本插件提供监听服务器关闭并且在这些情况下强制关闭服务器的功能, 给小白腐竹们提供一个简单且无脑的解决方案,
+并给予一定的提示信息
 
 使用方法
 --------
@@ -45,7 +46,6 @@ KillServer
 ----
 
 .. list-table::
-   :widths: 20 15 20 40 15
    :header-rows: 1
 
    * - 配置项
@@ -66,7 +66,7 @@ KillServer
    * - ``mcdr_only``
      - ``bool``
      - ``False``
-     - 是否只监听 `PluginStoppingServerEvent`
+     - 是否只监听 :attr:`~kill_server.events.server_event.ServerEvents.PLUGIN_STOPPING_SERVER` 事件
      -
 
 新的事件

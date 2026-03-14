@@ -1,7 +1,7 @@
 KillServer API -- Events
 ============================
 
-.. py:currentmodule:: kill_server.events.server_event
+.. py:currentmodule:: kill_server
 
 KillServer 创建了一些新的事件用以监听服务器的运行状态.
 对于 MCDR 内置的一些生命周期事件本插件继续沿用, 并补充了不少

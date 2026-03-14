@@ -5,7 +5,7 @@
 > [!WARNING]
 > 此插件使用 [dowhen](http://github.com/gaogaotiantian/dowhen/) 模块实现, 可能不够稳定
 
-> [!TIP]
+> [!NOTE]
 > BUG Report: [GitHub issues](https://github.com/xieyuen/MCDR-Plugins/issues/new)
 
 ## 介绍
@@ -40,11 +40,14 @@
 
 ## 配置
 
-|      配置项       |   类型    |   默认值   | 含义                                                              | 注释      |
-|:--------------:|:-------:|:-------:|:----------------------------------------------------------------|:--------|
-|    `enable`    | `bool`  | `True`  | 是否启用插件                                                          | 不影响事件分发 |
-| `waiting_time` | `float` |  `60`   | 等待服务器关闭的时间, 超时强制关闭                                              | 单位为秒    |
-|  `mcdr_only`   | `bool`  | `False` | 是否只监听 [`PluginStoppingServerEvent`](#PluginStoppingServerEvent) |         |
+|      配置项       |   类型    |   默认值   | 含义                                           | 注释      |
+|:--------------:|:-------:|:-------:|:---------------------------------------------|:--------|
+|    `enable`    | `bool`  | `True`  | 是否启用插件                                       | 不影响事件分发 |
+| `waiting_time` | `float` |  `60`   | 等待服务器关闭的时间, 超时强制关闭                           | 单位为秒    |
+|  `mcdr_only`   | `bool`  | `False` | 是否只监听 `kill_server.plugin_stopping_server`   |         |
+
+> [!NOTE]
+> `kill_server.plugin_stopping_server` 事件参见 [Read the Docs 文档](https://mcdr-plugins.readthedocs.io/zh-cn/dev-mcdrpost/kill_server/events.html#kill_server.events.server_event.ServerEvents.PLUGIN_STOPPING_SERVER)
 
 ## 新的事件
 
