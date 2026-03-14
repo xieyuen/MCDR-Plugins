@@ -79,7 +79,7 @@ class ServerEvents:
     """服务器已启动
     
     :事件 ID: ``mcdr.server_startup``
-    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     
     See Also:
         https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-startup
