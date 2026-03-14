@@ -82,7 +82,10 @@ intersphinx_mapping = {
 autodoc_member_order = 'bysource'
 autodoc_inherit_docstrings = False  # so overridden methods won't pop up
 autodoc_default_options = {
-    'members': True,
+    'members': True,           # 显示所有成员
+    'special-members': '__init__',  # 显示特殊方法
+    'undoc-members': True,      # 显示没有文档的成员
+    'show-inheritance': True,   # 显示继承关系
 }
 
 # -- Options for sphinx.ext.autosectionlabel -------------------------------------------------
