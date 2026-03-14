@@ -4,6 +4,7 @@ from mcdrpost.constants import OFFHAND_CODE
 from mcdrpost.data_structure import Item
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
 
+# for doc building
 try:
     import minecraft_data_api as api
 except ImportError:
