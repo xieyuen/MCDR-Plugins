@@ -1,6 +1,8 @@
 from mcdreforged import MCDRPluginEvents, PluginEvent, PluginServerInterface
 from mcdreforged.plugin.plugin_event import MCDREvent
 
+server: PluginServerInterface | None = PluginServerInterface.psi_opt()
+
 
 class ServerEvent(PluginEvent):
     """服务器事件, 包括服务端控制等
@@ -147,4 +149,5 @@ __register_server_events()
 
 def dispatch(event: PluginEvent, args: tuple = ()):
     """以指定参数分发事件"""
-    PluginServerInterface.psi().dispatch_event(event, args)
+    assert server is not None
+    server.dispatch_event(event, args)
