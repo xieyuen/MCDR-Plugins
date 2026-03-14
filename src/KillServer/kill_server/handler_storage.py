@@ -5,7 +5,8 @@ from kill_server.events.server_event import ServerEvents
 
 
 class HandlerStorage:
-    handlers: dict[str, EventHandler] = {}
+    def __init__(self):
+        self.handlers: dict[str, EventHandler] = {}
 
     def register(self, e: PluginEvent, handler: EventHandler):
         if e.id in self.handlers:

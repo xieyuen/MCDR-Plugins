@@ -12,6 +12,7 @@ class ServerEvent(PluginEvent):
     """
 
     def __init__(self, event_id: str) -> None:
+        """创建一个服务器控制事件"""
         super().__init__(event_id)
 
     @classmethod
@@ -21,11 +22,13 @@ class ServerEvent(PluginEvent):
         .. note::
             包括 MCDR 内置的和本插件定义的
         """
-        return e.id in _ServerEventStorage.EVENT_DICT
+        return ServerEvents.contains_id(e.id)
 
 
 class _ServerEventStorage:
+    """服务器事件存储类"""
     EVENT_DICT: dict[str, MCDREvent | ServerEvent] = {}
+    """包含所有控制事件的字典, 以 ID 为键"""
 
     @classmethod
     def register(cls, event: MCDREvent | ServerEvent):
@@ -56,8 +59,7 @@ class ServerEvents:
         - https://docs.mcdreforged.com/zh-cn/latest/code_references/ServerInterface.html#server-control
     """
 
-    # Server Controlling Events
-
+    # --- Server Controlling/Lifecycle Events ---
     # Server starting
     SERVER_PRE_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START_PRE
     """服务器准备启动
@@ -86,6 +88,7 @@ class ServerEvents:
     See Also:
         https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-startup
     """
+
     # Server Stopping
     SERVER_STOPPING: ServerEvent = ServerEvent("kill_server.server_stopping")
     """服务器正在停止
@@ -119,6 +122,7 @@ class ServerEvents:
         https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-stop
     """
 
+    # --- World Relevant Event ---
     WORLD_SAVED: ServerEvent = ServerEvent("kill_server.world_saved")
     """世界已保存
     
@@ -148,6 +152,10 @@ __register_server_events()
 
 
 def dispatch(event: PluginEvent, args: tuple = ()):
-    """以指定参数分发事件"""
+    """以指定参数分发事件
+
+    .. note::
+        当 server 为 None 时应该是文档环境
+    """
     assert server is not None
     server.dispatch_event(event, args)
