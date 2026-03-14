@@ -58,29 +58,71 @@ class ServerEvents:
 
     # Server starting
     SERVER_PRE_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START_PRE
-    """服务器准备启动"""
+    """服务器准备启动
+    
+    :事件 ID: ``mcdr.server_start_pre``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-start-pre
+    """
     SERVER_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START
-    """服务器正在启动"""
+    """服务器正在启动
+    
+    :事件 ID: ``mcdr.server_start``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-start
+    """
     SERVER_STARTED: MCDREvent = MCDRPluginEvents.SERVER_STARTUP
-    """服务器已启动"""
+    """服务器已启动
+    
+    :事件 ID: ``mcdr.server_startup``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-startup
+    """
     # Server Stopping
     SERVER_STOPPING: ServerEvent = ServerEvent("kill_server.server_stopping")
-    """服务器正在停止"""
+    """服务器正在停止
+    
+    :事件 ID: ``kill_server.server_stopping``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    """
     PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_stopping_server")
     """服务器正在被插件/MCDR命令关闭
     
     当且仅当 :meth:`ServerInterface.stop() <mcdreforged.plugin.si.server_interface.ServerInterface.stop>` 调用时触发
+    
+    :事件 ID: ``kill_server.plugin_stopping_server``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
     PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_killing_server")
     """服务器正在被插件/MCDR命令强制关闭
     
     当且仅当 :meth:`ServerInterface.kill() <mcdreforged.plugin.si.server_interface.ServerInterface.kill>` 调用时触发
+    
+    :事件 ID: ``kill_server.plugin_killing_server``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
     SERVER_STOPPED: MCDREvent = MCDRPluginEvents.SERVER_STOP
-    """服务器已停止"""
+    """服务器已停止
+    
+    :事件 ID: ``mcdr.server_stop``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-stop
+    """
 
     WORLD_SAVED: ServerEvent = ServerEvent("kill_server.world_saved")
-    """世界已保存"""
+    """世界已保存
+    
+    :事件 ID: ``kill_server.world_saved``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    """
 
     # Methods
     @classmethod
