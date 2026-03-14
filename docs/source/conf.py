@@ -6,6 +6,10 @@ import datetime
 import sys
 from pathlib import Path
 from contextlib import suppress
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sphinx.application import Sphinx
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -77,7 +81,9 @@ intersphinx_mapping = {
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_member_order = 'bysource'
 autodoc_inherit_docstrings = False  # so overridden methods won't pop up
-
+autodoc_default_options = {
+    'members': True,
+}
 
 # -- Options for sphinx.ext.autosectionlabel -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosectionlabel.html
