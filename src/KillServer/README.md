@@ -48,4 +48,4 @@
 
 ## 新的事件
 
-待完成
+见 [Read the Docs 文档](https://mcdr-plugins.readthedocs.io/zh-cn/latest/kill_server/events.html)

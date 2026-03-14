@@ -3,14 +3,23 @@ from mcdreforged.plugin.plugin_event import MCDREvent
 
 
 class ServerEvent(PluginEvent):
-    """服务器事件, 包括服务端控制等"""
+    """服务器事件, 包括服务端控制等
+
+    Attributes:
+        id (str): 事件 ID
+    """
 
     def __init__(self, event_id: str) -> None:
         super().__init__(event_id)
 
     @classmethod
     def is_server_event(cls, e: PluginEvent) -> bool:
-        return isinstance(e, cls)
+        """判断该事件是否为一个服务器控制事件
+
+        .. note::
+            包括 MCDR 内置的和本插件定义的
+        """
+        return e.id in _ServerEventStorage.EVENT_DICT
 
 
 class _ServerEventStorage:
@@ -60,12 +69,12 @@ class ServerEvents:
     PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_stopping_server")
     """服务器正在被插件/MCDR命令关闭
     
-    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.stop` 调用时触发
+    当且仅当 :meth:`ServerInterface.stop() <mcdreforged.plugin.si.server_interface.ServerInterface.stop>` 调用时触发
     """
     PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_killing_server")
     """服务器正在被插件/MCDR命令强制关闭
     
-    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.kill` 调用时触发
+    当且仅当 :meth:`ServerInterface.kill() <mcdreforged.plugin.si.server_interface.ServerInterface.kill>` 调用时触发
     """
     SERVER_STOPPED: MCDREvent = MCDRPluginEvents.SERVER_STOP
     """服务器已停止"""
