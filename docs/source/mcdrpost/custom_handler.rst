@@ -56,6 +56,18 @@ MCDRpost API--自定义 Handler
 
 .. autoclass:: Item
 .. autoclass:: Environment
+.. autoclass:: MinecraftVersion
+.. autoclass:: SemanticVersion
+
+常量
+--------
+
+.. py:data:: OFFHAND_CODE
+.. py:data:: AIR
+
+   空气方块
+.. autoclass:: Commands
+.. autoclass:: Sounds
 
 示例
 -------

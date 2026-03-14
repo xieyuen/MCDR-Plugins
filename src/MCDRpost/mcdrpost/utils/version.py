@@ -2,6 +2,8 @@ import re
 from types import NotImplementedType
 from typing import Any, NamedTuple, TypeAlias, TypeVar, overload
 
+from mcdreforged.utils import class_utils
+
 from mcdrpost.utils.general import TotalOrdering
 
 ValidVersionTupleType: TypeAlias = (
@@ -46,23 +48,28 @@ ComparableType: TypeAlias = SemanticVersionType | SimpleVersionTuple | ValidVers
 class SemanticVersion(TotalOrdering[ComparableType]):
     """语义化版本号
 
-    Attributes:
-        major (int): 主版本号
-        minor (int): 次版本号
-        patch (int): 补丁版本号
-        pre_release (tuple[str, int] | None): 预发布版本号
-        build_metadata (tuple[str, int] | None): 构建元数据
+    该类生成的实例支持不同的比较方法, 不仅可以和自己比较,
+    还可以和 :class:`str`, :class:`tuple` 类型比较, 只需要它确实是一个语义化版本号的样子
+
+    .. note::
+        :class:`tuple` 的比较按 ``(major, minor, patch, prerelease, build_metadata)`` 进行比较
     """
 
     PATTERN = re.compile(
         r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     )
+    """:meta private:"""
 
     major: int
+    """主版本号"""
     minor: int
+    """次版本号"""
     patch: int
+    """补丁版本号"""
     pre_release: str | None = None
+    """预发布版本号"""
     build_metadata: str | None = None
+    """构建元数据"""
 
     def __init__(self, version_str: str) -> None:
         self._original_string = version_str
@@ -142,17 +149,9 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         if n_other is NotImplemented:
             return NotImplemented
 
-        if (self.major, self.minor, self.patch) < (
-                n_other.major,
-                n_other.minor,
-                n_other.patch,
-        ):
+        if (self.major, self.minor, self.patch) < (n_other.major, n_other.minor, n_other.patch):
             return True
-        elif (self.major, self.minor, self.patch) > (
-                n_other.major,
-                n_other.minor,
-                n_other.patch,
-        ):
+        elif (self.major, self.minor, self.patch) > (n_other.major, n_other.minor, n_other.patch):
             return False
         elif self.pre_release is None:
             return False
@@ -164,7 +163,7 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         return self._original_string
 
     def __repr__(self) -> str:
-        return f"SemanticVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})"
+        return class_utils.represent(self)
 
 
 MinecraftVersionType = TypeVar("MinecraftVersionType", bound="MinecraftVersion")
@@ -263,4 +262,4 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
         return not self.pre_release
 
     def __repr__(self):
-        return f"MinecraftVersion(major={self.major}, minor={self.minor}, patch={self.patch}, pre_release={self.pre_release}, build_metadata={self.build_metadata})"
+        return class_utils.represent(self)

@@ -21,19 +21,53 @@ END_LINE: Literal["\n"] = "\n"
 
 
 class Deprecations:
+    """弃用信息"""
+
     TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
     INSTEAD_INFO_TEMPLATE = "Please use {} instead."
 
 
 class Commands:
+    """原版命令集合"""
+
     REPLACE_OLD = "replaceitem entity {0} weapon.offhand {1}"
+    """旧版命令 replaceitem
+    
+    Format:
+        * 0 - 玩家名
+        * 1 - 物品命名空间 ID
+    """
     REPLACE_NEW = "item replace entity {0} weapon.offhand with {1}"
+    """新版本命令 item replace
+    
+    Format:
+        * 0 - 玩家名
+        * 1 - 物品命名空间 ID
+    """
     GET_ITEM = "data get entity {0} Inventory[{Slot:-106b}]"
+    """获取副手物品
+    
+    Format:
+        * 0 - 玩家名
+    """
     PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
+    """新版本音效播放 execute
+    
+    Format:
+        * 0 - 玩家名
+        * 1 - 音效名
+    """
     PLAY_SOUND_OLD = "execute {0} ~ ~ ~ playsound {1} player {0}"
+    """旧版本音效播放 execute
+    
+    Format:
+        * 0 - 玩家名
+        * 1 - 音效名
+    """
 
 
 class Sounds:
+    """默认音效"""
     SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"
     SUCCESSFULLY_POST_SENDER = "minecraft:entity.arrow.hit_player"
     SUCCESSFULLY_POST_RECEIVER = "minecraft:entity.arrow.shoot"

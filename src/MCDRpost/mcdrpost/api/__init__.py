@@ -9,10 +9,11 @@
 from typing import Callable
 
 from mcdrpost.api.default_version_handler import DefaultVersionHandler
-from mcdrpost.constants import AIR, OFFHAND_CODE
+from mcdrpost.constants import AIR, Commands, OFFHAND_CODE, Sounds
 from mcdrpost.data_structure import Item
 from mcdrpost.environment import Environment
 from mcdrpost.manager.version_manager import VersionManager
+from mcdrpost.utils.version import MinecraftVersion, SemanticVersion
 from mcdrpost.version_handler.abstract_version_handler import AbstractVersionHandler
 from mcdrpost.version_handler.sound_player.abstract_sound_player import (
     AbstractSoundPlayer,
@@ -36,6 +37,8 @@ __all__ = [
     # typing
     "Item",
     "Environment",
+    "MinecraftVersion",
+    "SemanticVersion",
     # custom handler
     "AbstractVersionHandler",
     "DefaultVersionHandler",
@@ -47,4 +50,6 @@ __all__ = [
     # constants
     "OFFHAND_CODE",
     "AIR",
+    "Commands",
+    "Sounds",
 ]
