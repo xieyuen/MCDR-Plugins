@@ -3,7 +3,6 @@ from typing import Any, final, override
 
 from mcdreforged import PluginServerInterface, new_thread
 
-import minecraft_data_api as mc_data_api
 from mcdrpost import constants
 from mcdrpost.constants import Commands
 from mcdrpost.data_structure import Item
@@ -13,6 +12,12 @@ from mcdrpost.version_handler.sound_player.abstract_sound_player import (
     AbstractSoundPlayer,
 )
 from mcdrpost.version_handler.sound_player.impl import NewSoundPlayer
+
+# for docs building
+try:
+    import minecraft_data_api as mc_data_api
+except ImportError:
+    mc_data_api: Any = None
 
 
 class AbstractVersionHandler(ABC):

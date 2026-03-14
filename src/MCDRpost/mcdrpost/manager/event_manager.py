@@ -6,6 +6,7 @@ from mcdreforged import Info, PluginServerInterface, new_thread
 from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
 
+# for doc building
 try:
     import minecraft_data_api as api
 except ImportError:
