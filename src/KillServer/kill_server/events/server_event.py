@@ -1,16 +1,27 @@
 from mcdreforged import MCDRPluginEvents, PluginEvent, PluginServerInterface
 from mcdreforged.plugin.plugin_event import MCDREvent
 
+server: PluginServerInterface | None = PluginServerInterface.psi_opt()
+
 
 class ServerEvent(PluginEvent):
-    """服务器事件, 包括服务端控制等"""
+    """服务器事件, 包括服务端控制等
+
+    Attributes:
+        id (str): 事件 ID
+    """
 
     def __init__(self, event_id: str) -> None:
         super().__init__(event_id)
 
     @classmethod
     def is_server_event(cls, e: PluginEvent) -> bool:
-        return isinstance(e, cls)
+        """判断该事件是否为一个服务器控制事件
+
+        .. note::
+            包括 MCDR 内置的和本插件定义的
+        """
+        return e.id in _ServerEventStorage.EVENT_DICT
 
 
 class _ServerEventStorage:
@@ -49,29 +60,71 @@ class ServerEvents:
 
     # Server starting
     SERVER_PRE_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START_PRE
-    """服务器准备启动"""
+    """服务器准备启动
+    
+    :事件 ID: ``mcdr.server_start_pre``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-start-pre
+    """
     SERVER_STARTING: MCDREvent = MCDRPluginEvents.SERVER_START
-    """服务器正在启动"""
+    """服务器正在启动
+    
+    :事件 ID: ``mcdr.server_start``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-start
+    """
     SERVER_STARTED: MCDREvent = MCDRPluginEvents.SERVER_STARTUP
-    """服务器已启动"""
+    """服务器已启动
+    
+    :事件 ID: ``mcdr.server_startup``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-startup
+    """
     # Server Stopping
     SERVER_STOPPING: ServerEvent = ServerEvent("kill_server.server_stopping")
-    """服务器正在停止"""
+    """服务器正在停止
+    
+    :事件 ID: ``kill_server.server_stopping``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    """
     PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_stopping_server")
     """服务器正在被插件/MCDR命令关闭
     
-    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.stop` 调用时触发
+    当且仅当 :meth:`ServerInterface.stop() <mcdreforged.plugin.si.server_interface.ServerInterface.stop>` 调用时触发
+    
+    :事件 ID: ``kill_server.plugin_stopping_server``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
     PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_killing_server")
     """服务器正在被插件/MCDR命令强制关闭
     
-    当且仅当 :meth:`mcdreforged.plugin.si.ServerInterface.kill` 调用时触发
+    当且仅当 :meth:`ServerInterface.kill() <mcdreforged.plugin.si.server_interface.ServerInterface.kill>` 调用时触发
+    
+    :事件 ID: ``kill_server.plugin_killing_server``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
     SERVER_STOPPED: MCDREvent = MCDRPluginEvents.SERVER_STOP
-    """服务器已停止"""
+    """服务器已停止
+    
+    :事件 ID: ``mcdr.server_stop``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    
+    See Also:
+        https://docs.mcdreforged.com/zh-cn/latest/plugin_dev/event.html#server-stop
+    """
 
     WORLD_SAVED: ServerEvent = ServerEvent("kill_server.world_saved")
-    """世界已保存"""
+    """世界已保存
+    
+    :事件 ID: ``kill_server.world_saved``
+    :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
+    """
 
     # Methods
     @classmethod
@@ -96,4 +149,5 @@ __register_server_events()
 
 def dispatch(event: PluginEvent, args: tuple = ()):
     """以指定参数分发事件"""
-    PluginServerInterface.psi().dispatch_event(event, args)
+    assert server is not None
+    server.dispatch_event(event, args)

@@ -48,4 +48,12 @@
 
 ## 新的事件
 
-待完成
+见 [Read the Docs 文档](https://mcdr-plugins.readthedocs.io/zh-cn/latest/kill_server/events.html)
+
+> [!IMPORTANT]
+> 自 1.1.0 版本起, 插件事件已经完全重构,
+> 使用 `from kill_server import *` 导入 `ServerStoppingEvent` 这些事件变量的的已不再适用, 
+> 它们全部合并到了 [`ServerEvents`](https://mcdr-plugins.readthedocs.io/zh-cn/latest/kill_server/events.html#kill_server.events.server_event.ServerEvents) 中
+> 
+> 使用事件 ID 监听事件的, 依然可以继续使用
+
