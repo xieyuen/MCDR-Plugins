@@ -1,11 +1,16 @@
 import time
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from mcdreforged import Info, PluginServerInterface, new_thread
 
-import minecraft_data_api as api
 from mcdrpost.configuration import Configuration
 from mcdrpost.utils.translation import TranslationKeys
+
+# for doc building
+try:
+    import minecraft_data_api as api
+except ImportError:
+    api: Any = None
 
 if TYPE_CHECKING:
     from mcdrpost.coordinator import MCDRpostCoordinator
@@ -13,6 +18,7 @@ if TYPE_CHECKING:
 
 class EventManager:
     """MCDR Event Handling"""
+
     def __init__(self, coo: "MCDRpostCoordinator"):
         self.coo = coo
 
@@ -46,13 +52,15 @@ class EventManager:
         """事件: 插件卸载--保存订单信息"""
         self.data_manager.save()
 
-    def on_player_joined(self, server: PluginServerInterface, player: str, _info: Info) -> None:
+    def on_player_joined(
+            self, server: PluginServerInterface, player: str, _info: Info
+    ) -> None:
         """事件: 玩家加入服务器"""
         if not self.data_manager.is_player_registered(player):
             if self.config.auto_register:
                 # 还未注册的玩家
                 self.data_manager.add_player(player)
-                server.logger.info(TranslationKeys.login_log.tr(player))
+                server.logger.info(TranslationKeys.data_auto_register.rtr(player))
                 self.data_manager.save()
                 return
 
@@ -60,16 +68,18 @@ class EventManager:
             player_list = api.get_server_player_list()[-1]
             for online_player in player_list:
                 if server.get_permission_level(online_player) >= 3:
-                    server.tell(online_player, TranslationKeys.new_player_joined.tr(player))
-            server.logger.info(TranslationKeys.new_player_joined.tr(player))
+                    server.tell(
+                        online_player, TranslationKeys.on_new_player_joined.rtr(player)
+                    )
+            server.logger.info(TranslationKeys.on_new_player_joined.rtr(player))
             return
 
         # 已注册的玩家，向他推送订单消息（如果有）
         if self.data_manager.has_unreceived_order(player):
-            @new_thread('MCDRpost|send receiving tip')
+            @new_thread("MCDRpost|send receiving tip")
             def send_receive_tip():
                 time.sleep(self.config.receiving_tip_delay)
-                server.tell(player, TranslationKeys.wait_for_receive.tr())
+                server.tell(player, TranslationKeys.on_old_player_joined.rtr())
                 self.version_manager.play_sound.has_something_to_receive(player)
 
             send_receive_tip()

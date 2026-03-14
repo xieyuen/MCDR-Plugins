@@ -1,10 +1,22 @@
-class InvalidData(ValueError):
+class DataError(ValueError):
     pass
 
 
-class InvalidOrder(InvalidData):
+class InvalidOrder(DataError):
     pass
 
 
-class InvalidItem(InvalidData):
+class InvalidItem(DataError):
+    pass
+
+
+class InvalidConfig(DataError):
+    pass
+
+
+class InvalidPermission(InvalidConfig):
+    pass
+
+
+class InvalidPrefix(InvalidConfig):
     pass

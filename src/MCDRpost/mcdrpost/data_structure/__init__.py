@@ -1,72 +1,14 @@
-"""数据结构模块，定义了插件中使用的核心数据类"""
+"""数据结构模块，定义了插件中使用的核心数据类
 
-from mcdreforged import Serializable
+.. versionadded:: 3.4.1
+    新增 pydantic 支持和数据验证功能
 
+    验证功能不影响 ``auto_fix`` 配置, 只验证无法修复的内容, 如无效的命名空间 ID
+"""
 
-class Item(Serializable):
-    """物品数据类，表示 Minecraft 中的物品
+try:
+    from .pydantic_model import Item, OrderInfo, Order, OrderData
+except ImportError:
+    from .mcdr_seri import Item, OrderInfo, Order, OrderData
 
-    .. note::
-        Minecraft 1.20.5 之后的 components 数据和之前的 tag 标签都存放在 components中
-
-    Attributes:
-        id (str): 物品ID
-        count (int): 物品数量
-        components (dict): 物品的组件数据（1.20.5+版本特性，对于低版本这里储存物品的 tag）
-    """
-
-    id: str
-    count: int
-    components: dict
-
-
-class OrderInfo(Serializable):
-    """订单信息
-
-    Attributes:
-        comment (str): 订单备注信息
-        item (Item): 订单中的物品
-        receiver (str): 收件人
-        sender (str): 发件人
-        time (str): 订单创建时间
-    """
-
-    time: str
-    sender: str
-    receiver: str
-    comment: str
-    item: Item
-
-
-class Order(Serializable):
-    """订单
-
-    Attributes:
-        id (int): 订单唯一标识符
-        comment (str): 订单备注信息
-        item (Item): 订单中的物品
-        receiver (str): 收件人
-        sender (str): 发件人
-        time (str): 订单创建时间
-    """
-
-    id: int
-    time: str
-    sender: str
-    receiver: str
-    comment: str
-    item: Item
-
-
-class OrderData(Serializable):
-    """订单数据存储结构
-
-    orders.json 的结构在这里定义
-
-    Attributes:
-        players (list[str]): 已注册玩家列表
-        orders (dict[str, Order]): 所有订单的字典，以订单 ID 为键，订单对象为值
-    """
-
-    players: list[str] = []
-    orders: dict[str, Order] = {}
+__all__ = ["Item", "OrderInfo", "Order", "OrderData"]
