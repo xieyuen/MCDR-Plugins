@@ -3,7 +3,7 @@ import time
 
 import dowhen
 from dowhen.handler import EventHandler
-from mcdreforged import Info, PluginServerInterface, event_listener, new_thread, PluginEvent
+from mcdreforged import Info, PluginEvent, PluginServerInterface, event_listener, new_thread
 
 from kill_server.config import Config
 from kill_server.events.server_event import ServerEvents, dispatch
