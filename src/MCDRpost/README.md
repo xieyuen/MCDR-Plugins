@@ -111,7 +111,7 @@ MCDRpost的配置文件（3.0.0或以上）在 `config/MCDRpost/config.yml` 中
 
 对于 2.1.1 及以下的版本(应该说, 2.1.0 和 2.1.1), **Flyky 并没有提供配置文件**, 想要配置需要编辑 `mcdrpost/__init__.py` 才能够修改
 
-在 `mcdrpost/__init__.py` 文件中 Line 13 ~ 17, 有以下五行代码
+在 `mcdrpost/__init__.py` 文件中 [Line 13 ~ 17](https://github.com/xieyuen/MCDR-Plugins/blob/a32f42632e0d5f27c3c3a92a42817a84bd93f162/src/MCDRpost/mcdrpost/__init__.py#L13-L17), 有以下五行代码
 
 ```python
 Prefix = '!!po'
