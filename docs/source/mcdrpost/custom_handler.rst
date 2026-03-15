@@ -3,7 +3,7 @@ MCDRpost API--自定义 Handler
 
 .. py:currentmodule:: mcdrpost.api
 
-一般来说，MCDRpost已经能够适应大多数服务端，但是对于某些特殊情况（比如1.9版本） [#f1]_，MCDRpost可能无法满足需求，
+一般来说，MCDRpost 已经能够适应大多数服务端，但是对于某些特殊情况（比如 1.9 版本） [#f1]_，MCDRpost 可能无法满足需求，
 考虑到插件对 Minecraft 的兼容性，插件暴露了一定的 API 用于 Minecraft 一些特殊服务端的适配
 
 核心 API 有:
@@ -20,7 +20,11 @@ MCDRpost API--自定义 Handler
     - :class:`Item`
     - :class:`Environment`
 - constants
-    - OFFHAND_CODE
+    - :data:`OFFHAND_CODE`
+    - :data:`AIR`
+    - :class:`Commands`
+    - :class:`Sounds`
+
 
 你可以在导入的时候使用下面的方式：
 
@@ -63,7 +67,18 @@ MCDRpost API--自定义 Handler
 --------
 
 .. py:data:: OFFHAND_CODE
+    :type: str
+
+    副手的位置, 在使用 ``/data`` 获取数据时使用
+
+    例如:
+
+    .. code-block:: python
+
+        server.execute(f"/data get entity @s {OFFHAND_CODE}")
+
 .. py:data:: AIR
+   :type: Item
 
    空气方块
 .. autoclass:: Commands
@@ -74,7 +89,7 @@ MCDRpost API--自定义 Handler
 
 我们建议使用插件定义你的 Handler，下面是一个单文件插件的例子
 
-.. code:: python
+.. code-block:: python
 
     PLUGIN_METADATA = {
         'id': 'example_handler',
@@ -123,6 +138,7 @@ MCDRpost API--自定义 Handler
         )
 
 .. note::
+
    在 ``on_load()`` 函数中定义是为了保证 MCDR 能正确加载插件，
    因为 MCDR 要先读取 Metadata 才知道插件依赖 MCDRpost，而此时 MCDRpost 不一定已经被加载
    放在函数中先不运行就可以避免没有优先加载 MCDRpost 导致的问题
@@ -133,7 +149,7 @@ MCDRpost API--自定义 Handler
 
 在 ``example_handler/entry.py`` 文件内
 
-.. code:: python
+.. code-block:: python
 
     import minecraft_data_api as api
     from mcdrpost.api import AbstractVersionHandler, Item, OFFHAND_CODE, register_handler
