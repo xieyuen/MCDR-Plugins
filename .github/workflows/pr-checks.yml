@@ -12,7 +12,7 @@ jobs:
       - name: Check if PR is from allowed branches
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
-          if [[ $BRANCH_NAME == dev/* ]] || [[ $BRANCH_NAME == hotfix/* ]]; then
+          if [[ $BRANCH_NAME == dev/* ]] || [[ $BRANCH_NAME == dev ]] || [[ $BRANCH_NAME == hotfix/* ]]; then
             echo "✓ Pull request is from an allowed branch: $BRANCH_NAME"
             echo "ALLOWED_BRANCH_CHECK=true" >> $GITHUB_ENV
             echo "SOURCE_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
@@ -23,7 +23,7 @@ jobs:
             echo "SOURCE_BRANCH=$BRANCH_NAME" >> $GITHUB_ENV
             exit 1
           fi
-          
+
       - name: Additional checks for feature branches
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
@@ -35,13 +35,13 @@ jobs:
           else
             echo "FEATURE_BRANCH_CHECK=skipped" >> $GITHUB_ENV
           fi
-          
+
       - name: Check commit signing
         run: |
           # This job can be expanded to check other PR requirements
           echo "PR source validation completed"
           echo "VALIDATION_COMPLETED=true" >> $GITHUB_ENV
-          
+
       - name: Create Job Summary
         run: |
           echo "## Pull Request Validation Results" >> $GITHUB_STEP_SUMMARY
