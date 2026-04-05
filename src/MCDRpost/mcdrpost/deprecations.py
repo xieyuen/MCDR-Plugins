@@ -45,9 +45,7 @@ class _Deprecations:
                 has_warned = True
 
         if has_warned:
-            server.logger.warning(
-                "Please abandon these features as soon as possible."
-            )
+            server.logger.warning("Please abandon these features as soon as possible.")
 
 
 # TODO: Deprecations

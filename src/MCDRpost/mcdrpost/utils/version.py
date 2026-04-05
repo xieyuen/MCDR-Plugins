@@ -7,14 +7,14 @@ from mcdreforged.utils import class_utils
 from mcdrpost.utils.general import TotalOrdering
 
 ValidVersionTupleType: TypeAlias = (
-        tuple[int, int]  # major and minor, its patch version will be set to 0
-        # major, minor, patch
-        | tuple[int, int, int]
-        # major, minor, patch, pre_release
-        | tuple[int, int, int, str]
-        # major, minor, patch, pre_release, build_metadata
-        # pre_release cannot be None, but can be an empty str for a non-pre-release version
-        | tuple[int, int, int, str, str]
+    tuple[int, int]  # major and minor, its patch version will be set to 0
+    # major, minor, patch
+    | tuple[int, int, int]
+    # major, minor, patch, pre_release
+    | tuple[int, int, int, str]
+    # major, minor, patch, pre_release, build_metadata
+    # pre_release cannot be None, but can be an empty str for a non-pre-release version
+    | tuple[int, int, int, str, str]
 )
 
 # TODO: transform into 3.12 generic grammar
@@ -42,7 +42,9 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-ComparableType: TypeAlias = SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
+ComparableType: TypeAlias = (
+    SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
+)
 
 
 class SemanticVersion(TotalOrdering[ComparableType]):
@@ -94,8 +96,7 @@ class SemanticVersion(TotalOrdering[ComparableType]):
 
     @overload
     @staticmethod
-    def __param_normalize(param: Any) -> NotImplementedType:
-        ...
+    def __param_normalize(param: Any) -> NotImplementedType: ...
 
     @overload
     @staticmethod
@@ -149,9 +150,17 @@ class SemanticVersion(TotalOrdering[ComparableType]):
         if n_other is NotImplemented:
             return NotImplemented
 
-        if (self.major, self.minor, self.patch) < (n_other.major, n_other.minor, n_other.patch):
+        if (self.major, self.minor, self.patch) < (
+            n_other.major,
+            n_other.minor,
+            n_other.patch,
+        ):
             return True
-        elif (self.major, self.minor, self.patch) > (n_other.major, n_other.minor, n_other.patch):
+        elif (self.major, self.minor, self.patch) > (
+            n_other.major,
+            n_other.minor,
+            n_other.patch,
+        ):
             return False
         elif self.pre_release is None:
             return False
@@ -206,7 +215,7 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
             if not match:
                 raise ValueError(f"Invalid version string: {original_version_str}")
 
-            (major, minor, pre_release, patch) = match.groups()
+            major, minor, pre_release, patch = match.groups()
 
             self.build_metadata = None
             self.version = SimpleVersionTuple(
@@ -224,7 +233,9 @@ class MinecraftVersion(TotalOrdering[ComparableType | MinecraftVersionType]):
 
     @overload
     @staticmethod
-    def __param_normalize(other: ComparableType | MinecraftVersionType) -> MinecraftVersionType:
+    def __param_normalize(
+        other: ComparableType | MinecraftVersionType,
+    ) -> MinecraftVersionType:
         pass
 
     @overload

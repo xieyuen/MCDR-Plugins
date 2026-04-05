@@ -35,8 +35,9 @@ class CommandHelper:
                 .c(RAction.suggest_command, f"{prefix} player add ")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_player_add.tr()}\n"),
-
-                RText(prefix + TranslationKeys.help_usage_player_remove.tr(), RColor.gray)
+                RText(
+                    prefix + TranslationKeys.help_usage_player_remove.tr(), RColor.gray
+                )
                 .c(RAction.suggest_command, f"{prefix} player remove ")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_player_remove.tr()}\n"),
@@ -47,42 +48,34 @@ class CommandHelper:
                 RText("--------- §3MCDRpost §r---------\n"),
                 RText(TranslationKeys.description.tr() + END_LINE),
                 RText(TranslationKeys.help_title.tr() + END_LINE),
-
                 RText(prefix, RColor.gray)
                 .c(RAction.suggest_command, prefix)
                 .h(TranslationKeys.hover.rtr()),
                 RText(f" | {TranslationKeys.help_info_help.tr()}\n"),
-
                 RText(prefix + TranslationKeys.help_usage_post.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} post")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_post.tr()}\n"),
-
                 RText(prefix + " rl", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} receive_list")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_receive_list.tr()}\n"),
-
                 RText(prefix + TranslationKeys.help_usage_receive.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} receive")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_receive.tr()}\n"),
-
                 RText(prefix + " pl", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} post_list")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_post_list.tr()}\n"),
-
                 RText(prefix + TranslationKeys.help_usage_cancel.tr(), RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} cancel")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_cancel.tr()}\n"),
-
                 RText(prefix + " ls players", RColor.gray)
                 .c(RAction.suggest_command, f"{prefix} list players")
                 .h(TranslationKeys.hover.rtr()),
                 RText(f"{TranslationKeys.help_info_list_players.tr()}\n"),
-
                 msgs_on_helper,
                 msgs_on_admin,
                 RText("§a『别名 Alias』§r\n"),

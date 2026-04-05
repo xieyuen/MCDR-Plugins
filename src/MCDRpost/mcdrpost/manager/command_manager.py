@@ -65,7 +65,11 @@ class CommandManager:
     def gen_post_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.post_fail_receiver_unregistered.rtr()))
+            .runs(
+                lambda src: src.reply(
+                    TranslationKeys.post_fail_receiver_unregistered.rtr()
+                )
+            )
             .then(
                 Text("receiver")
                 .suggests(self.data_manager.get_players)
@@ -86,7 +90,9 @@ class CommandManager:
     def gen_receive_node(self, node_name: str) -> Literal:
         return add_requirements(
             Literal(node_name)
-            .runs(lambda src: src.reply(TranslationKeys.receive_fail_undefined_id.rtr()))
+            .runs(
+                lambda src: src.reply(TranslationKeys.receive_fail_undefined_id.rtr())
+            )
             .then(
                 Integer("orderid")
                 .suggests(
@@ -198,12 +204,20 @@ class CommandManager:
             .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
             .then(
                 Literal("add")
-                .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
+                .runs(
+                    lambda src: src.reply(
+                        TranslationKeys.error_incomplete_general.rtr()
+                    )
+                )
                 .then(Text("player_id").runs(self.pre_handler.add_player))
             )
             .then(
                 Literal("remove")
-                .runs(lambda src: src.reply(TranslationKeys.error_incomplete_general.rtr()))
+                .runs(
+                    lambda src: src.reply(
+                        TranslationKeys.error_incomplete_general.rtr()
+                    )
+                )
                 .then(
                     Text("player_id")
                     .suggests(self.data_manager.get_players)

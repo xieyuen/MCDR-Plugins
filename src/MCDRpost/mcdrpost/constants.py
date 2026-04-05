@@ -68,6 +68,7 @@ class Commands:
 
 class Sounds:
     """默认音效"""
+
     SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"
     SUCCESSFULLY_POST_SENDER = "minecraft:entity.arrow.hit_player"
     SUCCESSFULLY_POST_RECEIVER = "minecraft:entity.arrow.shoot"

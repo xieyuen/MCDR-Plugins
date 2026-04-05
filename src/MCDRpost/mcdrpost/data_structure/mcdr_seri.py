@@ -32,9 +32,13 @@ class Item(Serializable):
             namespace, name = attr_value.split(":")
             # https://zh.minecraft.wiki/w/%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4ID
             if not re.match(r"[a-z0-9_\-.]+", namespace):
-                raise ValueError(f"Invalid item: invalid namespace with illegal char(s) ({namespace})")
+                raise ValueError(
+                    f"Invalid item: invalid namespace with illegal char(s) ({namespace})"
+                )
             if not re.match(r"[a-z0-9_\-./]+", name):
-                raise ValueError(f"Invalid item: invalid item name with illegal char(s) ({name})")
+                raise ValueError(
+                    f"Invalid item: invalid item name with illegal char(s) ({name})"
+                )
             return
 
         if attr_name == "count" and attr_value <= 0:
