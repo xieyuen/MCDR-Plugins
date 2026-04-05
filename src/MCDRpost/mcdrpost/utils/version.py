@@ -17,9 +17,6 @@ ValidVersionTupleType: TypeAlias = (
     | tuple[int, int, int, str, str]
 )
 
-# TODO: transform into 3.12 generic grammar
-SemanticVersionType = TypeVar("SemanticVersionType", bound="SemanticVersion")
-
 
 class SimpleVersionTuple(NamedTuple):
     major: int
@@ -42,7 +39,8 @@ class SimpleVersionTuple(NamedTuple):
         return SemanticVersion(self.__version_string)
 
 
-ComparableType: TypeAlias = (
+type SemanticVersionType = SemanticVersion
+type ComparableType = (
     SemanticVersionType | SimpleVersionTuple | ValidVersionTupleType | str
 )
 

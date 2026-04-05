@@ -1,6 +1,5 @@
 import time
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
 
 
 def get_formatted_time() -> str:
@@ -8,11 +7,7 @@ def get_formatted_time() -> str:
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
-# TODO: transform into 3.12 generic grammar (see dev/MCDRpost-3.12)
-ComparableType = TypeVar("ComparableType")
-
-
-class TotalOrdering(Generic[ComparableType], ABC):
+class TotalOrdering[ComparableType](ABC):
     @abstractmethod
     def __eq__(self, other) -> bool:  # self == other
         raise NotImplementedError
