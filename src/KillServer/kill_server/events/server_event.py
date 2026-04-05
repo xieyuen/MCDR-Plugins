@@ -27,6 +27,7 @@ class ServerEvent(PluginEvent):
 
 class _ServerEventStorage:
     """服务器事件存储类"""
+
     EVENT_DICT: dict[str, MCDREvent | ServerEvent] = {}
     """包含所有控制事件的字典, 以 ID 为键"""
 
@@ -96,7 +97,9 @@ class ServerEvents:
     :事件 ID: ``kill_server.server_stopping``
     :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
-    PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_stopping_server")
+    PLUGIN_STOPPING_SERVER: ServerEvent = ServerEvent(
+        "kill_server.plugin_stopping_server"
+    )
     """服务器正在被插件/MCDR命令关闭
     
     当且仅当 :meth:`ServerInterface.stop() <mcdreforged.plugin.si.server_interface.ServerInterface.stop>` 调用时触发
@@ -104,7 +107,9 @@ class ServerEvents:
     :事件 ID: ``kill_server.plugin_stopping_server``
     :回调参数: :class:`~mcdreforged.plugin.si.plugin_server_interface.PluginServerInterface`
     """
-    PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent("kill_server.plugin_killing_server")
+    PLUGIN_KILLING_SERVER: ServerEvent = ServerEvent(
+        "kill_server.plugin_killing_server"
+    )
     """服务器正在被插件/MCDR命令强制关闭
     
     当且仅当 :meth:`ServerInterface.kill() <mcdreforged.plugin.si.server_interface.ServerInterface.kill>` 调用时触发
@@ -144,7 +149,7 @@ class ServerEvents:
 
 def __register_server_events():
     for name, value in vars(ServerEvents).items():
-        if not name.startswith('_') and isinstance(value, MCDREvent | ServerEvent):
+        if not name.startswith("_") and isinstance(value, MCDREvent | ServerEvent):
             _ServerEventStorage.register(value)
 
 

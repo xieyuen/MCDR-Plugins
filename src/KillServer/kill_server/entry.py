@@ -3,13 +3,22 @@ import time
 
 import dowhen
 from dowhen.handler import EventHandler
-from mcdreforged import Info, PluginEvent, PluginServerInterface, event_listener, new_thread
+from mcdreforged import (
+    Info,
+    PluginEvent,
+    PluginServerInterface,
+    event_listener,
+    new_thread,
+)
 
 from kill_server.config import Config
 from kill_server.events.server_event import ServerEvents, dispatch
 from kill_server.handler_storage import HandlerStorage
 
-PAUSE_PROMPT: tuple[str, str] = ("请按任意键继续. . . ", "Press any key to continue . . . ")
+PAUSE_PROMPT: tuple[str, str] = (
+    "请按任意键继续. . . ",
+    "Press any key to continue . . . ",
+)
 
 config: Config
 handler_storage: HandlerStorage = HandlerStorage()
@@ -83,7 +92,9 @@ def on_load(server: PluginServerInterface, _prev_module):
 
     if config.mcdr_only:
         server.logger.info("配置 mcdr_only 已启用")
-        server.register_event_listener(ServerEvents.PLUGIN_STOPPING_SERVER, force_kill_server)
+        server.register_event_listener(
+            ServerEvents.PLUGIN_STOPPING_SERVER, force_kill_server
+        )
     else:
         server.register_event_listener(ServerEvents.SERVER_STOPPING, force_kill_server)
 

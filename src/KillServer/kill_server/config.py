@@ -21,6 +21,10 @@ class Config(Serializable):
             assert isinstance(attr_value, float)
 
             if attr_value <= 0:
-                raise ValueError(f"配置项 waiting_time 必须是正值, 实际配置: {attr_value}")
+                raise ValueError(
+                    f"配置项 waiting_time 必须是正值, 实际配置: {attr_value}"
+                )
             if attr_value <= 3:
-                psi.logger.warning(f"配置项 waiting_time 单位为秒, 实际配置 {attr_value} 可能过小")
+                psi.logger.warning(
+                    f"配置项 waiting_time 单位为秒, 实际配置 {attr_value} 可能过小"
+                )
