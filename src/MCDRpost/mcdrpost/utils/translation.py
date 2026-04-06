@@ -39,7 +39,7 @@ class TranslationKeyItem:
             *args: 传递给翻译字符串的参数
 
         Returns:
-            RTextMCDRTranslation: 包含翻译键的RText对象
+            RTextMCDRTranslation: 包含翻译键的 RText 对象
         """
         return self.__rtr(self.key, *args)
 
