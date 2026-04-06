@@ -2,7 +2,6 @@ from typing import Literal
 
 from mcdreforged import PluginServerInterface
 
-from mcdrpost.core.services.config_service import ConfigService
 from mcdrpost.data_structure import OrderData
 from mcdrpost.utils.translation import TranslationKeys
 
@@ -13,9 +12,12 @@ class DataManager:
     DATA_FILE = "orders.json"
     DATA_TYPE: Literal["json"] = "json"
 
-    def __init__(self, server: PluginServerInterface, config_service: ConfigService):
+    @property
+    def data(self) -> OrderData:
+        return self._data
+
+    def __init__(self, server: PluginServerInterface):
         self.server = server
-        self.config_service = config_service
         self._data = self._load()
 
     def _load(self) -> OrderData:
@@ -27,7 +29,17 @@ class DataManager:
             file_format=self.DATA_TYPE,
             echo_in_console=False,
         )
-        self.server.logger.info(
-            TranslationKeys.data_loaded.rtr()
-        )
+        self.server.logger.info(TranslationKeys.data_loaded.rtr())
         return data
+
+    def reload(self):
+        self._data = self._load()
+
+    def save(self):
+        self.server.save_config_simple(
+            self.data,
+            self.DATA_FILE,
+            in_data_folder=True,
+            file_format=self.DATA_TYPE,
+        )
+        self.server.logger.info(TranslationKeys.data_saved.rtr())

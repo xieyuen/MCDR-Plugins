@@ -32,6 +32,4 @@ class ConfigService:
             echo_in_console=False,
             file_format=self.CONFIG_TYPE,
         )
-        self.server.logger.info(
-            TranslationKeys.config_reloaded.rtr()
-        )
+        self.server.logger.info(TranslationKeys.config_reloaded.rtr())
