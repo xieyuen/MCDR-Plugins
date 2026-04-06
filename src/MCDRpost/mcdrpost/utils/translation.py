@@ -52,7 +52,6 @@ class TranslationKeys:
     info = TranslationKeyItem("mcdrpost.basic.info")
 
     # config
-    config_loaded = TranslationKeyItem("mcdrpost.config.loaded")
     config_reloaded = TranslationKeyItem("mcdrpost.config.reloaded")
 
     # data
