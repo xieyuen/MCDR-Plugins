@@ -2,7 +2,7 @@
 name = "mcdr-plugins"
 version = "0.1.0"
 description = "My MCDR Plugins"
-readme = "README.md"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.12"
 dependencies = [
     "mcdreforged>=2.15.7",

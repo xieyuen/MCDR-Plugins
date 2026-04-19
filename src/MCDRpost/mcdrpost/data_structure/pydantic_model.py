@@ -1,5 +1,6 @@
 import re
 
+# noinspection PyUnresolvedReferences
 from pydantic import BaseModel, Field, PositiveInt, field_validator
 
 

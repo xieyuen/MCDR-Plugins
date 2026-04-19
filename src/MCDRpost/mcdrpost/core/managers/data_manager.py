@@ -16,7 +16,7 @@ class DataManager:
     def data(self) -> OrderData:
         return self._data
 
-    def __init__(self, server: PluginServerInterface):
+    def __init__(self, server: PluginServerInterface) -> None:
         self.server = server
         self._data = self._load()
 
@@ -32,10 +32,10 @@ class DataManager:
         self.server.logger.info(TranslationKeys.data_loaded.rtr())
         return data
 
-    def reload(self):
+    def reload(self) -> None:
         self._data = self._load()
 
-    def save(self):
+    def save(self) -> None:
         self.server.save_config_simple(
             self.data,
             self.DATA_FILE,
