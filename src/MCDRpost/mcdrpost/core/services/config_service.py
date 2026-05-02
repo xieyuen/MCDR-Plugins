@@ -15,6 +15,7 @@ class ConfigService:
         return self._config
 
     def __init__(self, server: PluginServerInterface):
+        server.logger.debug("Initializing ConfigService")
         self.server = server
         self._config = server.load_config_simple(
             self.CONFIG_FILE,

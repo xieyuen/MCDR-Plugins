@@ -46,39 +46,33 @@ class DataIndex:
             发件人索引, key 为发件人名单, value 是对应的订单 ID
     """
 
-    @property
-    def data(self) -> OrderData:
-        return self.data_service.data
-
-    def __init__(self, data_service: "DataService") -> None:
-        self.data_service = data_service
+    def __init__(self) -> None:
         self.receiver_index: DefaultDict[str, list[int]] = defaultdict(list)
         self.sender_index: DefaultDict[str, list[int]] = defaultdict(list)
-        self.build()
 
     def __clear(self) -> None:
         """清除索引"""
         self.receiver_index.clear()
         self.sender_index.clear()
 
-    def build(self) -> None:
-        """只用于重载数据时"""
+    def build(self, data: OrderData) -> None:
+        """(重新)构建索引, 只用于重载数据时"""
         self.__clear()
 
-        for order in self.data.orders.values():
+        for order in data.orders.values():
             self.add(order)
 
     def add(self, order: Order) -> None:
-        """只应在新增订单或重新构建索引时调用"""
+        """添加索引, 只应在新增订单或重新构建索引时调用"""
         self.receiver_index[order.receiver].append(order.id)
         self.receiver_index[order.receiver].sort()
         self.sender_index[order.sender].append(order.id)
         self.sender_index[order.sender].sort()
 
-    def remove(self, order_id: int) -> None:
-        order = self.data.orders[str(order_id)]
-        self.receiver_index[order.receiver].remove(order_id)
-        self.sender_index[order.sender].remove(order_id)
+    def remove(self, order: Order) -> None:
+        """删除索引"""
+        self.receiver_index[order.receiver].remove(order.id)
+        self.sender_index[order.sender].remove(order.id)
 
 
 class DataService:
@@ -93,11 +87,13 @@ class DataService:
     def __init__(
         self, server: PluginServerInterface, config_service: ConfigService
     ) -> None:
+        server.logger.debug("Initializing DataService")
         self.server = server
         self.data_manager = DataManager(server)
         self.config_service = config_service
         self.validator = DataValidator(server, config_service)
-        self.index = DataIndex(self)
+        self.index = DataIndex()
+        self.index.build(self.data)
 
     def __get_next_id(self) -> int:
         """获取最小的未使用 ID"""
@@ -139,13 +135,19 @@ class DataService:
 
     def pop_order(self, order_id: int) -> Order:
         """弹出某订单"""
-        raise NotImplementedError
+        order = self.data.orders.pop(str(order_id))
+        self.index.remove(order)
+
+        return order
 
     def reload(self) -> None:
+        """重新加载数据"""
         self.data_manager.reload()
         self.validator.validate(
             self.data, policy="fix" if self.config.auto_fix else "raise"
         )
+        self.index.build(self.data)
 
     def save(self) -> None:
+        """保存数据"""
         self.data_manager.save()
