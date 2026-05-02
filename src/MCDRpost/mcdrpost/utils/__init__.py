@@ -1,0 +1,6 @@
+import time
+
+
+def get_formatted_time() -> str:
+    """获取当前时间的格式化的字符串"""
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

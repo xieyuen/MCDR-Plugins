@@ -1,10 +1,4 @@
-import time
 from abc import ABC, abstractmethod
-
-
-def get_formatted_time() -> str:
-    """获取当前时间的格式化的字符串"""
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
 class TotalOrdering[ComparableType](ABC):
@@ -24,6 +18,3 @@ class TotalOrdering[ComparableType](ABC):
 
     def __ge__(self, other: ComparableType) -> bool:  # self >= other
         return not (self < other)
-
-
-__all__ = ["get_formatted_time", "TotalOrdering"]
