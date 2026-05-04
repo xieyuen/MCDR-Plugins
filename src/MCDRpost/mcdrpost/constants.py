@@ -1,6 +1,10 @@
+from pathlib import Path
 from typing import Literal
 
 from mcdrpost.data_structure import Item
+
+PLUGIN_ROOT = Path(__file__).parent.parent
+BUILTIN_ADAPTORS_PATH = PLUGIN_ROOT / "mcdrpost" / "mcva" / "impl"
 
 SIMPLE_HELP_MESSAGE = {
     "en_us": "post/teleport weapon hands items",
