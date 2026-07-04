@@ -151,3 +151,139 @@ class DataService:
     def save(self) -> None:
         """保存数据"""
         self.data_manager.save()
+
+    # 玩家管理方法
+    def is_player_registered(self, player: str) -> bool:
+        """检查玩家是否已注册
+
+        Args:
+            player (str): 玩家名称
+
+        Returns:
+            bool: 是否已注册
+        """
+        return player in self.data.players
+
+    def add_player(self, player: str) -> bool:
+        """添加玩家
+
+        Args:
+            player (str): 玩家名称
+
+        Returns:
+            bool: 是否成功添加
+        """
+        if self.is_player_registered(player):
+            return False
+        self.data.players.append(player)
+        return True
+
+    def remove_player(self, player: str) -> bool:
+        """移除玩家
+
+        Args:
+            player (str): 玩家名称
+
+        Returns:
+            bool: 是否成功移除
+        """
+        if not self.is_player_registered(player):
+            return False
+        self.data.players.remove(player)
+        return True
+
+    def get_players(self) -> list[str]:
+        """获取所有已注册玩家列表
+
+        Returns:
+            list[str]: 玩家列表
+        """
+        return self.data.players.copy()
+
+    # 订单查询方法
+    def contain_order(self, order_id: int) -> bool:
+        """检查订单是否存在
+
+        Args:
+            order_id (int): 订单 ID
+
+        Returns:
+            bool: 是否存在
+        """
+        return str(order_id) in self.data.orders
+
+    def get_order_by_id(self, order_id: int) -> Order | None:
+        """根据 ID 获取订单
+
+        Args:
+            order_id (int): 订单 ID
+
+        Returns:
+            Order | None: 订单对象，不存在则返回 None
+        """
+        return self.data.orders.get(str(order_id))
+
+    def get_orderid_by_sender(self, sender: str) -> list[int]:
+        """获取发件人的所有订单 ID
+
+        Args:
+            sender (str): 发件人名称
+
+        Returns:
+            list[int]: 订单 ID 列表
+        """
+        return self.index.sender_index.get(sender, []).copy()
+
+    def get_orderid_by_receiver(self, receiver: str) -> list[int]:
+        """获取收件人的所有订单 ID
+
+        Args:
+            receiver (str): 收件人名称
+
+        Returns:
+            list[int]: 订单 ID 列表
+        """
+        return self.index.receiver_index.get(receiver, []).copy()
+
+    def get_orders_by_sender(self, sender: str) -> list[Order]:
+        """获取发件人的所有订单
+
+        Args:
+            sender (str): 发件人名称
+
+        Returns:
+            list[Order]: 订单列表
+        """
+        order_ids = self.get_orderid_by_sender(sender)
+        return [self.data.orders[str(oid)] for oid in order_ids]
+
+    def get_orders_by_receiver(self, receiver: str) -> list[Order]:
+        """获取收件人的所有订单
+
+        Args:
+            receiver (str): 收件人名称
+
+        Returns:
+            list[Order]: 订单列表
+        """
+        order_ids = self.get_orderid_by_receiver(receiver)
+        return [self.data.orders[str(oid)] for oid in order_ids]
+
+    def get_all_orders(self) -> list[Order]:
+        """获取所有订单
+
+        Returns:
+            list[Order]: 所有订单列表
+        """
+        return list(self.data.orders.values())
+
+    def has_unreceived_order(self, player: str) -> bool:
+        """检查玩家是否有未接收的订单
+
+        Args:
+            player (str): 玩家名称
+
+        Returns:
+            bool: 是否有未接收的订单
+        """
+        return len(self.index.receiver_index.get(player, [])) > 0
