@@ -30,3 +30,6 @@ class MCDRpostMain:
         self.data_service = DataService(server, self.config_service)
         self.mcva_service = MCVersionAdaptorService(server)
         self.post_service = PostService(self)
+
+    def run(self):
+        raise NotImplementedError
