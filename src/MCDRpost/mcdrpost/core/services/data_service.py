@@ -45,6 +45,7 @@ class DataIndex:
         self.sender[order.sender].append(order.id)
         self.sender[order.sender].sort()
         self.all.append(order.id)
+        self.all.sort()
 
     def remove(self, order: Order) -> None:
         """删除索引"""
@@ -79,9 +80,8 @@ class DataService:
             return 1
 
         order_id = 1
-        all_id = {int(i) for i in self.data.orders}
 
-        while order_id in all_id:
+        while order_id in self.index.all:
             order_id += 1
 
         return order_id
