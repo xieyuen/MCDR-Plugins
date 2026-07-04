@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 class PostService:
     def __init__(self, mcdrpost: "MCDRpostMain"):
-        self.mcdrpost = mcdrpost
-        self.server = self.mcdrpost.server
+        self.mp = mcdrpost
+        self.server = self.mp.server
         self.logger = self.server.logger
 
     def sent(self, sender: str, receiver: str, comment: str | None = None) -> int:
@@ -26,12 +26,12 @@ class PostService:
             int: 订单号
         """
 
-        item = self.mcdrpost.mcva_service.get_offhand_item(sender)
+        item = self.mp.mcva_service.get_offhand_item(sender)
 
         self.logger.debug(f"detected item from {sender}: {item}")
         self.logger.debug(f"posting...")
 
-        self.mcdrpost.mcva_service.replace(sender, constants.AIR)
+        self.mp.mcva_service.replace(sender, constants.AIR)
 
         info = OrderInfo(
             time=get_formatted_time(),
@@ -40,9 +40,19 @@ class PostService:
             item=item,
             comment=comment,
         )
-        id = self.mcdrpost.data_service.create_order(info)
+        id = self.mp.data_service.create_order(info)
 
         # TODO: play sounds
 
         return id
 
+    def receive(self, player: str, order_id: int) -> bool:
+        self.logger.debug(f"player {player} wants to receive order {order_id}")
+
+        if not self.mp.data_service.has_order(order_id):
+            self.logger.debug(f"No order with id: {order_id}t")
+            return False
+        elif not self.mp.data_service.has_order(order_id, player, "receiver"):
+            pass
+
+        raise NotImplementedError

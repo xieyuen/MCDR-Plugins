@@ -1,7 +1,6 @@
 from typing import Self
 
 from mcdreforged import PluginServerInterface
-from mcdreforged.constants.plugin_constant import MCDR_PLUGIN_VERSION
 
 from mcdrpost.core.services.config_service import ConfigService
 from mcdrpost.core.services.data_service import DataService
@@ -10,7 +9,6 @@ from mcdrpost.core.services.post_service import PostService
 
 
 class MCDRpostMain:
-
     __INSTANCE: Self | None = None
 
     @classmethod
@@ -18,6 +16,10 @@ class MCDRpostMain:
         if cls.__INSTANCE is None:
             cls.__INSTANCE = super().__new__(cls)
         return cls.__INSTANCE  # type: ignore
+
+    @classmethod
+    def get_instance(cls) -> Self | None:
+        return cls.__INSTANCE
 
     def __init__(self, server: PluginServerInterface) -> None:
         self.server = server
