@@ -65,7 +65,7 @@ class DataService:
     def __init__(
             self, server: PluginServerInterface, config_service: ConfigService,
     ) -> None:
-        server.logger.debug("Initializing DataService")
+        server.logger.info("Initializing DataService")
         self.server = server
         self.logger = server.logger
         self.data_manager = DataManager(server)
@@ -95,7 +95,7 @@ class DataService:
         Returns:
             int: 订单 ID
         """
-        self.logger.debug("Creating new order")
+        self.logger.info("Creating new order")
 
         order_id = self.__get_next_id()
 
@@ -110,16 +110,21 @@ class DataService:
         self.data.orders[str(order_id)] = order
         self.index.add(order)
 
-        self.logger.debug(f"New order created, id: {order_id}")
+        self.logger.info(f"New order created, id: {order_id}")
         return order_id
 
-    def pop_order(self, order_id: int) -> Order:
-        """弹出某订单"""
-        self.logger.debug(f"Popping order with id: {order_id}")
+    def remove_order(self, order_id: int) -> None:
+        """删除某订单"""
+        self.logger.info(f"Removing order with id: {order_id}")
 
         order = self.data.orders.pop(str(order_id))
         self.index.remove(order)
 
+    def get_order(self, order_id: int) -> Order:
+        """获取某订单"""
+        self.logger.info(f"Getting order with id: {order_id}")
+
+        order = self.data.orders[str(order_id)]
         return order
 
     def validate(self) -> None:
