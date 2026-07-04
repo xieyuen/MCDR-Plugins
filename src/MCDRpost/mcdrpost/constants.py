@@ -41,7 +41,7 @@ class Commands:
     Format:
         * 0 - 玩家名
     """
-    PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
+    PLAY_SOUND_NEW = "execute at {0} run playsound {1} player {0}"
     """新版本音效播放 execute
     
     Format:

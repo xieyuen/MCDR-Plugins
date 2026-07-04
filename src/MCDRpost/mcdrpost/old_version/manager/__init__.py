@@ -1,3 +1,0 @@
-"""
-MCDRpost Managers
-"""
