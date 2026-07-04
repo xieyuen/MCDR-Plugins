@@ -41,15 +41,8 @@ class Commands:
     Format:
         * 0 - 玩家名
     """
-    PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
-    """新版本音效播放 execute
-    
-    Format:
-        * 0 - 玩家名
-        * 1 - 音效名
-    """
-    PLAY_SOUND_OLD = "execute {0} ~ ~ ~ playsound {1} player {0}"
-    """旧版本音效播放 execute
+    PLAY_SOUND = "playsound {1} player {0}"
+    """音效播放命令
     
     Format:
         * 0 - 玩家名
@@ -57,10 +50,3 @@ class Commands:
     """
 
 
-class Sounds:
-    """默认音效"""
-
-    SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"
-    SUCCESSFULLY_POST_SENDER = "minecraft:entity.arrow.hit_player"
-    SUCCESSFULLY_POST_RECEIVER = "minecraft:entity.arrow.shoot"
-    HAS_SOMETHING_TO_RECEIVE = "minecraft:entity.arrow.hit_player"

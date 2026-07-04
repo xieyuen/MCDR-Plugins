@@ -6,7 +6,7 @@ from mcdreforged import Serializable
 class CommandPermissions(Serializable):
     """命令权限配置
 
-    MCDR 的权限只有 0, 1, 2, 3, 4 五个等级，
+    MCDR 的权限只有 0, 1, 2, 3, 4 五个等级,
     分别对应的是 ``guest`` ``user`` ``helper`` ``admin`` ``owner`` 五个等级
 
     See Also:
@@ -40,11 +40,11 @@ class CommandPermissions(Serializable):
     def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
         if not isinstance(attr_value, int):
             raise ValueError(
-                f"Permission level must be an integer, found: {attr_name} with type {type(attr_value)}"
+                f"Permission level must be an integer, found: {attr_name} with type {type(attr_value)}",
             )
         if not (0 <= attr_value <= 4):
             raise ValueError(
-                f"Permission level must be between 0 and 4, found: {attr_name} = {attr_value}"
+                f"Permission level must be between 0 and 4, found: {attr_name} = {attr_value}",
             )
 
 
@@ -62,7 +62,7 @@ class PrefixConfig(Serializable):
         expected_type = annotations[attr_name]
         if not isinstance(attr_value, expected_type):
             raise ValueError(
-                f"{attr_name} must be {expected_type}, found: {type(attr_value)}"
+                f"{attr_name} must be {expected_type}, found: {type(attr_value)}",
             )
         if attr_name == "more_prefix":
             attr_value = cast(list, cast(object, attr_value))
@@ -72,14 +72,27 @@ class PrefixConfig(Serializable):
                 raise ValueError("more_prefix must be a list of str or empty list")
 
 
+class SoundConfig(Serializable):
+    """音效"""
+
+    successfully_receive: str = "minecraft:entity.bat.takeoff"
+    """当成功收到物品时播放"""
+    successfully_post_sender: str = "minecraft:entity.arrow.hit_player"
+    """当成功发送时向发件人播放"""
+    successfully_post_receiver: str = "minecraft:entity.arrow.shoot"
+    """当别人发件给你时播放"""
+    has_something_to_receive: str = "minecraft:entity.arrow.hit_player"
+    """刚进入服务器时发现有东西可以收件时播放"""
+
+
 class Configuration(Serializable):
     """插件配置"""
 
     max_storage: int = 5
-    """每个人发送的订单的最大存储量，-1不限制"""
+    """每个人发送的订单的最大存储量, -1不限制"""
 
     prefix: PrefixConfig = PrefixConfig.get_default()
-    """MCDR 命令前缀，可以注册多个作为别名，只需要放在一个列表内即可, !!po 一定会生效"""
+    """MCDR 命令前缀, 可以注册多个作为别名, 只需要放在一个列表内即可, !!po 一定会生效"""
 
     auto_fix: bool = False
     """是否自动修复无效订单"""
@@ -87,16 +100,19 @@ class Configuration(Serializable):
     auto_register: bool = True
     """是否自动为新玩家注册"""
 
-    receiving_tip_delay: float = 3
-    """登录之后收件箱提示的延迟时间，单位为秒"""
+    receiving_tip_delay: float | int = 3
+    """登录之后收件箱提示的延迟时间, 单位为秒"""
 
     permissions: CommandPermissions = CommandPermissions.get_default()
     """命令权限配置"""
+
+    sound: SoundConfig = SoundConfig.get_default()
+    """音效配置"""
 
     def validate_attribute(self, attr_name: str, attr_value: Any, **kwargs):
         annotations = self.get_field_annotations()
         expected_type = annotations[attr_name]
         if not isinstance(attr_value, expected_type):
             raise ValueError(
-                f"Config {attr_name} is invalid, expected {expected_type} but found {type(attr_value)}"
+                f"Config {attr_name} is invalid, expected {expected_type} but found {type(attr_value)}",
             )

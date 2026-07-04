@@ -15,6 +15,9 @@ class PostService:
         self.logger = self.server.logger
 
     def sent(self, sender: str, receiver: str, comment: str | None = None) -> int:
+    def play(self, player: str, sound: str) -> None:
+        self.server.execute(Commands.PLAY_SOUND.format(player, sound))
+
         """发送订单
 
         Args:
@@ -42,7 +45,8 @@ class PostService:
         )
         id = self.mp.data_service.create_order(info)
 
-        # TODO: play sounds
+        self.play(sender, self.config.sound.successfully_post_sender)
+        self.play(receiver, self.config.sound.successfully_post_receiver)
 
         return id
 
