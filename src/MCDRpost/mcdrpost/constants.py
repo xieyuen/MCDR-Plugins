@@ -1,12 +1,10 @@
+from pathlib import Path
 from typing import Literal
 
 from mcdrpost.data_structure import Item
 
-PLUGIN_ID: Literal["mcdrpost"] = "mcdrpost"
-CONFIG_FILE_NAME: Literal["config.yml"] = "config.yml"
-CONFIG_FILE_TYPE: Literal["yaml"] = "yaml"
-ORDER_DATA_FILE_NAME: Literal["orders.json"] = "orders.json"
-ORDERS_DATA_FILE_TYPE: Literal["json"] = "json"
+PLUGIN_ROOT = Path(__file__).parent.parent
+BUILTIN_ADAPTORS_PATH = PLUGIN_ROOT / "mcdrpost" / "mcva" / "impl"
 
 SIMPLE_HELP_MESSAGE = {
     "en_us": "post/teleport weapon hands items",
@@ -18,13 +16,6 @@ OFFHAND_CODE: Literal["Inventory[{Slot:-106b}]"] = "Inventory[{Slot:-106b}]"
 AIR: Item = Item(id="minecraft:air", count=1, components={})
 
 END_LINE: Literal["\n"] = "\n"
-
-
-class Deprecations:
-    """弃用信息"""
-
-    TEMPLATE = "{} is deprecated in v{}, and will be removed in v{}."
-    INSTEAD_INFO_TEMPLATE = "Please use {} instead."
 
 
 class Commands:
@@ -50,15 +41,8 @@ class Commands:
     Format:
         * 0 - 玩家名
     """
-    PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
-    """新版本音效播放 execute
-    
-    Format:
-        * 0 - 玩家名
-        * 1 - 音效名
-    """
-    PLAY_SOUND_OLD = "execute {0} ~ ~ ~ playsound {1} player {0}"
-    """旧版本音效播放 execute
+    PLAY_SOUND = "playsound {1} player {0}"
+    """音效播放命令
     
     Format:
         * 0 - 玩家名
@@ -66,10 +50,3 @@ class Commands:
     """
 
 
-class Sounds:
-    """默认音效"""
-
-    SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"
-    SUCCESSFULLY_POST_SENDER = "minecraft:entity.arrow.hit_player"
-    SUCCESSFULLY_POST_RECEIVER = "minecraft:entity.arrow.shoot"
-    HAS_SOMETHING_TO_RECEIVE = "minecraft:entity.arrow.hit_player"

@@ -4,7 +4,6 @@ mcdrpost:
     info: "传送/收寄副手物品"
 
   config:
-    loaded: "配置文件已加载"
     reloaded: "配置文件已重载"
 
   data:

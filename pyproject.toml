@@ -2,22 +2,18 @@
 name = "mcdr-plugins"
 version = "0.1.0"
 description = "My MCDR Plugins"
-readme = "README.md"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.12"
 dependencies = [
     "mcdreforged>=2.15.7",
+    "dowhen",
+    "hjson"
 ]
 license = { file = "LICENSE" }
 
 [project.optional-dependencies]
-minecraft-data-api = [
-    "hjson>=3.1.0",
-]
 mcdrpost = [
     "pydantic>=2.12.5",
-]
-kill-server = [
-    "dowhen>=0.1.0",
 ]
 docs = [
     "sphinx>=9.1.0",

@@ -1,5 +1,6 @@
 import re
 
+# noinspection PyUnresolvedReferences
 from pydantic import BaseModel, Field, PositiveInt, field_validator
 
 
@@ -7,9 +8,9 @@ class Item(BaseModel):
     """物品数据类，表示 Minecraft 中的物品
 
     .. note::
-        Minecraft 1.20.5 之后的 components 数据和之前的 tag 标签都存放在 components中
+        Minecraft 1.20.5 之后的 components 数据和之前的 tag 标签都存放在 components 中
 
-    .. versionadded:: 3.4.1
+    .. versionadded:: 4.0.0
         新增验证功能
     """
 

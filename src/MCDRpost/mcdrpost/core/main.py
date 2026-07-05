@@ -1,0 +1,35 @@
+from typing import Self
+
+from mcdreforged import PluginServerInterface
+
+from mcdrpost.core.services.config_service import ConfigService
+from mcdrpost.core.services.data_service import DataService
+from mcdrpost.core.services.mcva_service import MCVersionAdaptorService
+from mcdrpost.core.services.post_service import PostService
+
+
+class MCDRpostMain:
+    __INSTANCE: Self | None = None
+
+    @classmethod
+    def __new__(cls, *args, **kwargs) -> Self:
+        if cls.__INSTANCE is None:
+            cls.__INSTANCE = super().__new__(cls)
+        return cls.__INSTANCE  # type: ignore
+
+    @classmethod
+    def get_instance(cls) -> Self | None:
+        return cls.__INSTANCE
+
+    def __init__(self, server: PluginServerInterface) -> None:
+        self.server = server
+        self.logger = server.logger
+
+        # initialize services
+        self.config_service = ConfigService(server)
+        self.data_service = DataService(server, self.config_service)
+        self.mcva_service = MCVersionAdaptorService(server)
+        self.post_service = PostService(self)
+
+    def run(self):
+        raise NotImplementedError

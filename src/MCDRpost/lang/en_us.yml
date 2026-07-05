@@ -4,7 +4,6 @@ mcdrpost:
     info: "post/teleport weapon hands items"
 
   config:
-    loaded: "Configuration has already been loaded."
     reloaded: "Configuration has already been reloaded."
 
   data:
