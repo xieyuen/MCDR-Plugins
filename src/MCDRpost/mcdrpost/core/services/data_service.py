@@ -127,6 +127,14 @@ class DataService:
         order = self.data.orders[str(order_id)]
         return order
 
+    def get_orders_by_player(self, player: str, typ: Literal["sender", "receiver"]) -> list[Order]:
+        if typ == "sender":
+            return [self.data.orders[str(order_id)] for order_id in self.index.sender[player]]
+        elif typ == "receiver":
+            return [self.data.orders[str(order_id)] for order_id in self.index.receiver[player]]
+        else:
+            assert False, f"Unexpected type of player: {typ}"
+
     def validate(self) -> None:
         policy = "fix" if self.config.auto_fix else "raise"
 
@@ -202,3 +210,12 @@ class DataService:
             return order_id in self.index.receiver[player]
         else:
             assert False, f"Unexpected type of player: {typ}"
+
+    def get_players(self) -> list[str]:
+        return self.data.players
+
+    def has_player(self, player: str) -> bool:
+        return player in self.data.players
+
+    def number_of_sent_orders(self, sender: str) -> int:
+        return len(self.index.sender[sender])
