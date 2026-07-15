@@ -4,7 +4,7 @@ from mcdreforged import PluginServerInterface
 from typing_extensions import NamedTuple
 
 from mcdrpost.constants import Deprecations as Const, PLUGIN_ID
-from mcdrpost.utils.version import SemanticVersion
+from mcdrpost.utils.mcversion import MCVersion
 
 
 class _Deprecation(NamedTuple):
@@ -34,7 +34,7 @@ class _Deprecations:
         self.features = (_Deprecation(*feature) for feature in features)
 
     def log(self, server: PluginServerInterface):
-        plg_version: SemanticVersion = SemanticVersion(
+        plg_version: MCVersion = MCVersion(
             str(server.get_plugin_metadata(PLUGIN_ID).version)
         )
         has_warned: bool = False
