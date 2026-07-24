@@ -15,7 +15,7 @@ SIMPLE_HELP_MESSAGE = {
 
 OFFHAND_CODE: Literal["Inventory[{Slot:-106b}]"] = "Inventory[{Slot:-106b}]"
 
-AIR:Item = Item(id="minecraft:air", count=1, components={})
+AIR: Item = Item(id="minecraft:air", count=1, components={})
 
 END_LINE: Literal["\n"] = "\n"
 
@@ -25,12 +25,19 @@ class Deprecations:
     INSTEAD_INFO_TEMPLATE = "Please use {} instead."
 
 
+
+
 class Commands:
+    class _GetItemCommand:
+        def format(self, player: str) -> str:
+            return f"data get entity {player}" + " Inventory[{Slot:-106b}]"
+
     REPLACE_OLD = "replaceitem entity {0} weapon.offhand {1}"
     REPLACE_NEW = "item replace entity {0} weapon.offhand with {1}"
-    GET_ITEM = "data get entity {0} Inventory[{Slot:-106b}]"
-    PLAY_SOUND_NEW = "execute at {0} run {1} player {0}"
+    GET_ITEM = _GetItemCommand()
+    PLAY_SOUND_NEW = "execute at {0} run playsound {1} player {0}"
     PLAY_SOUND_OLD = "execute {0} ~ ~ ~ playsound {1} player {0}"
+
 
 class Sounds:
     SUCCESSFULLY_RECEIVE = "minecraft:entity.bat.takeoff"

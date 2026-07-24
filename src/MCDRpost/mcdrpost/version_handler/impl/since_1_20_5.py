@@ -20,7 +20,7 @@ class Since20Handler(BuiltinVersionHandler):
             return f"{item.id} {item.count}"
         components_str = "["
         for k, v in item.components.items():
-            components_str += f" {k}={v},"
+            components_str += f"{k}={v}, "
         components_str += "]"
         return f"{item.id}{components_str} {item.count}"
 
